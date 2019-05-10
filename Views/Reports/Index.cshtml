@@ -1,0 +1,142 @@
+﻿@model ReportsIndex
+@{
+    ViewBag.Title = Words.Audit_Action_ViewReports + " - " + ConfigBase.Settings.Name;
+    IEnumerable<Settings.Application> apps = ConfigBase.Settings.Applications.FilterForLoggedUser(User).Where(a => a.EnableReports);
+    IEnumerable<Reports> reports = Model.AvailableReports;
+}
+@section header{
+    @Styles.Render("~/content/min/css/reports")
+}
+@section footer{
+    @Scripts.Render("~/content/min/js/reports")
+    <script>
+        $(document).ready(function () {
+            OdissReports.baseUrl = "@Url.Content("~/reports")";
+            OdissReports.baseAppUrl = "@Url.Content("~/app/")";
+            OdissReports.language = '@Language';
+            OdissReports.start();
+        });
+    </script>
+}
+@section sidebar
+{
+    @if (UserPermissionsEnum.ViewReports.IsUserAuthorized(User))
+    {
+        <ul class="nav nav-sidebar">
+            <li class="active"><a href="javascript:void(0);">@Words.Reports<span class="pull-right glyphicon glyphicon-menu-right"></span></a></li>
+        </ul>
+        <div style="margin-bottom:20px;">
+            <label><small>@Words.Applications</small></label>
+            <div class="list-group">
+                @{ int pos = 0; }
+                @foreach (var app in apps)
+                {
+                    <a href="javascript:void(0);" class="list-group-item @(pos == 0 ? "active" : "")" data-type="application" data-id="@app.ID">
+                        @app.Name.ToLanguage()
+                        <span style="@(pos != 0 ? "display:none" : "")" class="pull-right glyphicon glyphicon-menu-right"></span>
+                    </a>
+                    pos++;
+                }
+            </div>
+
+            @* REMOVE
+            <div class="form-group form-group-sm" style="position:relative;">
+                <select id="cboApplications" class="form-control" name="cboApplications" @(apps.Count() == 1 ? "disabled='disabled'" : string.Empty)>
+                    <option value="">-- Select an application --</option>
+                    @foreach (var app in apps)
+                    {
+                        <option value="@app.ID" @(app.ID.ToString() == Model.FormState["cboApplications"] || apps.Count() == 1 ? "selected='selected'" : string.Empty)>@app.Name</option>
+                    }
+                </select>
+            </div>
+            *@
+            @if (reports.Any() && reports.Any(a => a.Type == ReportType.Chart && a.Settings?.Filters != null && a.Settings.Filters.Any()))
+            {
+                <form method="post" id="frmFilters">
+                    <label><small>@Words.Reports_Filters</small></label>
+                    @foreach (var filter in reports.Where(a => a.Settings?.Filters != null).SelectMany(a => a.Settings.Filters).OrderBy(a => a.Order).GroupBy(a => new { Name = a.Name.ToLanguage(), a.Type, a.ParameterName, a.FilterCommand, a.DefaultValueResult }))
+                    {
+                        string extraClasses = "";
+
+                        if (filter.Key.Type == FieldTypeEnum.DateRange)
+                        {
+                            extraClasses += " form-group-date-range ";
+                        }
+
+                        <div class="form-group form-group-sm @extraClasses" style="position:relative;">
+                            @if (filter.Key.Type == FieldTypeEnum.Text)
+                            {
+                                <input type="text" id="FILTER_@filter.Key.ParameterName"
+                                       class="form-control control-filter"
+                                       name="FILTER_@filter.Key.ParameterName"
+                                       placeholder="@filter.Key.Name"
+                                       data-reports="@string.Join(",", filter.Select(a => a.IDReport))"
+                                       value=""
+                                       title="@filter.Key.Name" />
+                            }
+                            else if (filter.Key.Type == FieldTypeEnum.AutoComplete)
+                            {
+                                <input type="text" id="FILTER_@filter.Key.ParameterName"
+                                       class="form-control control-filter autocompletesearch"
+                                       name="FILTER_@filter.Key.ParameterName"
+                                       placeholder="@filter.Key.Name"
+                                       data-report-id="@filter.First().IDReport"
+                                       data-parameter-name="@filter.Key.ParameterName"
+                                       data-reports="@string.Join(",", filter.Select(a => a.IDReport))"
+                                       value=""
+                                       title="@filter.Key.Name" />
+                                string autoCompleteHiddenName = "hiddenFILTER_" + filter.Key.ParameterName;
+                                <input type="hidden" id="@autoCompleteHiddenName" data-reports="@string.Join(",", filter.Select(a => a.IDReport))" name="@autoCompleteHiddenName" value="" />
+                            }
+                            else if (filter.Key.Type == FieldTypeEnum.DateRange)
+                            {
+                                <input type="text" id="FILTER_@filter.Key.ParameterName" data-reports="@string.Join(",", filter.Select(a => a.IDReport))" class="form-control control-filter" name="FILTER_@filter.Key.ParameterName" placeholder="@filter.Key.Name (@ConfigBase.Settings.DateFormatDescription)" value="@filter.Key.DefaultValueResult" title="@filter.Key.Name" />
+                                <i class="glyphicon glyphicon-calendar"></i>
+                            }
+                        </div>
+                    }
+                    <button type="submit" class="btn btn-primary" id="btnFilter">@Words.Reports_Filter</button>
+                </form>
+                        }
+
+            @if (reports.Any() && reports.Any(a => a.Type == ReportType.ExportExcel))
+            {
+                <form method="post" id="frmDocuments">
+                    <br />
+                    <div class="form-group form-group-sm" style="position:relative;">
+                        <label>@Words.Reports</label>
+                        <select id="cboReports" class="form-control" name="cboReports">
+                            <option value="">-- Select a report --</option>
+                            @foreach (var report in Model.AvailableReports.Where(a => a.Type == ReportType.ExportExcel))
+                            {
+                                <option value="@report.ID">@report.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group form-group-sm form-group-date-range" style="position:relative;">
+                        <input type="text" id="txtDatePeriod" class="form-control control-filter" name="DatePeriod" placeholder="Date Range" value="" />
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </div>
+                    <button type="submit" class="btn btn-primary" data-loading-text="@Words.Reports_Downloading" id="btnExport">@Words.Reports_Download</button>
+                    <label class="btn-xs" style="display:none;font-weight:normal">@Words.Reports_Downloading</label>
+
+                </form>
+                @*<button type="button" id="btnResetSearch" class="btn btn-default">@Words.Reset</button>*@
+            }
+        </div>
+    }
+}
+<h1 data-title="@Words.Reports"></h1>
+<br />
+<div class="row" id="graphicalReports">
+    <script id="graphTemplate" type="text/template">
+        <div class="col-md-6 boxChart">
+            <div class="panel panel-default">
+                <div class="panel-body" style="position:relative;max-height:460px;max-width:747px;">
+                    <canvas @*width="350" height="200" *@></canvas>
+                    <button type="button" class="btn btn-default" data-type="export" data-report-id="" style="display:none; position: absolute; right: 10px; bottom: 15px;" title="@Words.Reports_ExportData"><span class="glyphicon glyphicon-download-alt"></span></button>
+                </div>
+            </div>
+        </div>
+    </script>
+</div>

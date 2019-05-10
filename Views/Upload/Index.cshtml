@@ -1,0 +1,59 @@
+﻿@model App
+@{
+    ViewBag.Title = Model.Name.ToLanguage() + " - " + ConfigBase.Settings.Name;
+}
+@section header
+{
+    @Styles.Render("~/content/min/css/submitbase")
+}
+@section footer
+{
+    @Scripts.Render("~/content/min/js/upload")
+    <script>
+
+        Dropzone.autoDiscover = false;
+        $(document).ready(function () {
+            OdissUpload.language = '@Language';
+            OdissUpload.baseUrl = '@Url.Content("~/upload/" + Model.ID + "/")';
+            OdissUpload.dateFormat = '@ConfigBase.Settings.DateFormat'.toUpperCase();
+            OdissUpload.start();
+        });
+    </script>
+}
+<div class="row">
+    <div class="center-block col-md-4 col-sm-12" style="float:none;">
+        <br />
+        <form method="post" id="frmSaveNew">
+            <table cellpadding="2" style="width:100%;margin-top:15px;" id="tbSubmitDocument">
+                <tr>
+                    <td colspan="2">
+                        <div style="font-weight:bold;color:#888;font-size:12px;">STEP 1</div>
+                        <div>Select a document from your computer. <span style="color:#888;font-size:11px;">(Allowed file types: .pdf and .tif)</span></div>
+                        <div id="clickable" class="dropzone droparea dz-message" style="margin-bottom:10px;">
+                            <div style="text-align:center;font-weight:bold;">
+                                @Words.SubmitDocument_Document
+                            </div>
+                            <br />
+                            <span class="glyphicon glyphicon-cloud-upload" style="font-size:24px;color:#CCC;"></span><br />
+                            @Words.SubmitDocument_DragAndDrop<br />
+                            @Words.Or, <button type="button" class="btn btn-sm btn-default">@Words.SubmitDocument_Browse</button>
+                            <div id="previews"></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div style="display:none;" id="tblSaveContent">
+                <br />
+                <div style="font-weight:bold;color:#888;font-size:12px;" id="boxStep2">STEP 2</div>
+                <input type="hidden" name="TemporaryFileID" id="TemporaryFileID" />
+                <input type="hidden" name="TemporaryFileName" id="TemporaryFileName" />
+                <div class="alert alert-success" role="alert" id="alertEditSuccess" style="display:none;margin-bottom:10px;margin-top:15px;">The document was successfully sent. <a href="javascript:void(0);" id="lnkSendAnotherDocument">@Words.SubmitDocument_SendAnother</a></div>
+                <div class="alert alert-danger" role="alert" id="alertEditError" style="display:none;margin-bottom:10px;">@Words.Properties_Error
+                <label id="lbl_errorDetails" />
+                </div>
+                <br />
+                <button type="submit" class="btn btn-primary btn-sm" id="btnSaveDocument">@Words.SubmitDocument_Submit</button>
+            </div>
+        </form>
+    </div>
+</div>

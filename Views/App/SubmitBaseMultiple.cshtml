@@ -1,0 +1,131 @@
+﻿@model App
+@{
+    Layout = "~/Views/Shared/_LayoutSubmitBase.cshtml";
+}
+@section footer
+{
+    <script>
+    $(document).ready(function () {
+        OdissSubmitBase.language = '@Language';
+        OdissSubmitBase.baseUrl = '@Url.Content("~/app/" + Model.ID + "/")';
+        OdissSubmitBase.dateFormat = '@ConfigBase.Settings.DateFormat'.toUpperCase();
+        OdissSubmitBase.start();
+    });
+    </script>
+}
+@section sidebar
+{
+    <div class="panel">
+        <ul class="nav nav-sidebar">
+            <li><a role="button">@Words.Viewer_Properties</a></li>
+        </ul>
+        <div class="panel-collapse collapse in panel-in">
+            <div style="padding: 8px 17px;">
+                <form method="post" id="frmSaveNew">
+                    <input type="hidden" name="TemporaryFileID" id="TemporaryFileID" />
+                    <div class="alert alert-success" role="alert" id="alertEditSuccess" style="display:none;margin-bottom:10px;">@Words.Properties_Updated</div>
+                    <div class="alert alert-danger" role="alert" id="alertEditError" style="display:none;margin-bottom:10px;">@Words.Properties_Error</div>
+                    <table cellpadding="2" style="width:100%;">
+                        <tr>
+                            <td colspan="2">
+                                <div id="clickable" class="dropzone droparea dz-message" style="margin-bottom:10px;">
+                                    <div style="text-align:center;font-weight:bold;">
+                                        @Words.SubmitDocument_Document
+                                    </div>
+                                    <br />
+                                    <span class="glyphicon glyphicon-cloud-upload" style="font-size:24px;color:#CCC;"></span><br />
+                                    @Words.SubmitDocument_DragAndDrop<br />
+                                    @Words.Or, <button type="button" class="btn btn-sm btn-default">@Words.SubmitDocument_Browse</button>
+                                    <div id="previews"></div>
+                                </div>
+                                @*
+                                    <div class="dz-preview dz-file-preview">
+                                        <div class="dz-details">
+                                            <div class="dz-filename"><span data-dz-name></span></div>
+                                            <div class="dz-size" data-dz-size></div>
+                                            <img data-dz-thumbnail />
+                                        </div>
+                                        <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
+                                        <div class="dz-success-mark"><span>✔</span></div>
+                                        <div class="dz-error-mark"><span>✘</span></div>
+                                        <div class="dz-error-message"><span data-dz-errormessage></span></div>
+                                    </div>*@
+                            </td>
+                        </tr>
+                        @foreach (var field in Model.Fields.Where(a => a.Editable).OrderBy(a => a.FilterOrder))
+                        {
+                            var classDate = field.Type == FieldTypeEnum.DateRange ? "form-group-date" : string.Empty;
+                            var classDisabled = field.IsFilledByAutoComplete ? "disabled" : string.Empty;
+                            var classFilledByAutoComplete = field.IsFilledByAutoComplete ? "isFilledByAutoComplete" : string.Empty;
+                            var propertyDisabled = field.IsFilledByAutoComplete ? "disabled='disabled'" : string.Empty;
+                            var classAutoCompleteCaller = field.IsAutoCompleteCaller ? "autoCompleteCaller" : string.Empty;
+                            var proprertyPrevData = field.IsAutoCompleteCaller ? "data-prevalue=''" : string.Empty;
+                            <tr>
+                                <th style="padding-right:5px;"><label for="@field.ID">@field.Name.ToLanguage()</label></th>
+                                <td style="padding-bottom: 3px;">
+                                    <div class="form-group form-group-sm @classDate @classDisabled" style="position:relative;">
+                                        @if (field.Type == FieldTypeEnum.Number || field.Type == FieldTypeEnum.Text || field.Type == FieldTypeEnum.NumberRange)
+                                        {
+                                            <input type="text" class="form-control input-sm @classAutoCompleteCaller @classFilledByAutoComplete" name="@field.ID" placeholder="@field.Name.ToLanguage()"
+                                                   value="" @propertyDisabled @proprertyPrevData />
+                                        }
+                                        else if (field.Type == FieldTypeEnum.DateRange)
+                                        {
+                                            <input type="text" id="@field.ID" class="form-control @classFilledByAutoComplete" name="@field.ID" placeholder="@field.Name.ToLanguage()"
+                                                   value="" @propertyDisabled />
+                                            <i class="glyphicon glyphicon-calendar"></i>
+                                        }
+                                        else if (field.Type == FieldTypeEnum.Tree || field.Type == FieldTypeEnum.Dropdown || field.Type == FieldTypeEnum.Radio)
+                                        {
+                                            var fieldData = field.GetData();
+                                            <select id="@field.ID" name="@field.ID" class="form-control @classFilledByAutoComplete" @propertyDisabled>
+                                                @if (fieldData.Any(a => a.ParentCode != null))
+                                                {
+                                                    foreach (var node in fieldData.Where(a => a.ParentCode == null))
+                                                    {
+                                                        if (!node.Selectable)
+                                                        {
+                                                            @:<optgroup label="@node.Name">
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@node.Code">@node.Name</option>
+                                                        }
+                                                        foreach (var subnode in fieldData.Where(a => a.ParentCode == node.Code))
+                                                        {
+                                                            <option value="@subnode.Code">@(node.Selectable ? new string(' ', 6) : string.Empty)@subnode.Name</option>
+                                                        }
+                                                        if (!node.Selectable)
+                                                        {
+                                                            @:</optgroup>
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    foreach (var node in fieldData)
+                                                    {
+                                                        <option value="@node.Code">@node.Name</option>
+                                                    }
+                                                }
+                                            </select>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td></td>
+                            <td class="text-right"><button class="btn btn-primary btn-sm">@Words.SubmitDocument_Submit</button></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+<form action="@Url.Content(string.Format("~/App/{0}/ViewerSubmit", Model.ID))" target="iDocument" method="post" style="display:none;" id="tmpSubmitForm" name="tmpSubmitForm">
+    <input type="hidden" name="docs" id="hidDoc" value="@Model.DocsID" />
+    <input type='submit' value='submit' style="display:none;" />
+</form>
+<iframe id="iDocument" name="iDocument" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>

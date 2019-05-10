@@ -1,0 +1,40 @@
+﻿@{
+    Layout = null;
+    HtmlHelper.ClientValidationEnabled = false;
+    HtmlHelper.UnobtrusiveJavaScriptEnabled = false;
+
+    var viewer = Html.OctacomViewer(new ViewerOptions
+    {
+        Language = Language,
+        EnablePrint = false,
+        EnableSave = false,
+        EnablePresentationMode = false,
+        EnableSearch = false
+    });
+}
+<!DOCTYPE html>
+<html dir="ltr" mozdisallowselectionprint moznomarginboxes>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Viewer</title>
+    @viewer.Resources
+</head>
+<body tabindex="1" class="loadingInProgress">
+    @viewer.Render()
+    <script>
+        function load(data) {
+            OctacomViewer.Load({
+                type: 'bytearray',
+                url: data
+            });
+        }
+
+        function close() {
+            OctacomViewer.Close();
+        }
+    </script>
+</body>
+</html>

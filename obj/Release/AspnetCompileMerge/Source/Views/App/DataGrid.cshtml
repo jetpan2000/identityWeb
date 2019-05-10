@@ -1,0 +1,14 @@
+﻿@model Octacom.Odiss.ABCgroup.Web.Models.DataGridModel
+
+<div id="react-root" class="content-wraper"></div>
+
+@section footer {
+    <script type="text/javascript">
+        window.__appData = JSON.parse('@Html.Raw(Model.DataJson)');
+        window.__serverState = {
+            rowsPerPage: @Model.RowsPerPage
+        };
+        window.__baseUrl = '@Url.Content("~/")';
+    </script>
+    @Scripts.Render("~/Scripts/src/dist/datagrid.bundle.js")
+}

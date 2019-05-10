@@ -1,0 +1,771 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="All" xml:space="preserve">
+    <value>Todos</value>
+  </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Aplicaciones</value>
+  </data>
+  <data name="Application_DocumentViewer" xml:space="preserve">
+    <value>Visor de documentos</value>
+  </data>
+  <data name="Application_NoPermissionView" xml:space="preserve">
+    <value>Usted no tiene permiso para "buscar y ver documentos"</value>
+  </data>
+  <data name="Application_SearchFor" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="Audit" xml:space="preserve">
+    <value>Auditoría</value>
+  </data>
+  <data name="Audit_Action" xml:space="preserve">
+    <value>Acción</value>
+  </data>
+  <data name="Audit_Actions" xml:space="preserve">
+    <value>Ccciones</value>
+  </data>
+  <data name="Audit_Action_AddNotes" xml:space="preserve">
+    <value>Añadir notas</value>
+  </data>
+  <data name="Audit_Action_Applications" xml:space="preserve">
+    <value>Aplicaciones</value>
+  </data>
+  <data name="Audit_Action_ChangePassword" xml:space="preserve">
+    <value>Cambiar la contraseña</value>
+  </data>
+  <data name="Audit_Action_ChangeUserPassword" xml:space="preserve">
+    <value>Cambiar contraseña de usuario</value>
+  </data>
+  <data name="Audit_Action_CopyApplicationRules" xml:space="preserve">
+    <value>Copiar las reglas de acceso de la aplicación</value>
+  </data>
+  <data name="Audit_Action_CreateUser" xml:space="preserve">
+    <value>Crear usuario</value>
+  </data>
+  <data name="Audit_Action_DeleteNotes" xml:space="preserve">
+    <value>Eliminar notas</value>
+  </data>
+  <data name="Audit_Action_DeleteUser" xml:space="preserve">
+    <value>Borrar usuario</value>
+  </data>
+  <data name="Audit_Action_Documents" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="Audit_Action_Documents_Search" xml:space="preserve">
+    <value>Búsqueda de documentos</value>
+  </data>
+  <data name="Audit_Action_Documents_View" xml:space="preserve">
+    <value>Ver imagen del documento</value>
+  </data>
+  <data name="Audit_Action_EditProperties" xml:space="preserve">
+    <value>Editar propriedades</value>
+  </data>
+  <data name="Audit_Action_Export" xml:space="preserve">
+    <value>Exportar resultados de la búsqueda</value>
+  </data>
+  <data name="Audit_Action_Login" xml:space="preserve">
+    <value>Iniciar sesión</value>
+  </data>
+  <data name="Audit_Action_ModifyUser" xml:space="preserve">
+    <value>Modificar usuario</value>
+  </data>
+  <data name="Audit_Action_Notes" xml:space="preserve">
+    <value>Notas</value>
+  </data>
+  <data name="Audit_Action_PrintDocument" xml:space="preserve">
+    <value>Imprimir documento</value>
+  </data>
+  <data name="Audit_Action_SaveDocument" xml:space="preserve">
+    <value>Guardar documento</value>
+  </data>
+  <data name="Audit_Action_SendEmail" xml:space="preserve">
+    <value>Enviar por correo electrónico la imagen del documento</value>
+  </data>
+  <data name="Audit_Action_Session" xml:space="preserve">
+    <value>Sesión</value>
+  </data>
+  <data name="Audit_Action_SetApplicationRules" xml:space="preserve">
+    <value>Establecer las reglas de acceso a aplicaciones</value>
+  </data>
+  <data name="Audit_Action_Users" xml:space="preserve">
+    <value>Usuarios</value>
+  </data>
+  <data name="Audit_Application" xml:space="preserve">
+    <value>Aplicación</value>
+  </data>
+  <data name="Audit_Data" xml:space="preserve">
+    <value>Datos</value>
+  </data>
+  <data name="Audit_Recorded" xml:space="preserve">
+    <value>Cuando?</value>
+  </data>
+  <data name="Audit_Reference" xml:space="preserve">
+    <value>Referencia</value>
+  </data>
+  <data name="Audit_Title" xml:space="preserve">
+    <value>Búsqueda de registros de auditoría</value>
+  </data>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Cambiar la contraseña</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Borrar</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="Email_Error" xml:space="preserve">
+    <value>Ocurrio un error. Inténtalo de nuevo.</value>
+  </data>
+  <data name="Email_From" xml:space="preserve">
+    <value>De</value>
+  </data>
+  <data name="Email_IncludeNotes" xml:space="preserve">
+    <value>Adjuntar notas</value>
+  </data>
+  <data name="Email_Message" xml:space="preserve">
+    <value>Mensaje</value>
+  </data>
+  <data name="Email_SaveAddresses" xml:space="preserve">
+    <value>Guardar direccion(es)</value>
+  </data>
+  <data name="Email_Send" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="Email_Sent" xml:space="preserve">
+    <value>Email enviado con éxito.</value>
+  </data>
+  <data name="Email_Subject" xml:space="preserve">
+    <value>Asunto</value>
+  </data>
+  <data name="Email_To" xml:space="preserve">
+    <value>Para</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Primer nombre</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="Language_English" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Language_French" xml:space="preserve">
+    <value>Français</value>
+  </data>
+  <data name="Language_Portuguese" xml:space="preserve">
+    <value>Português</value>
+  </data>
+  <data name="Language_Spanish" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Apellido</value>
+  </data>
+  <data name="Login_EmptyPassword" xml:space="preserve">
+    <value>Debe introducir la contraseña</value>
+  </data>
+  <data name="Login_EmptyUsername" xml:space="preserve">
+    <value>Debe introducir el nombre de usuario</value>
+  </data>
+  <data name="Login_InvalidPassword" xml:space="preserve">
+    <value>El nombre de usuario o contraseña proporcionada es incorrecta</value>
+  </data>
+  <data name="Login_Signin" xml:space="preserve">
+    <value>Ingresar</value>
+  </data>
+  <data name="Login_SigninMessage" xml:space="preserve">
+    <value>Ingresar para continuar</value>
+  </data>
+  <data name="Logoff" xml:space="preserve">
+    <value>Desconectarse</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>Notas</value>
+  </data>
+  <data name="Notes_Added" xml:space="preserve">
+    <value>Notas añadido correctamente.</value>
+  </data>
+  <data name="Notes_At" xml:space="preserve">
+    <value>en</value>
+  </data>
+  <data name="Notes_Error" xml:space="preserve">
+    <value>Ocurrio un error. Inténtalo de nuevo.</value>
+  </data>
+  <data name="Notes_RemoveNote" xml:space="preserve">
+    <value>Borrar la nota</value>
+  </data>
+  <data name="Notes_WroteBy" xml:space="preserve">
+    <value>Escribió por</value>
+  </data>
+  <data name="Or" xml:space="preserve">
+    <value>o</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="PasswordChanged" xml:space="preserve">
+    <value>Su contraseña se ha cambiado correctamente</value>
+  </data>
+  <data name="PasswordNotChanged" xml:space="preserve">
+    <value>Su contraseña no ha cambiado. Compruebe su información y vuelve a intentarlo.</value>
+  </data>
+  <data name="Password_ChangeYour" xml:space="preserve">
+    <value>Cambiar tu contraseña</value>
+  </data>
+  <data name="Password_ConfirmationPasswordRequired" xml:space="preserve">
+    <value>La confirmación de la contraseña es necesaria.</value>
+  </data>
+  <data name="Password_ConfirmNew" xml:space="preserve">
+    <value>Confirme la nueva contraseña</value>
+  </data>
+  <data name="Password_Current" xml:space="preserve">
+    <value>Contraseña actual</value>
+  </data>
+  <data name="Password_EnterPassword" xml:space="preserve">
+    <value>Por favor ingrese su contraseña.</value>
+  </data>
+  <data name="Password_New" xml:space="preserve">
+    <value>Nueva contraseña</value>
+  </data>
+  <data name="Password_Rules" xml:space="preserve">
+    <value>La contraseña debe tener entre {0} y {1} caracteres.</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>Permisos</value>
+  </data>
+  <data name="Permissions_All" xml:space="preserve">
+    <value>TODAS</value>
+  </data>
+  <data name="Properties_Error" xml:space="preserve">
+    <value>Ocurrio un error. Inténtalo de nuevo.</value>
+  </data>
+  <data name="Properties_Updated" xml:space="preserve">
+    <value>Propiedades actualizadas correctamente.</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="SaveChanges" xml:space="preserve">
+    <value>Guardar cambios</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="Search_Documents" xml:space="preserve">
+    <value>Búsqueda de documentos</value>
+  </data>
+  <data name="ToggleNavigation" xml:space="preserve">
+    <value>Activar la navegación</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nombre de usuario</value>
+  </data>
+  <data name="Users" xml:space="preserve">
+    <value>Usuarios</value>
+  </data>
+  <data name="Users_AddUser" xml:space="preserve">
+    <value>Añadir usuario</value>
+  </data>
+  <data name="Users_Administrator" xml:space="preserve">
+    <value>Administrador</value>
+  </data>
+  <data name="Users_DeleteUser" xml:space="preserve">
+    <value>Eliminar este usuario</value>
+  </data>
+  <data name="Users_Regular" xml:space="preserve">
+    <value>Regular</value>
+  </data>
+  <data name="Users_Super" xml:space="preserve">
+    <value>Super</value>
+  </data>
+  <data name="Users_Temporary" xml:space="preserve">
+    <value>Temporario</value>
+  </data>
+  <data name="UserType" xml:space="preserve">
+    <value>Tipo de usuario</value>
+  </data>
+  <data name="User_AccessAnyApplication" xml:space="preserve">
+    <value>Permitir al usuario acceder a cualquier aplicación</value>
+  </data>
+  <data name="User_Add" xml:space="preserve">
+    <value>Añadir usuario</value>
+  </data>
+  <data name="User_AddedErrorMessage" xml:space="preserve">
+    <value>Ocurrio un error. Inténtalo de nuevo.</value>
+  </data>
+  <data name="User_AddedMessage" xml:space="preserve">
+    <value>Usuario añadido correctamente.</value>
+  </data>
+  <data name="User_ChooseApplications" xml:space="preserve">
+    <value>Elegir las aplicaciones</value>
+  </data>
+  <data name="User_CopyPermissions" xml:space="preserve">
+    <value>Copiar los permisos de otro usuario</value>
+  </data>
+  <data name="User_Details" xml:space="preserve">
+    <value>Detalles</value>
+  </data>
+  <data name="User_Edit" xml:space="preserve">
+    <value>Editar usuario</value>
+  </data>
+  <data name="User_EnterUsername" xml:space="preserve">
+    <value>Por favor, ingrese un nombre de usuario</value>
+  </data>
+  <data name="User_IntroAdd" xml:space="preserve">
+    <value>Para añadir usuarios, haga clic aquí.</value>
+  </data>
+  <data name="User_IntroSearch" xml:space="preserve">
+    <value>Buscar y filtrar los usuarios.</value>
+  </data>
+  <data name="User_Updated" xml:space="preserve">
+    <value>Usuario actualizado correctamente.</value>
+  </data>
+  <data name="Viewer_EditProperties" xml:space="preserve">
+    <value>Editar propiedades</value>
+  </data>
+  <data name="Viewer_MultipleDocuments" xml:space="preserve">
+    <value>Múltiples documentos</value>
+  </data>
+  <data name="Viewer_MultipleDocumentsMessage" xml:space="preserve">
+    <value>No se puede ver/editar propiedades de varios documentos.</value>
+  </data>
+  <data name="Viewer_Properties" xml:space="preserve">
+    <value>Propiedades</value>
+  </data>
+  <data name="Viewer_SaveChanges" xml:space="preserve">
+    <value>Guardar cambios</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Ayuda</value>
+  </data>
+  <data name="NoApplicationPermission" xml:space="preserve">
+    <value>No hay aplicaciones se han configurado todavía. Consulte con el administrador del sistema si tiene permiso de acceso.</value>
+  </data>
+  <data name="User_Actions" xml:space="preserve">
+    <value>Acciones</value>
+  </data>
+  <data name="User_Documents" xml:space="preserve">
+    <value>Documentos</value>
+  </data>
+  <data name="User_TypeName" xml:space="preserve">
+    <value>Escriba el nombre de usuario</value>
+  </data>
+  <data name="Audit_AllApplications" xml:space="preserve">
+    <value>Todas las páginas de aplicaciones</value>
+  </data>
+  <data name="Audit_AnyWhere" xml:space="preserve">
+    <value>Todas las páginas</value>
+  </data>
+  <data name="Audit_System" xml:space="preserve">
+    <value>Las páginas del sistema</value>
+  </data>
+  <data name="Audit_Where" xml:space="preserve">
+    <value>¿Dónde?</value>
+  </data>
+  <data name="Audit_Details" xml:space="preserve">
+    <value>Detalles</value>
+  </data>
+  <data name="Audit_DetailsData" xml:space="preserve">
+    <value>Detalles de auditoría</value>
+  </data>
+  <data name="Audit_Show" xml:space="preserve">
+    <value>Mostrar</value>
+  </data>
+  <data name="User_ExpireAccess" xml:space="preserve">
+    <value>Expirar el acceso en</value>
+  </data>
+  <data name="User_SetExpireDate" xml:space="preserve">
+    <value>Usted tiene que fijar una fecha de caducidad a los usuarios temporales.</value>
+  </data>
+  <data name="User_UserNameTaken" xml:space="preserve">
+    <value>¡Este nombre de usuario ya está en uso!</value>
+  </data>
+  <data name="Users_Active" xml:space="preserve">
+    <value>Usuarios activos</value>
+  </data>
+  <data name="Users_Inactive" xml:space="preserve">
+    <value>Usuarios inactivos</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Limpiar</value>
+  </data>
+  <data name="Audit_Action_SubmitDocument" xml:space="preserve">
+    <value>Carga de Documentos</value>
+  </data>
+  <data name="Submit_Document" xml:space="preserve">
+    <value>Carga de Documentos</value>
+  </data>
+  <data name="SubmitDocument_Browse" xml:space="preserve">
+    <value>Examinar</value>
+  </data>
+  <data name="SubmitDocument_Document" xml:space="preserve">
+    <value>Documento</value>
+  </data>
+  <data name="SubmitDocument_DragAndDrop" xml:space="preserve">
+    <value>Arrastre y suelte para cargar</value>
+  </data>
+  <data name="SubmitDocument_Submit" xml:space="preserve">
+    <value>Enviar</value>
+  </data>
+  <data name="SubmitDocument_Success" xml:space="preserve">
+    <value>El documento se ha procesado correctamente.</value>
+  </data>
+  <data name="Application_Empty" xml:space="preserve">
+    <value>en blanco</value>
+  </data>
+  <data name="Notes_SeeMore" xml:space="preserve">
+    <value>Abra el documento para ver todas las notas ...</value>
+  </data>
+  <data name="User_PhoneNumberMobile" xml:space="preserve">
+    <value>Teléfono (Móbil)</value>
+  </data>
+  <data name="User_PhoneNumberOffice" xml:space="preserve">
+    <value>Teléfono (Oficina)</value>
+  </data>
+  <data name="Audit_Action_ViewAudit" xml:space="preserve">
+    <value>Buscar y ver registros de auditoría</value>
+  </data>
+  <data name="Audit_Action_ViewNotes" xml:space="preserve">
+    <value>Ver notas</value>
+  </data>
+  <data name="Audit_Action_ViewReports" xml:space="preserve">
+    <value>Ver Reportes</value>
+  </data>
+  <data name="Reports" xml:space="preserve">
+    <value>Reportes</value>
+  </data>
+  <data name="Login_AccountLocked" xml:space="preserve">
+    <value>Su cuenta está bloqueada temporalmente. Espere unos minutos y vuelva a intentarlo.</value>
+  </data>
+  <data name="And" xml:space="preserve">
+    <value>y</value>
+  </data>
+  <data name="PasswordDoesntMatch" xml:space="preserve">
+    <value>La confirmación de la contraseña no coincide.</value>
+  </data>
+  <data name="PasswordEmpty" xml:space="preserve">
+    <value>La nueva contraseña no puede estar vacía.</value>
+  </data>
+  <data name="PasswordEmptyCurrent" xml:space="preserve">
+    <value>La contraseña actual no puede estar vacía.</value>
+  </data>
+  <data name="Audit_Action_CustomAction" xml:space="preserve">
+    <value>Acción personalizada</value>
+  </data>
+  <data name="Audit_Others" xml:space="preserve">
+    <value>Otras</value>
+  </data>
+  <data name="Viewer_Pages" xml:space="preserve">
+    <value>Páginas</value>
+  </data>
+  <data name="Viewer_Pages_All" xml:space="preserve">
+    <value>Todas las páginas</value>
+  </data>
+  <data name="Viewer_Pages_From" xml:space="preserve">
+    <value>De</value>
+  </data>
+  <data name="Viewer_Pages_Range" xml:space="preserve">
+    <value>Rango</value>
+  </data>
+  <data name="Viewer_Pages_To" xml:space="preserve">
+    <value>A</value>
+  </data>
+  <data name="ChangePassword_ChangeToContinue" xml:space="preserve">
+    <value>Se debe crear una nueva contraseña</value>
+  </data>
+  <data name="ChangePassword_SaveContinue" xml:space="preserve">
+    <value>Guardar y continuar</value>
+  </data>
+  <data name="ChangePassword_Error" xml:space="preserve">
+    <value>Error al actualizar su contraseña. Póngase en contacto con el soporte técnico.</value>
+  </data>
+  <data name="ChangePassword_RequirePasswordChange" xml:space="preserve">
+    <value>Requerir cambio de contraseña en el siguiente inicio de sesión</value>
+  </data>
+  <data name="Login_SessionSigninToContinue" xml:space="preserve">
+    <value>Su sesión ha caducado. Es necesario volver a iniciar sesión para continuar.</value>
+  </data>
+  <data name="Login_SessionTimeout" xml:space="preserve">
+    <value>Sesión expirada</value>
+  </data>
+  <data name="Login_LimitExceeded" xml:space="preserve">
+    <value>Se ha superado el límite máximo de usuarios conectados simultáneamente. Póngase en contacto con el administrador del sistema.</value>
+  </data>
+  <data name="Users_LimitExceeded" xml:space="preserve">
+    <value>Se ha superado el número máximo de usuarios. No se agregó el usuario. Póngase en contacto con el administrador.</value>
+  </data>
+  <data name="SubmitDocument_SendAnother" xml:space="preserve">
+    <value>¿Quieres enviar otro documento?</value>
+  </data>
+  <data name="User_RestrictDocumentExplanation" xml:space="preserve">
+    <value>En esta sección se puede restringir el acceso a ciertos tipos de documentos. Si desea permitir al usuario tener acceso a todos los documentos, no especifique ningún tipo de filtro.</value>
+  </data>
+  <data name="User_RestrictDocumentSearch" xml:space="preserve">
+    <value>Escribe para buscar...</value>
+  </data>
+  <data name="Email_InvalidDomain" xml:space="preserve">
+    <value>Este correo electrónico sólo se puede enviar a direcciones {0}.</value>
+  </data>
+  <data name="Email_AttachPages" xml:space="preserve">
+    <value>Adjuntar página(s)</value>
+  </data>
+  <data name="Notes_ConfirmDelete" xml:space="preserve">
+    <value>¿De verdad quiere eliminar la nota?</value>
+  </data>
+  <data name="Notes_WroteSecondsAgo" xml:space="preserve">
+    <value>hace segundos</value>
+  </data>
+  <data name="User_ConfirmUserDelete" xml:space="preserve">
+    <value>¿Realmente desea eliminar este usuario?</value>
+  </data>
+  <data name="User_ErrorCopyingPermissions" xml:space="preserve">
+    <value>Error al copiar los permisos.</value>
+  </data>
+  <data name="User_ErrorLoading" xml:space="preserve">
+    <value>Error al cargar los datos del usuario.</value>
+  </data>
+  <data name="User_ErrorRemoving" xml:space="preserve">
+    <value>Error al eliminar el usuario.</value>
+  </data>
+  <data name="User_NoPermissionEdit" xml:space="preserve">
+    <value>Usted no tiene permiso para editar este usuario.</value>
+  </data>
+  <data name="User_PermissionsCopied" xml:space="preserve">
+    <value>Permisos de usuario copiados de</value>
+  </data>
+  <data name="User_Removed" xml:space="preserve">
+    <value>Usuario eliminado con éxito.</value>
+  </data>
+  <data name="Viewer_AutoComplete_DataNotFound" xml:space="preserve">
+    <value>Datos no encontrados. ¿Desea editar los campos relacionados?</value>
+  </data>
+  <data name="Validation_InvalidDate" xml:space="preserve">
+    <value>Fecha invalida</value>
+  </data>
+  <data name="Login_SessionExpired" xml:space="preserve">
+    <value>La sesión ha expirado. Inténtelo de nuevo.</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Empresa</value>
+  </data>
+  <data name="Login_EmptyEmail" xml:space="preserve">
+    <value>Correo electrónico requerido</value>
+  </data>
+  <data name="Login_ForgotPassword" xml:space="preserve">
+    <value>Olvidaste tu contraseña?</value>
+  </data>
+  <data name="Login_ForgotUsername" xml:space="preserve">
+    <value>¿Ha olvidado su nombre de usuario?</value>
+  </data>
+  <data name="Login_NeedHelp" xml:space="preserve">
+    <value>¿Necesitas ayuda?</value>
+  </data>
+  <data name="Login_UsernameReminderEmailSent" xml:space="preserve">
+    <value>Tu nombre de usuario se envió a tu dirección de correo electrónico.</value>
+  </data>
+  <data name="User_PasswordStrengh" xml:space="preserve">
+    <value>y debe contener: &lt;br/&gt; - Por lo menos una letra mayúscula &lt;br/&gt; - Por lo menos una letra minúscula &lt;br/&gt; - Por lo menos un número &lt;br/&gt;</value>
+  </data>
+  <data name="Login_ResetPassword" xml:space="preserve">
+    <value>Restablecer la contraseña</value>
+  </data>
+  <data name="Login_RecoverUsername" xml:space="preserve">
+    <value>Recuperar nombre de usuario</value>
+  </data>
+  <data name="Login_PasswordResetInvalidEmail" xml:space="preserve">
+    <value>E-mail o nombre de usuario no válido.</value>
+  </data>
+  <data name="Login_PasswordResetEmailSent" xml:space="preserve">
+    <value>Se restableció la contraseña. Por favor, consultar su correo electrónico.</value>
+  </data>
+  <data name="Login_MessageUsernameReminder" xml:space="preserve">
+    <value>Ingrese su dirección de correo electrónico y le enviaremos instrucciones:</value>
+  </data>
+  <data name="Login_MessagePasswordReset" xml:space="preserve">
+    <value>Ingrese su dirección de correo electrónico y le enviaremos instrucciones:</value>
+  </data>
+  <data name="User_EmailTaken" xml:space="preserve">
+    <value>Esta dirección de correo electrónico ya está siendo utilizada por un usuario diferente! Intente otra.</value>
+  </data>
+  <data name="User_Password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
+  <data name="User_PasswordConfirm" xml:space="preserve">
+    <value>Confirme la contraseña</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Ajustes</value>
+  </data>
+  <data name="User_EnterEmail" xml:space="preserve">
+    <value>Por favor, ingrese una dirección de correo electrónico</value>
+  </data>
+  <data name="Audit_ChartView" xml:space="preserve">
+    <value>Gráficos</value>
+  </data>
+  <data name="Audit_ListView" xml:space="preserve">
+    <value>Lista</value>
+  </data>
+  <data name="Audit_Chart_MostActive" xml:space="preserve">
+    <value>Día de la semana más activo</value>
+  </data>
+  <data name="Audit_Chart_Top10Actions" xml:space="preserve">
+    <value>Top 10 de las acciones</value>
+  </data>
+  <data name="ChangePassword_Description" xml:space="preserve">
+    <value>Cambia tu contraseña de acceso</value>
+  </data>
+  <data name="Language_Description" xml:space="preserve">
+    <value>Defina el idioma predeterminado de su cuenta</value>
+  </data>
+  <data name="User_Groups" xml:space="preserve">
+    <value>Grupos</value>
+  </data>
+  <data name="User_ChooseGroups" xml:space="preserve">
+    <value>Elegir los grupos</value>
+  </data>
+  <data name="User_RestrictGroupExplanation" xml:space="preserve">
+    <value>Los grupos tienen permisos predefinidos. Agregar al usuario a un grupo hará que tenga acceso a ciertas funciones.</value>
+  </data>
+  <data name="Reports_Filters" xml:space="preserve">
+    <value>Filtros</value>
+  </data>
+  <data name="Reports_Filter" xml:space="preserve">
+    <value>Filtrar</value>
+  </data>
+  <data name="Reports_Downloading" xml:space="preserve">
+    <value>Descargando...</value>
+  </data>
+  <data name="Reports_Download" xml:space="preserve">
+    <value>Descargar</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Exportar</value>
+  </data>
+  <data name="Reports_ExportData" xml:space="preserve">
+    <value>Exportar datos</value>
+  </data>
+</root>

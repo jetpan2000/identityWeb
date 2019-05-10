@@ -1,0 +1,16 @@
+﻿@model Octacom.Odiss.ABCgroup.Web.Models.InvoiceTabModel
+
+<div id="react-submit-invoice-root"></div>
+
+<script type="text/javascript">
+    window.__appData = JSON.parse('@Html.Raw(Model.DataJson)');
+    window.__invoiceTabState = {
+        documentId: '@Model.DocumentId'
+    };
+    window.__baseUrl = '@Url.Content("~/")';
+    window.__pageName = '@ViewBag.PageName';
+
+    window.__submitUrl = '@Url.Action("ViewerBase64", "App", new { id = ViewContext.RouteData?.Values["id"]?.ToString() })';
+</script>
+
+@Scripts.Render("~/Scripts/src/dist/submit-invoice.bundle.js")

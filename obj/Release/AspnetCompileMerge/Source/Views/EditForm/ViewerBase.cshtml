@@ -1,0 +1,241 @@
+﻿@model EditForm
+@{
+    Layout = "~/Views/Shared/EditForm/_LayoutViewerBase.cshtml";
+
+    var docGuid = Model.Result != null && Model.DocsID != null ? Model.DocsID.ToStringArray() : "";
+}
+@helper ShowTotalNotes()
+{
+    if (Model?.Notes != null && Model.Notes.Any())
+    {
+        <span>(@Model.Notes.Count())</span>
+    }
+}
+@section footer
+{
+    <script>
+        $(document).ready(function () {
+            OdissEditViewerBase.language = '@Language';
+            OdissEditViewerBase.baseUrl = '@Url.Content("~/editform/" + Model.ID + "/")';
+            OdissEditViewerBase.dateFormat = '@ConfigBase.Settings.DateFormat'.toUpperCase();
+            OdissEditViewerBase.start();
+        });
+    </script>
+}
+@section editdata
+{
+    @{
+        bool showNotes = Model.Config.EnableNotes && Model.Result != null && Model.DocsID != null && (UserPermissionsEnum.ViewNotes.IsUserAuthorized(User) || UserPermissionsEnum.AddNotes.IsUserAuthorized(User));
+        bool showEmailBar = false;
+
+        string mainClass = "col-xs-12 col-sm-12 col-md-8 col-lg-8";
+
+        if (!showEmailBar && !showNotes)
+        {
+            mainClass = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
+        }
+    }
+    <div class="vertical-alignment-helper">
+        <div class="modal-dialog vertical-align-center modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="@Words.Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="lblModal">@Model.Name.ToLanguage()</h4>
+            </div>
+            <div class="modal-body" style="background-color:#f3f3f3;padding:0px;margin:0px;overflow:hidden; overflow-y:auto">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="@mainClass">
+                            <form method="post" id="frmEditProperties">
+                                <div class="row">
+
+                                    @*
+                                    -----------------------------
+                                    DETAILS
+                                    -----------------------------
+                                    *@
+
+                                    <div class="col-xm-12 col-sm-12 col-md-12 col-lg-12 sidebar" id="sidebar">
+
+                                        <div id="accFeatures" role="tablist" aria-multiselectable="true">
+
+                                            @if (Model.Result != null && (!Model.Config.EnableEditProperties || !UserPermissionsEnum.EditProperties.IsUserAuthorized(User)))
+                                            {
+                                                <div class="panel">
+                                                    <ul class="nav nav-sidebar" role="tab" id="headingProperties">
+                                                        <li><a class="" role="button" data-toggle="collapse" data-parent="#" href="#panProperties" aria-expanded="true" aria-controls="panProperties">@APWords.Details</a></li>
+                                                    </ul>
+                                                    <div id="panProperties" class="panel-collapse panel-in" role="tabpanel" aria-labelledby="headingProperties">
+                                                        <div style="padding: 0px;">
+                                                            <table cellpadding="2" style="width:100%;" class="table table-condensed">
+                                                                @foreach (var field in Model.Fields.OrderBy(a => a.FilterOrder))
+                                                                {
+                                                                    <tr>
+                                                                        <th scope="row" style="padding-right:5px;">@field.Name.ToLanguage()</th>
+                                                                        <td>@Model.Result.RenderValue(field)</td>
+                                                                    </tr>
+                                                                }
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            @if ((Model.Config.EnableEditProperties && Model.Result != null && UserPermissionsEnum.EditProperties.IsUserAuthorized(User)) || (Model.Result == null && UserPermissionsEnum.SubmitDocuments.IsUserAuthorized(User)))
+                                            {
+                                                var hFormTypeValue = string.Empty;
+                                                var hOriginalFileName = string.Empty;
+
+                                                if (Model?.Result != null)
+                                                {
+                                                    if (Model.Result["hFormType"] != null)
+                                                    {
+                                                        hFormTypeValue = Model.Result["hFormType"].ToString();
+                                                    }
+
+                                                    if (Model.Result["OriginalFileName"] != null)
+                                                    {
+                                                        hOriginalFileName = Model.Result["OriginalFileName"].ToString();
+                                                    }
+                                                }
+                                                <input type="hidden" id="hFormType" name="hFormType" value="@(hFormTypeValue)" />
+
+                                                <div class="panel">
+                                                    <ul class="nav nav-sidebar" role="tab" id="headingEditProperties">
+                                                        <li><a class="" role="button" data-toggle="collapse" data-parent="#" href="#panEditProperties" aria-expanded="false" aria-controls="panEditProperties">@APWords.Details</a></li>
+                                                    </ul>
+                                                    <div id="panEditProperties" class="panel-collapse panel-in" role="tabpanel" aria-labelledby="headingEditProperties">
+                                                        <div style="padding: 8px 17px;">
+
+                                                            <input type="hidden" name="guid" value="@docGuid" />
+                                                            <input type="hidden" name="TemporaryFileID" id="TemporaryFileID" />
+                                                            <input type="hidden" name="TemporaryFileName" id="TemporaryFileName" value="@(hOriginalFileName)" />
+
+                                                            <table cellpadding="2" style="width:100%;">
+                                                                @foreach (var field in Model.Fields.Where(a => a.Editable).OrderBy(a => a.FilterOrder))
+                                                                {
+                                                                    <tr>
+                                                                        <th style="padding-right:5px;"><label for="@field.ViewColumnID">@field.Name.ToLanguage()</label></th>
+                                                                        <td style="padding-bottom: 3px;">
+                                                                            @{
+
+                                                                                @FieldHelper.ShowField(field, FieldAreaEnum.Edit, Model.Result);
+
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+
+                                                            </table>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                if (Model.Config.GetEnableAttachments()){
+
+                                                    <div class="panel">
+                                                        <ul class="nav nav-sidebar" role="tab" id="headingEditAttachments">
+                                                            <li><a class="" role="button" data-toggle="collapse" data-parent="#" href="#panAttachments" aria-expanded="false" aria-controls="panAttachments">@APWords.Attachments</a></li>
+                                                        </ul>
+                                                        <div id="panAttachments" class="panel-collapse panel-in" role="tabpanel" aria-labelledby="headingAttachments">
+                                                            <div style="padding: 8px 17px;">
+
+                                                                <table cellpadding="2" style="width:100%;margin-top:15px;">
+                                                                    <tr>
+                                                                        <td colspan="2">
+                                                                            <div id="clickable" class="dropzone droparea dz-message" style="margin-bottom:10px;">
+
+                                                                                <div id="uploadDiv">
+                                                                                    <span class="glyphicon glyphicon-cloud-upload" style="font-size:24px;color:#CCC;"></span><br />
+                                                                                    @Words.SubmitDocument_DragAndDrop<br />
+                                                                                    @Words.Or <button type="button" class="btn btn-sm btn-default">@Words.SubmitDocument_Browse</button>
+                                                                                </div>
+
+                                                                                <div id="previews"></div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        @if (showNotes || showEmailBar)
+                        {
+                            <div class="col-xm-12 col-sm-12 col-md-4 col-lg-4 rightSideBar" id="rightSideBar">
+                                @if (showNotes)
+                                {
+                                    <div class="panel">
+                                        <ul class="nav nav-sidebar" role="tab" id="headingNotes">
+                                            <li><a class="" role="button" data-toggle="collapse" data-parent="#" href="#panNotes" aria-expanded="false" aria-controls="panNotes">@Words.Notes @ShowTotalNotes()</a></li>
+                                        </ul>
+                                        <div id="panNotes" class="panel-collapse panel-in" role="tabpanel" aria-labelledby="headingNotes">
+                                            <div style="padding: 8px 17px;">
+                                                <div class="alert alert-success" role="alert" id="alertNotesSuccess" style="display:none;margin-bottom:10px;">@Words.Notes_Added</div>
+                                                <div class="alert alert-danger" role="alert" id="alertNotesError" style="display:none;margin-bottom:10px;">@Words.Notes_Error</div>
+                                                @if (UserPermissionsEnum.AddNotes.IsUserAuthorized(User))
+                                                {
+                                                    <div style="position:relative;">
+                                                        <textarea class="form-control" rows="5" style="margin-bottom:15px;resize:none;" id="txtNote"></textarea>
+                                                        <button style="position:absolute; bottom:10px;right:10px;" class="btn btn-sm btn-primary pull-right" id="btnSaveNote" data-id="@Model.DocsID.ToStringArray()">@Words.Save</button>
+                                                    </div>
+                                                    <div style="clear:both;"></div>
+                                                }
+                                                @if (UserPermissionsEnum.ViewNotes.IsUserAuthorized(User))
+                                                {
+                                                    <div id="lstNotes">
+                                                        @foreach (var note in Model.Notes)
+                                                        {
+                                                            <div class="note">
+                                                                @Html.Raw(System.Text.RegularExpressions.Regex.Replace(note.Text, @"<[^>]+>|&nbsp;", string.Empty).Replace(Environment.NewLine, "<br />"))<br />
+                                                                <strong>@Words.Notes_WroteBy @note.Author - @note.Created.ToString(ConfigBase.Settings.DateFormat) @Words.Notes_At @note.Created.ToString("hh:mm:sstt")</strong>
+                                                                @if (UserPermissionsEnum.DeleteNotes.IsUserAuthorized(User))
+                                                                {
+                                                                    <button class="btn glyphicon glyphicon-remove btn-danger btn-xs btn-remove" data-id="@note.ID" type="button" title="@Words.Notes_RemoveNote"></button>
+                                                                }
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="footerContainer">
+                    @if (!string.IsNullOrEmpty(docGuid))
+                    {
+                    <button type="button" class="btn btn-default pull-left" id="btnDelete">@Words.Delete</button>
+                    }
+                    <div class="footerRight">
+                        @if ((Model.Config.EnableEditProperties && Model.Result != null && UserPermissionsEnum.EditProperties.IsUserAuthorized(User)) || (Model.Result == null && UserPermissionsEnum.SubmitDocuments.IsUserAuthorized(User)))
+                        {
+                            <button class="btn btn-primary" id="btnSaveChanges">@Words.Viewer_SaveChanges</button>
+                        }
+                        <button type="button" class="btn btn-default" data-dismiss="modal">@Words.Close</button>
+                    </div>
+                    <div class="pull-right">
+                        <div>
+                            <div class="alert alert-success" role="alert" id="alertEditSuccess" style="display:none;padding:6px;text-align: center; margin-bottom: 0px;">@APWords.DataSaved</div>
+                            <div class="alert alert-success" role="alert" id="alertDeleteSuccess" style="display:none;padding:6px;text-align: center; margin-bottom: 0px;">Deleted</div>
+                            <div class="alert alert-danger" role="alert" id="alertEditError" style="display:none;padding:6px;text-align: center; margin-bottom: 0px;">@APWords.DataSavingError</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+}

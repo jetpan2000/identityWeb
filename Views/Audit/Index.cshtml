@@ -1,0 +1,231 @@
+﻿@model AuditIndex
+@{
+    ViewBag.Title = Words.Audit_Title + " - " + ConfigBase.Settings.Name;
+}
+@section header{
+    @Styles.Render("~/content/min/css/audit")
+}
+@section footer{
+    @Scripts.Render("~/content/min/js/audit")
+    <script>
+        $(document).ready(function () {
+            OdissAudit.language = '@Language';
+            OdissAudit.maxPerPage = @ConfigBase.Settings.MaxPerPage;
+            OdissAudit.baseUrl = "@Url.Content("~/audit/")";
+            OdissAudit.systemPagesDescription = "@Words.Audit_System";
+            OdissAudit.auditShowDescription = "@Words.Audit_Show";
+            OdissAudit.start();
+        });
+    </script>
+}
+@section sidebar
+{
+    <ul class="nav nav-sidebar">
+        <li class="active"><a href="javacript:void(0);" style="cursor:default;">@Words.Search <span class="pull-right glyphicon glyphicon-search"></span></a></li>
+    </ul>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmSearch" }))
+    {
+        @Html.HiddenFor(m => m.Audit.Actions, new { data_id = "actions" })
+        @Html.Hidden("page", "0")
+        @Html.Hidden("sort", "")
+        @Html.Hidden("exporting", "")
+        <div class="form-group form-group-sm">
+            @Html.LabelFor(m => m.Audit.ApplicationFullName, Words.Audit_Where)
+            @Html.DropDownListFor(m => m.Audit.IDApplication, Model.ApplicationsFilter, new { @class = "form-control" })
+        </div>
+        <div class="form-group form-group-sm form-group-date-range" style="position:relative;">
+            @Html.TextBoxFor(m => m.Audit.RecordedRange, new { @class = "form-control", data_type = "daterange", placeholder = Words.Audit_Recorded })
+            <i class="glyphicon glyphicon-calendar"></i>
+        </div>
+        <div class="form-group form-group-sm">
+            @Html.TextBoxFor(m => m.Audit.UserName, new { @class="form-control", placeholder = Words.Username })
+        </div>
+        <br />
+        <div class="form-group form-group-sm">
+            <label>@Words.Audit_Actions</label>
+            <div id="ulActions" class="form-control-aspect">
+                <ul>
+                    <li>
+                        <a href="javascript:void(0);">@Words.Audit_Action_Session</a>
+                        <ul>
+                            <li id="Actions_@(AuditTypeEnum.Login)"><a href="javascript:void(0);">@Words.Audit_Action_Login</a></li>
+                            <li id="Actions_@(AuditTypeEnum.ChangePassword)"><a href="javascript:void(0);">@Words.Audit_Action_ChangePassword</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);">@Words.Audit_Action_Documents</a>
+                        <ul>
+                            <li id="Actions_@(AuditTypeEnum.Search)"><a href="javascript:void(0);">@Words.Audit_Action_Documents_Search</a></li>
+                            <li>
+                                <a href="javascript:void(0);">Image</a>
+                                <ul>
+                                    <li id="Actions_@(AuditTypeEnum.ViewDocument)"><a href="javascript:void(0);">@Words.Audit_Action_Documents_View</a></li>
+                                    <li id="Actions_@(AuditTypeEnum.SubmitDocument)"><a href="javascript:void(0);">@Words.Audit_Action_SubmitDocument</a></li>
+                                    <li id="Actions_@(AuditTypeEnum.EmailDocument)"><a href="javascript:void(0);">@Words.Audit_Action_SendEmail</a></li>
+                                    <li id="Actions_@(AuditTypeEnum.EditProperties)"><a href="javascript:void(0);">@Words.Audit_Action_EditProperties</a></li>
+                                    <li id="Actions_@(AuditTypeEnum.PrintDocument)"><a href="javascript:void(0);">@Words.Audit_Action_PrintDocument</a></li>
+                                    <li id="Actions_@(AuditTypeEnum.SaveDocument)"><a href="javascript:void(0);">@Words.Audit_Action_SaveDocument</a></li>
+                                    <li id="Actions_@(AuditTypeEnum.DeleteDocuments)"><a href="javascript:void(0);">@Words.Audit_Action_DeleteDocuments</a></li>
+                                    <li>
+                                        <a href="javascript:void(0);">@Words.Audit_Action_Notes</a>
+                                        <ul>
+                                            <li id="Actions_@(AuditTypeEnum.AddNote)"><a href="javascript:void(0);">@Words.Audit_Action_AddNotes</a></li>
+                                            <li id="Actions_@(AuditTypeEnum.DeleteNote)"><a href="javascript:void(0);">@Words.Audit_Action_DeleteNotes</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li id="Actions_@(AuditTypeEnum.Export)"><a href="#">@Words.Audit_Action_Export</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);">@Words.Reports</a>
+                        <ul>
+                            <li id="Actions_@(AuditTypeEnum.ViewReports)"><a href="javascript:void(0);">@Words.Audit_Action_ViewReports</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0);">@Words.Audit_Action_Users</a>
+                        <ul>
+                            <li id="Actions_@(AuditTypeEnum.UserCreate)"><a href="javascript:void(0);">@Words.Audit_Action_CreateUser</a></li>
+                            <li id="Actions_@(AuditTypeEnum.UserModify)"><a href="javascript:void(0);">@Words.Audit_Action_ModifyUser</a></li>
+                            <li id="Actions_@(AuditTypeEnum.UserChangePassword)"><a href="javascript:void(0);">@Words.Audit_Action_ChangeUserPassword</a></li>
+                            <li id="Actions_@(AuditTypeEnum.UserDelete)"><a href="javascript:void(0);">@Words.Audit_Action_DeleteUser</a></li>
+                            @if (ConfigBase.Settings.RestrictAppsAccess)
+                            {
+                            <li>
+                                <a href="javascript:void(0);">@Words.Audit_Action_Applications</a>
+                                <ul>
+                                    <li id="Actions_@(AuditTypeEnum.AppSet)"><a href="javascript:void(0);">@Words.Audit_Action_SetApplicationRules</a></li>
+                                    <li id="Actions_@(AuditTypeEnum.AppCopy)"><a href="javascript:void(0);">@Words.Audit_Action_CopyApplicationRules</a></li>
+                                </ul>
+                            </li>
+                            }
+                        </ul>
+                    </li>
+                    @if (ConfigBase.Settings.Applications != null &&
+                         ConfigBase.Settings.Applications.Any(a => a.Type == ApplicationTypeEnum.Custom) &&
+                         ConfigBase.Settings.Custom?.Audit?.Values != null)
+                    {
+                    <li @*id="Actions_@(AuditTypeEnum.CustomAction)"*@>
+                        <a href="javascript:void(0);">@Words.Audit_Others</a>
+                        <ul>
+                            @foreach (var item in ConfigBase.Settings.Custom.Audit.Values)
+                            {
+                                <li id="Actions_CUSTOM@(item.Key)"><a href="javascript:void(0);">@item.Value.ToLanguage()</a></li>
+                            }
+                        </ul>
+                    </li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">@Words.Search</button>
+    }
+}
+<br />
+<div class="row">
+    <div class="col-md-6">
+        <h1 style="margin:0px;">@Words.Audit</h1>
+    </div>
+    <div class="col-md-6">
+        <div class="pull-right">
+            <div class="btn-group" role="group">
+                @*<button type="button" class="btn btn-default active" id="btnCalendar"><i class="glyphicon glyphicon-calendar"></i> Calendar View</button>*@
+                <button type="button" class="btn btn-default active" id="btnList"><i class="glyphicon glyphicon glyphicon-list"></i> @Words.Audit_ListView</button>
+                <button type="button" class="btn btn-default" id="btnChart"><i class="glyphicon glyphicon glyphicon glyphicon-signal"></i> @Words.Audit_ChartView</button>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<div id="panChart" style="display:none;">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>@Words.Audit_Chart_MostActive</strong></div>
+                <div class="panel-body" style="padding:0px;">
+                    <div style="margin:20px;">
+                        <canvas id="chartStatistics1" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading"><strong>@Words.Audit_Chart_Top10Actions</strong></div>
+                <div class="panel-body" style="padding:0px;position:relative;min-height:300px;min-width:300px;">
+                    <div class="row">
+                        <div style="margin:20px;">
+                            <div style="padding: 4px 0;margin: 20px 20px;position: relative;">
+                                <canvas id="chartStatistics2" width="400" height="250"></canvas>
+                            </div>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="panList">
+    <table id="tbAudit" class="table table-bordered table-striped table-condensed" style="display:none;">
+        <thead>
+            <tr>
+                <th>@Words.Audit_Recorded</th>
+                <th>@Words.Username</th>
+                <th>@Words.Audit_Action</th>
+                <th>@Words.Audit_Application</th>
+                <th>@Words.Audit_Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Audits != null)
+            {
+                foreach (var audit in Model.Audits)
+                {
+                    <tr>
+                        <td>@FieldRender.Render(audit.Recorded, RenderTypeEnum.DateTime)</td>
+                        <td>@audit.UserName</td>
+                        <td>@audit.AuditTypeString</td>
+                        <td>
+                            @if (string.IsNullOrWhiteSpace(audit.ApplicationFullName))
+                            {
+                                <span style="color:#a7a7a7">@Words.Audit_System</span>
+                            }
+                            else
+                            {
+                                @audit.ApplicationFullName
+                            }
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(audit.Data) || !string.IsNullOrWhiteSpace(audit.Ref))
+                            {
+                                <a href ng-click="audit.show($event)" data-id="@audit.ID">@Words.Audit_Show</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div id="panCalendar" style="display:none;">
+    <div id="calendar"></div>
+</div>
+<div class="modal" id="modShow" tabindex="-1" role="dialog" aria-labelledby="lblModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="@Words.Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="lblModal">@Words.Audit_DetailsData</h4>
+            </div>
+            <div class="modal-body" style="background-color:#f3f3f3;">
+                <span id="modalDetailsBody"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">@Words.Close</button>
+            </div>
+        </div>
+    </div>
+</div>

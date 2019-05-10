@@ -1,0 +1,12 @@
+﻿@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    window.__appData = JSON.parse('@Html.Raw(ViewBag.AppData)')
+    window.__baseUrl = '@Url.Content("~/")';
+    window.__pageName = '@ViewBag.PageName';
+    window.__exceptionsUrl = '@ViewBag.ExceptionsPageUrl';
+</script>
+
+@Scripts.Render("~/Scripts/src/dist/ap.bundle.js")

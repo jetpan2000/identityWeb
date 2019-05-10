@@ -1,0 +1,670 @@
+﻿/* LFC ********************************************************************************************
+.basecustom .list-group-item.active>.badge, .basecustom .nav-pills>.active>a>.badge
+{
+    color: #00975C;
+}
+.basecustom table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child:before,
+.basecustom table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
+    background-color: #00975C;
+}
+
+.basecustom .pagination>li>a, .basecustom .pagination>li>span {
+    color: #00975C;
+}
+.basecustom .pagination>li.active>a {
+    color:#fff;
+}
+.basecustom .nav-sidebar > .active > a,
+.basecustom .nav-sidebar > .active > a:hover,
+.basecustom .nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #00975C;
+}
+.basecustom .list-group-item.active,
+.basecustom .list-group-item.active:focus,
+.basecustom .list-group-item.active:hover{
+    background-color: #00975C;
+    border-color: #00975C;
+}
+.basecustom .pagination>.active>a,
+.basecustom .pagination>.active>a:focus,
+.basecustom .pagination>.active>a:hover,
+.basecustom .pagination>.active>span,
+.basecustom .pagination>.active>span:focus,
+.basecustom .pagination>.active>span:hover
+{
+    background-color: #00975C;
+    border-color: #00975C;
+}
+.basecustom .daterangepicker .ranges li.active,
+.basecustom .daterangepicker .ranges li:hover {
+    background: #00975C;
+    border: 1px solid #00975C;
+    color: #fff;
+}
+.basecustom .daterangepicker td.active, .daterangepicker td.active:hover {
+    background: #00975C;
+}
+
+.basecustom .daterangepicker .ranges li {
+    color: #00975C;
+}
+
+.basecustom .daterangepicker .input-mini.active {
+    border: 1px solid #00975C;
+}
+
+.basecustom .jstree-default .jstree-wholerow-clicked {
+    background: #DBDBDB;
+    background: -webkit-linear-gradient(top,#DBDBDB 0,#A8A8A8 100%);
+    background: linear-gradient(to bottom,#FFBEBE 0,#A8A8A8 100%);
+}
+
+.basecustom .jstree-default .jstree-wholerow-hovered {
+    background: #DBDBDB;
+}
+.basecustom .jstree-default .jstree-hovered {
+    background: #f2efef;
+}
+.basecustom thead {
+    background-color: #00975C;
+}
+
+.basecustom a { color: #00975C; }
+.basecustom .btn-primary { background-color: #00975C; border-color: #00975C; }
+.basecustom .btn-success {
+    color:#fff;
+}
+
+.basecustom .progress-bar { background-color: #000; }
+.basecustom .navbar-default .navbar-nav>li>a {
+    color: #999;
+}
+.basecustom .navbar-default .navbar-nav>li>a:hover {
+    color: #fff;
+    background-color:#00975C;
+}
+
+.basecustom .navbar-default .navbar-nav > li.active > a {
+    color:#000;
+    background-color:#e6e6e6;
+}
+.basecustom .navbar-header {
+    background-color:#FFF;
+}
+.basecustom .sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.basecustom .navbar-fixed-top
+{
+    background-color:#FFF;
+}
+.basecustom .navbar-fixed-top {
+  background-color:#fff;
+}
+
+.basecustom .navbar-nav li:hover{
+    background-color:#f3f3f3;
+}
+
+.basecustom .navbar-fixed-top
+{
+    border-bottom:0px;
+}
+
+.basecustom .navbar-toggle {
+    color:#000;
+}
+*/
+
+/* MRLF *******************************************************************************************
+.basecustom .list-group-item.active>.badge, .basecustom .nav-pills>.active>a>.badge
+{
+    color: #959595;
+}
+.basecustom table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child:before,
+.basecustom table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
+    background-color: #959595;
+}
+
+.basecustom .pagination>li>a, .basecustom .pagination>li>span {
+    color: #959595;
+}
+.basecustom .pagination>li.active>a {
+    color:#fff;
+}
+.basecustom .nav-sidebar > .active > a,
+.basecustom .nav-sidebar > .active > a:hover,
+.basecustom .nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #94d60a;
+}
+.basecustom .list-group-item.active,
+.basecustom .list-group-item.active:focus,
+.basecustom .list-group-item.active:hover{
+    background-color: #959595;
+    border-color: #959595;
+}
+.basecustom .pagination>.active>a,
+.basecustom .pagination>.active>a:focus,
+.basecustom .pagination>.active>a:hover,
+.basecustom .pagination>.active>span,
+.basecustom .pagination>.active>span:focus,
+.basecustom .pagination>.active>span:hover
+{
+    background-color: #959595;
+    border-color: #959595;
+}
+.basecustom .daterangepicker .ranges li.active,
+.basecustom .daterangepicker .ranges li:hover {
+    background: #959595;
+    border: 1px solid #959595;
+    color: #fff;
+}
+.basecustom .daterangepicker td.active, .daterangepicker td.active:hover {
+    background: #959595;
+}
+
+.basecustom .daterangepicker .ranges li {
+    color: #959595;
+}
+
+.basecustom .daterangepicker .input-mini.active {
+    border: 1px solid #959595;
+}
+
+.basecustom .jstree-default .jstree-wholerow-clicked {
+    background: #DBDBDB;
+    background: -webkit-linear-gradient(top,#DBDBDB 0,#A8A8A8 100%);
+    background: linear-gradient(to bottom,#FFBEBE 0,#A8A8A8 100%);
+}
+
+.basecustom .jstree-default .jstree-wholerow-hovered {
+    background: #DBDBDB;
+}
+.basecustom .jstree-default .jstree-hovered {
+    background: #f2efef;
+}
+.basecustom thead {
+    background-color: #959595;
+}
+
+.basecustom a { color: #87c407; }
+.basecustom a.disabled { color: #999; }
+.basecustom .btn-primary { background-color: #94d60a; border-color: #94d60a; }
+.basecustom .btn-success {
+    color:#fff;
+}
+
+.basecustom .progress-bar { background-color: #87c407; }
+.basecustom .navbar-default .navbar-nav>li>a {
+    color: #999;
+}
+.basecustom .navbar-default .navbar-nav>li>a:hover {
+    color: #fff;
+    background-color:#959595;
+}
+
+.basecustom .navbar-default .navbar-nav > li.active > a {
+    color:#000;
+    background-color:#e6e6e6;
+}
+.basecustom .navbar-header {
+    background-color:#FFF;
+}
+.basecustom .sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.basecustom .navbar-fixed-top
+{
+    background-color:#FFF;
+}
+.basecustom .navbar-fixed-top {
+  background-color:#fff;
+}
+
+.basecustom .navbar-nav li:hover{
+    background-color:#f3f3f3;
+}
+
+.basecustom .navbar-fixed-top
+{
+    border-bottom:0px;
+}
+
+.basecustom .navbar-toggle {
+    color:#000;
+}
+
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open > .dropdown-toggle.btn-primary.focus, .open > .dropdown-toggle.btn-primary:focus, .open > .dropdown-toggle.btn-primary:hover {
+    background-color: #5d8706;
+    border-color: #5d8706;
+}
+*/
+
+/* ACC ******************************************************************************************* */
+.basecustom .list-group-item.active>.badge, .basecustom .nav-pills>.active>a>.badge
+{
+    color: #959595;
+}
+.basecustom table.dataTable.dtr-inline.collapsed>tbody>tr>td:first-child:before,
+.basecustom table.dataTable.dtr-inline.collapsed>tbody>tr>th:first-child:before {
+    background-color: #959595;
+}
+
+.basecustom .pagination>li>a, .basecustom .pagination>li>span {
+    color: #959595;
+}
+.basecustom .pagination>li.active>a {
+    color:#fff;
+}
+.basecustom .nav-sidebar > .active > a,
+.basecustom .nav-sidebar > .active > a:hover,
+.basecustom .nav-sidebar > .active > a:focus {
+    color: #fff;
+    background-color: #F01428;
+}
+.basecustom .list-group-item.active,
+.basecustom .list-group-item.active:focus,
+.basecustom .list-group-item.active:hover {
+    background-color: #4a4f55;
+    border-color: #4a4f55;
+}
+.basecustom .pagination > .active > a,
+.basecustom .pagination > .active > a:focus,
+.basecustom .pagination > .active > a:hover,
+.basecustom .pagination > .active > span,
+.basecustom .pagination > .active > span:focus,
+.basecustom .pagination > .active > span:hover {
+    background-color: #4a4f55;
+    border-color: #4a4f55;
+}
+.basecustom .daterangepicker .ranges li.active,
+.basecustom .daterangepicker .ranges li:hover {
+    background: #4a4f55;
+    border: 1px solid #4a4f55;
+    color: #fff;
+}
+.basecustom .daterangepicker td.active, .daterangepicker td.active:hover {
+    background: #4a4f55;
+}
+
+.basecustom .daterangepicker .ranges li {
+    color: #4a4f55;
+}
+
+.basecustom .daterangepicker .input-mini.active {
+    border: 1px solid #4a4f55;
+}
+
+.basecustom .jstree-default .jstree-wholerow-clicked {
+    background: #DBDBDB;
+    background: -webkit-linear-gradient(top,#DBDBDB 0,#A8A8A8 100%);
+    background: linear-gradient(to bottom,#FFBEBE 0,#A8A8A8 100%);
+}
+
+.basecustom .jstree-default .jstree-wholerow-hovered {
+    background: #DBDBDB;
+}
+.basecustom .jstree-default .jstree-hovered {
+    background: #f2efef;
+}
+.basecustom thead {
+    background-color: #F01428;
+}
+
+.basecustom a { color: #F01428; }
+.basecustom a.disabled { color: #999; }
+.basecustom .btn-primary { background-color: #F01428; border-color: #F01428; }
+.basecustom .btn-success {
+    color:#fff;
+}
+
+.basecustom .progress-bar { background-color: #F01428; }
+.basecustom .navbar-default .navbar-nav>li>a {
+    color: #999;
+}
+    .basecustom .navbar-default .navbar-nav > li > a:hover {
+        color: #fff;
+        background-color: #4a4f55;
+    }
+
+.basecustom .navbar-default .navbar-nav > li.active > a {
+    color:#000;
+    background-color:#e6e6e6;
+}
+.basecustom .navbar-header {
+    background-color:#FFF;
+}
+.basecustom .sub-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.basecustom .navbar-fixed-top
+{
+    background-color:#FFF;
+}
+.basecustom .navbar-fixed-top {
+  background-color:#fff;
+}
+
+.basecustom .navbar-nav li:hover{
+    background-color:#f3f3f3;
+}
+
+.basecustom .navbar-fixed-top
+{
+    border-bottom:0px;
+}
+
+.basecustom .navbar-toggle {
+    color:#000;
+}
+
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open > .dropdown-toggle.btn-primary.focus, .open > .dropdown-toggle.btn-primary:focus, .open > .dropdown-toggle.btn-primary:hover {
+    background-color: #F01428;
+    border-color: #F01428;
+}
+
+
+/* CH *********************************************************************************
+.basecustom .list-group-item.active > .badge, .basecustom .nav-pills > .active > a > .badge {
+    color: #959595;
+}
+
+.basecustom table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before,
+.basecustom table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
+    background-color: #959595;
+}
+
+.basecustom .pagination > li > a, .basecustom .pagination > li > span {
+    color: #959595;
+}
+
+.basecustom .pagination > li.active > a {
+    color: #fff;
+}
+
+.basecustom .nav-sidebar > .active > a,
+.basecustom .nav-sidebar > .active > a:hover,
+.basecustom .nav-sidebar > .active > a:focus {
+    color: #fff;
+    background-color: #e41f35;
+}
+
+.basecustom .list-group-item.active,
+.basecustom .list-group-item.active:focus,
+.basecustom .list-group-item.active:hover {
+    background-color: #4a4f55;
+    border-color: #4a4f55;
+}
+
+.basecustom .pagination > .active > a,
+.basecustom .pagination > .active > a:focus,
+.basecustom .pagination > .active > a:hover,
+.basecustom .pagination > .active > span,
+.basecustom .pagination > .active > span:focus,
+.basecustom .pagination > .active > span:hover {
+    background-color: #4a4f55;
+    border-color: #4a4f55;
+}
+
+.basecustom .daterangepicker .ranges li.active,
+.basecustom .daterangepicker .ranges li:hover {
+    background: #4a4f55;
+    border: 1px solid #4a4f55;
+    color: #fff;
+}
+
+.basecustom .daterangepicker td.active, .daterangepicker td.active:hover {
+    background: #4a4f55;
+}
+
+.basecustom .daterangepicker .ranges li {
+    color: #4a4f55;
+}
+
+.basecustom .daterangepicker .input-mini.active {
+    border: 1px solid #4a4f55;
+}
+
+.basecustom .jstree-default .jstree-wholerow-clicked {
+    background: #DBDBDB;
+    background: -webkit-linear-gradient(top,#DBDBDB 0,#A8A8A8 100%);
+    background: linear-gradient(to bottom,#FFBEBE 0,#A8A8A8 100%);
+}
+
+.basecustom .jstree-default .jstree-wholerow-hovered {
+    background: #DBDBDB;
+}
+
+.basecustom .jstree-default .jstree-hovered {
+    background: #f2efef;
+}
+
+.basecustom thead {
+    background-color: #e41f35;
+}
+
+.basecustom a {
+    color: #e41f35;
+}
+
+    .basecustom a.disabled {
+        color: #999;
+    }
+
+.basecustom .btn-primary {
+    background-color: #e41f35;
+    border-color: #e41f35;
+}
+
+.basecustom .btn-success {
+    color: #fff;
+}
+
+.basecustom .progress-bar {
+    background-color: #e41f35;
+}
+
+.basecustom .navbar-default .navbar-nav > li > a {
+    color: #999;
+}
+
+.basecustom .navbar-default .navbar-nav > li > a:hover {
+    color: #fff;
+    background-color: #4a4f55;
+}
+
+.basecustom .navbar-default .navbar-nav > li.active > a {
+    color: #000;
+    background-color: #e6e6e6;
+}
+
+.basecustom .navbar-header {
+    background-color: #FFF;
+}
+
+.basecustom .sub-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.basecustom .navbar-fixed-top {
+    background-color: #FFF;
+}
+
+.basecustom .navbar-fixed-top {
+    background-color: #fff;
+}
+
+.basecustom .navbar-nav li:hover {
+    background-color: #f3f3f3;
+}
+
+.basecustom .navbar-fixed-top {
+    border-bottom: 0px;
+}
+
+.basecustom .navbar-toggle {
+    color: #000;
+}
+
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open > .dropdown-toggle.btn-primary.focus, .open > .dropdown-toggle.btn-primary:focus, .open > .dropdown-toggle.btn-primary:hover {
+    background-color: #e41f35;
+    border-color: #e41f35;
+}*/
+
+/* WFP *********************
+.basecustom .list-group-item.active > .badge, .basecustom .nav-pills > .active > a > .badge {
+    color: #959595;
+}
+
+.basecustom table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before,
+.basecustom table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
+    background-color: #959595;
+}
+
+.basecustom .pagination > li > a, .basecustom .pagination > li > span {
+    color: #959595;
+}
+
+.basecustom .pagination > li.active > a {
+    color: #fff;
+}
+
+.basecustom .nav-sidebar > .active > a,
+.basecustom .nav-sidebar > .active > a:hover,
+.basecustom .nav-sidebar > .active > a:focus {
+    color: #fff;
+    background-color: #58960C;
+}
+
+.basecustom .list-group-item.active,
+.basecustom .list-group-item.active:focus,
+.basecustom .list-group-item.active:hover {
+    background-color: #58960C;
+    border-color: #58960C;
+}
+
+.basecustom .pagination > .active > a,
+.basecustom .pagination > .active > a:focus,
+.basecustom .pagination > .active > a:hover,
+.basecustom .pagination > .active > span,
+.basecustom .pagination > .active > span:focus,
+.basecustom .pagination > .active > span:hover {
+    background-color: #58960C;
+    border-color: #58960C;
+}
+
+.basecustom .daterangepicker .ranges li.active,
+.basecustom .daterangepicker .ranges li:hover {
+    background: #58960C;
+    border: 1px solid #58960C;
+    color: #fff;
+}
+
+.basecustom .daterangepicker td.active, .daterangepicker td.active:hover {
+    background: #4a4f55;
+}
+
+.basecustom .daterangepicker .ranges li {
+    color: #4a4f55;
+}
+
+.basecustom .daterangepicker .input-mini.active {
+    border: 1px solid #4a4f55;
+}
+
+.basecustom .jstree-default .jstree-wholerow-clicked {
+    background: #DBDBDB;
+    background: -webkit-linear-gradient(top,#DBDBDB 0,#A8A8A8 100%);
+    background: linear-gradient(to bottom,#FFBEBE 0,#A8A8A8 100%);
+}
+
+.basecustom .jstree-default .jstree-wholerow-hovered {
+    background: #DBDBDB;
+}
+
+.basecustom .jstree-default .jstree-hovered {
+    background: #f2efef;
+}
+
+.basecustom thead {
+    background-color: #58960C;
+}
+
+.basecustom a {
+    color: #58960C;
+}
+
+.basecustom a.disabled {
+    color: #999;
+}
+
+.basecustom .btn-primary {
+    background-color: #58960C;
+    border-color: #58960C;
+}
+
+.basecustom .btn-success {
+    color: #fff;
+}
+
+.basecustom .progress-bar {
+    background-color: #58960C;
+}
+
+.basecustom .navbar-default .navbar-nav > li > a {
+    color: #999;
+}
+
+    .basecustom .navbar-default .navbar-nav > li > a:hover {
+        color: #fff;
+        background-color: #58960C;
+    }
+
+.basecustom .navbar-default .navbar-nav > li.active > a {
+    color: #000;
+    background-color: #e6e6e6;
+}
+
+.basecustom .navbar-header {
+    background-color: #FFF;
+}
+
+.basecustom .sub-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.basecustom .navbar-fixed-top {
+    background-color: #FFF;
+}
+
+.basecustom .navbar-fixed-top {
+    background-color: #fff;
+}
+
+.basecustom .navbar-nav li:hover {
+    background-color: #f3f3f3;
+}
+
+.basecustom .navbar-fixed-top {
+    border-bottom: 0px;
+}
+
+.basecustom .navbar-toggle {
+    color: #000;
+}
+
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open > .dropdown-toggle.btn-primary.focus, .open > .dropdown-toggle.btn-primary:focus, .open > .dropdown-toggle.btn-primary:hover {
+    background-color: #58960C;
+    border-color: #58960C;
+}
+*/

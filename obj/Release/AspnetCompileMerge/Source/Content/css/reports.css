@@ -1,0 +1,14 @@
+﻿.chartLoading
+{
+	position:absolute;
+	top:40%;
+	left:50%;
+}
+
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; -webkit-border-radius: 0px; -moz-border-radius: 0px; border-radius: 0px; width: 350px !important;}
+.autocomplete-suggestion { padding: 4px 10px; white-space: nowrap; cursor:pointer; font-size: 12px; }
+.autocomplete-selected { background: #F0F0F0; cursor:pointer; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-group { padding: 4px 10px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+.autocomplete-no-suggestion { padding:4px 10px; }

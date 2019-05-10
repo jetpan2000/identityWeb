@@ -1,0 +1,493 @@
+﻿@model App
+@{
+    Layout = "~/Views/Shared/_LayoutViewerBase.cshtml";
+}
+@helper ShowTotalNotes() {
+    if (Model?.Notes != null && Model.Notes.Any())
+    {
+        <span>@Model.Notes.Count()</span>
+    }
+}
+@functions {
+    public bool IsLastPage(int page)
+    {
+        return page == Model.TotalPages;
+    }
+
+    public string GetViewerUrl()
+    {
+        string viewerUrl = Url.Content(string.Format("~/App/{0}/Viewer", Model.ID));
+        ViewerTypeEnum viewerType = ConfigBase.Settings.ViewerType;
+
+        // Ovewrite main global viewer settings by specific application
+        if (Model.Config.Custom?.ViewerModule != null && Model.Config.Custom.ViewerModule.ViewerType != ViewerTypeEnum.None)
+        {
+            viewerType = Model.Config.Custom.ViewerModule.ViewerType;
+        }
+
+        if (viewerType == ViewerTypeEnum.BrowserNative)
+        {
+            viewerUrl = Url.Content(string.Format("~/App/{0}/ViewerBrowserNative", Model.ID));
+        }
+        else if (viewerType == ViewerTypeEnum.ByBrowser)
+        {
+            if (!string.IsNullOrEmpty(Request.UserAgent))
+            {
+                if (/*Request.UserAgent.IndexOf("Edge") > -1 || */Request.Browser.Browser == "IE" || Request.Browser.Browser == "InternetExplorer")
+                {
+                    viewerUrl = Url.Content(string.Format("~/App/{0}/ViewerBrowserNative", Model.ID));
+                }
+            }
+        }
+
+        return viewerUrl;
+    }
+
+    public bool IsWorkflowActionsAllowed()
+    {
+        if (Model.Workflow?.ActiveRequestActions != null)
+            if (Model.Workflow.ActiveRequestActions.Any())
+                if (Model.Workflow.IsUserAllowed)
+                    return true;
+
+        return false;
+    }
+
+    public string GetTabAttributes(bool isExpanded) => isExpanded ? "aria-expanded=true" : "aria-expanded=false class=collapsed";
+    public string GetBoxClass(bool isExpanded) => isExpanded ? " in " : "";
+    public bool IsTabCollapsed(string tabName) => Model.Config.Custom?.ViewerModule?.Sidebar?.Visibility?.FirstOrDefault(a => a.TabName == "Properties" && !a.IsExpanded) != null;
+    public string GetPropertiesTabAttributes() => GetTabAttributes(!IsTabCollapsed("Properties"));
+    public string GetPropertiesBoxClass() => GetBoxClass(!IsTabCollapsed("Properties"));
+    public string GetWorkflowTabAttributes() => GetTabAttributes(!IsTabCollapsed("Workflow"));
+    public string GetWorkflowBoxClass() => GetBoxClass(!IsTabCollapsed("Workflow"));
+}
+@section footer
+{
+    <script>
+        $(document).ready(function () {
+            OdissViewerBase.language = '@Language';
+            OdissViewerBase.baseUrl = '@Url.Content("~/app/" + Model.ID + "/")';
+            OdissViewerBase.baseWfUrl = '@Url.Content("~/wf/" + Model.ID + "/")';
+            OdissViewerBase.dateFormat = '@ConfigBase.Settings.DateFormat'.toUpperCase();
+            OdissViewerBase.viewerType = '@ConfigBase.Settings.ViewerType';
+            OdissViewerBase.isWorkflow = '@(Model.Config.Type == ApplicationTypeEnum.Workflow ? "1" : "0")';
+            OdissViewerBase.start();
+        });
+    </script>
+    @if (Model.Config.HasCustomView(Octacom.Odiss.Library.Custom.CustomActionFilterEnum.ViewerFooter))
+    {
+        @Model.Config.GetCustomPartialView(Html, Octacom.Odiss.Library.Custom.CustomActionFilterEnum.ViewerFooter, Model);
+    }
+}
+@section sidebar
+{
+    <div id="accFeatures" role="tablist" aria-multiselectable="true">
+        @if (!Model.MultipleDocuments && !(Model.Config.Custom != null && Model.Config.Custom.OpenViewer == false) && Model.Config.EnablePages)
+        {
+        <div class="panel">
+            <ul class="nav nav-sidebar" role="tab" id="headingPages">
+                <li><a class="collapsed" role="button" data-toggle="collapse" href="#panPages" aria-expanded="false" aria-controls="panPages">@Words.Viewer_Pages</a></li>
+            </ul>
+            <div id="panPages" class="panel-collapse collapse panel-in" role="tabpanel" aria-labelledby="headingPages">
+                <form id="frmPages" style="padding:5px 20px 20px 20px;line-height:20px;">
+                    <div class="radio"><label id="lblPagesAll" style="font-weight:bold;"><input type="radio" name="radPages" id="radPagesAll" value="0" checked>@Words.Viewer_Pages_All (@Model.TotalPages)</label></div>
+                    <div class="radio" style="margin-bottom:5px;"><label id="lblPagesRange"><input type="radio" name="radPages" id="radPagesRange" value="1">@Words.Viewer_Pages_Range</label></div>
+                    <div style="padding-left:20px;">
+                        <div class="row">
+                            <div class="col-md-6">
+                                @Words.Viewer_Pages_From:
+                                <select class="form-control input-sm" id="cboPageFrom">
+                                    @foreach (var page in Enumerable.Range(1, Model.TotalPages))
+                                    {
+                                        <option value="@page">@page</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                @Words.Viewer_Pages_To:
+                                <select class="form-control input-sm" id="cboPageTo">
+                                    @foreach (var page in Enumerable.Range(1, Model.TotalPages))
+                                    {
+                                        <option value="@page" @(IsLastPage(page) ? "selected=selected" : string.Empty) >@page</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        }
+        @*
+        @if (Model.MultipleDocuments)
+        {
+            <div class="panel">
+                <ul class="nav nav-sidebar" role="tab" id="headingProperties">
+                    <li><a role="button" data-toggle="collapse" href="#panProperties" aria-expanded="true" aria-controls="panProperties">@Words.Viewer_MultipleDocuments</a></li>
+                </ul>
+                <div id="panProperties" class="panel-collapse collapse in panel-in" role="tabpanel" aria-labelledby="headingProperties">
+                    <div style="padding: 20px;">
+                        @Words.Viewer_MultipleDocumentsMessage
+                    </div>
+                </div>
+            </div>
+        }
+        *@
+        @if (Model.Config.EnableProperties && Model.Result != null)
+        {
+        <div class="panel">
+            <ul class="nav nav-sidebar" role="tab" id="headingProperties">
+                <li><a role="button" data-toggle="collapse" href="#panProperties" @(GetPropertiesTabAttributes()) aria-controls="panProperties">@Words.Viewer_Properties</a></li>
+            </ul>
+            <div id="panProperties" class="panel-collapse collapse @(GetPropertiesBoxClass()) panel-in" role="tabpanel" aria-labelledby="headingProperties">
+                <div style="padding: 0px;">
+                    <table cellpadding="2" style="width:100%;" class="table table-condensed">
+                        @foreach (var field in Model.Fields
+                            .FilterByFieldsEvent(Model.Result)
+                            .Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchResults || a.VisibilityType == FieldVisibilityTypeEnum.Viewer)
+                            .Where(a => a.Type != FieldTypeEnum.Array && a.Type != FieldTypeEnum.Button)
+                            .Where(a => UserPermissionsEnum.ViewHiddenFields.IsUserAuthorized(User) || Model.Config.Custom?.HiddenFields == null || Model.Config.Custom.HiddenFields.All(f => f != a.ID))
+                            .OrderBy(a => a.ResultOrder))
+                        {
+                            <tr>
+                                <th scope="row" style="padding-right:5px;">@(field.HeaderGroupName.ToLanguage() + " " + field.Name.ToLanguage())</th>
+                                <td>
+                                    @Model.Result.RenderValue(field, true)
+                                </td>
+                            </tr>
+                        }
+                    </table>
+
+                    @foreach (var field in Model.Fields.Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchResults || a.VisibilityType == FieldVisibilityTypeEnum.Viewer).Where(a => a.Type == FieldTypeEnum.Array).Where(a => UserPermissionsEnum.ViewHiddenFields.IsUserAuthorized(User) || Model.Config.Custom?.HiddenFields == null || Model.Config.Custom.HiddenFields.All(f => f != a.ID)).OrderBy(a => a.ResultOrder))
+                    {
+                        string arrayPropertyHeader = (field.HeaderGroupName.ToLanguage() + " " + field.Name.ToLanguage()).Trim();
+
+                        <table cellpadding="2" style="width:100%;" class="table table-condensed">
+                            <tr style="border-top: 1px solid #ddd">
+                                <th scope="row" style="padding-right:5px;">@arrayPropertyHeader</th>
+                                <td></td>
+                            </tr>
+                        </table>
+
+                        var js = new System.Web.Script.Serialization.JavaScriptSerializer();
+                        List<List<string>> values = js.Deserialize<List<List<string>>>(Model.Result.RenderValue(field).ToString());
+
+                        if (values != null && values.Count > 0)
+                        {
+                        <div style="padding: 0 15px 10px 15px;">
+                            <table class="table table-bordered table-responsive table-hover table-striped table-items" style="margin-bottom:0px;">
+                                <thead>
+                                    <tr>
+                                    @{
+                                        if (!string.IsNullOrEmpty(field.Settings?.ArrayName) && field.Settings.ArrayColumnSeparator != null)
+                                        {
+                                            string[] headers = field.Settings.ArrayName.Split(field.Settings.ArrayColumnSeparator);
+
+                                            if (headers.Length == 1 && headers[0].ToLanguage() == arrayPropertyHeader)
+                                            {
+
+                                            }
+                                            else
+                                            {
+                                                foreach (string header in headers)
+                                                {
+                                            <th>
+                                                @header.ToLanguage().Replace("&nbsp;", "")
+                                            </th>
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                            <th>
+
+                                            </th>
+                                            }
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @{
+                                    foreach (List<string> line in values)
+                                    {
+                                        <tr>
+                                            @{
+                                                foreach (string item in line)
+                                                {
+                                                    <td>
+                                                        @item
+                                                    </td>
+                                                }
+                                            }
+                                        </tr>
+                                    }
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        }
+        @if (Model.Config.Type == ApplicationTypeEnum.Workflow && Model.Workflow != null)
+        {
+        <div class="panel">
+            <ul class="nav nav-sidebar" role="tab" id="headingWorkflow">
+                <li><a role="button" data-toggle="collapse" href="#panWorkflow" @(GetWorkflowTabAttributes()) aria-controls="panWorkflow">Workflow <span class="badge pull-right" title="@Model.Workflow.Request.StateDescription">@Model.Workflow.Request.StateName</span></a></li>
+            </ul>
+            <div id="panWorkflow" class="panel-collapse collapse @(GetWorkflowBoxClass()) panel-in" role="tabpanel" aria-labelledby="headingWorkflow">
+                @if (IsWorkflowActionsAllowed())
+                {
+                    if (!Model.Workflow.IsValidRequest.Success)
+                    {
+                        <div id="WFStepsBox" style="display:none;">
+                            @Html.Partial("~/Views/Workflow/Steps.cshtml", Model.Workflow)
+                        </div>
+                        <div id="WFStepsMessage" class="alert alert-warning" data-pre-message="To start the workflow process, fix the following issue: ">
+                            To start the workflow process, fix the following issue: @(Model.Workflow.IsValidRequest.ErrorMessage)
+                        </div>
+                    }
+                    else
+                    {
+                        @Html.Partial("~/Views/Workflow/Steps.cshtml", Model.Workflow)
+                    }
+                }
+                else
+                {
+                    <div style="padding-top:20px;"></div>
+                }
+                <div>
+                    @Html.Partial("~/Views/Workflow/History.cshtml", Model.Workflow)
+                </div>
+            </div>
+            </div>
+        }
+        @if (Model.Config.HasCustomView(Octacom.Odiss.Library.Custom.CustomActionFilterEnum.ViewerTab))
+        {
+            @Model.Config.GetCustomPartialView(Html, Octacom.Odiss.Library.Custom.CustomActionFilterEnum.ViewerTab, Model);
+        }
+        @if (Model.Config.EnableEditProperties && Model.Result != null && UserPermissionsEnum.EditProperties.IsUserAuthorized(User))
+        {
+        <div class="panel">
+            <ul class="nav nav-sidebar" role="tab" id="headingEditProperties">
+                <li><a class="collapsed" role="button" data-toggle="collapse" href="#panEditProperties" aria-expanded="false" aria-controls="panEditProperties">@Words.Viewer_EditProperties</a></li>
+            </ul>
+            <div id="panEditProperties" class="panel-collapse collapse panel-in" role="tabpanel" aria-labelledby="headingEditProperties">
+                <div style="padding: 8px 17px;">
+                    <form method="post" id="frmEditProperties">
+                        <input type="hidden" name="guid" value="@Model.DocsID.ToStringArray()" />
+                        <div class="alert alert-success" role="alert" id="alertEditSuccess" style="display:none;margin-bottom:10px;">
+                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                            @Words.Properties_Updated
+                        </div>
+                        <div class="alert alert-danger" role="alert" id="alertEditError" style="display:none;margin-bottom:10px;">
+                            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                            @Words.Properties_Error
+                        </div>
+                        <table cellpadding="2" style="width:100%;">
+                            @foreach (var field in Model.Fields.Where(a => UserPermissionsEnum.ViewHiddenFields.IsUserAuthorized(User) || Model.Config.Custom?.HiddenFields == null || Model.Config.Custom.HiddenFields.All(f => f != a.ID)).OrderBy(a => a.ResultOrder).FilterByFieldsEvent(Model.Result).Where(a => a.Editable))
+                            {
+                                @FieldHelper.ShowRow(field, FieldAreaEnum.Edit, Model.Result)
+                            }
+                            <tr>
+                                <td></td>
+                                <td class="text-right">
+                                    <button class="btn btn-primary btn-sm">
+                                        @if (!string.IsNullOrEmpty(Model.Config?.Custom?.SaveChangesButtonTitle))
+                                        {
+                                            @Model.Config.Custom.SaveChangesButtonTitle.ToLanguage()
+                                        }
+                                        else
+                                        {
+                                            @Words.Viewer_SaveChanges
+                                        }
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        }
+        @if (Model.Config.EnableNotes && Model.Result != null && (UserPermissionsEnum.ViewNotes.IsUserAuthorized(User) || UserPermissionsEnum.AddNotes.IsUserAuthorized(User)))
+        {
+        <div class="panel">
+            <ul class="nav nav-sidebar" role="tab" id="headingNotes">
+                <li><a class="collapsed" role="button" data-toggle="collapse" href="#panNotes" aria-expanded="false" aria-controls="panNotes">@Words.Notes <span class="badge pull-right" id="spanTotalNotes">@ShowTotalNotes()</span></a></li>
+            </ul>
+            <div id="panNotes" class="panel-collapse collapse panel-in" role="tabpanel" aria-labelledby="headingNotes">
+                <div style="padding: 8px 17px;">
+                    @if (UserPermissionsEnum.AddNotes.IsUserAuthorized(User))
+                    {
+                    <div style="position:relative;">
+                        <textarea class="form-control" rows="5" style="margin-bottom:15px;resize:none;" id="txtNote"></textarea>
+                        <button style="position:absolute; bottom:10px;right:10px;" class="btn btn-sm btn-primary pull-right" id="btnSaveNote" data-id="@Model.DocsID.ToStringArray()">@Words.Save</button>
+                    </div>
+                    <div style="clear:both;"></div>
+                    }
+                    <div class="alert alert-success" role="alert" id="alertNotesSuccess" style="display:none;margin-bottom:10px;">
+                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                        @Words.Notes_Added
+                    </div>
+                    <div class="alert alert-danger" role="alert" id="alertNotesError" style="display:none;margin-bottom:10px;">
+                        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                        @Words.Notes_Error
+                    </div>
+                    @if (UserPermissionsEnum.ViewNotes.IsUserAuthorized(User))
+                    {
+                    <div id="lstNotes">
+                        @foreach (var note in Model.Notes)
+                        {
+                            <div class="note">
+                                @Html.Raw(System.Text.RegularExpressions.Regex.Replace(note.Text, @"<[^>]+>|&nbsp;", string.Empty).Replace(Environment.NewLine, "<br />"))<hr style="margin:5px 0px;border-color:#ddd;" />
+                                <strong>@Words.Notes_WroteBy @note.Author </strong><br /><span style="color:#888;">@note.Created.ToString(ConfigBase.Settings.DateFormat) @Words.Notes_At @note.Created.ToString("hh:mm:sstt")</span>
+                                @if (UserPermissionsEnum.DeleteNotes.IsUserAuthorized(User))
+                                {
+                                <button class="btn glyphicon glyphicon-remove btn-danger btn-xs btn-remove" data-id="@note.ID" type="button" title="@Words.Notes_RemoveNote"></button>
+                                }
+                            </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+        }
+        @if (Model.Config.EnableEmail && !string.IsNullOrWhiteSpace(User.Email) && UserPermissionsEnum.EmailDocument.IsUserAuthorized(User) && !(Model.Config.Custom != null && Model.Config.Custom.OpenViewer == false))
+        {
+        <div class="panel">
+            <ul class="nav nav-sidebar" role="tab" id="headingEmail">
+                <li><a class="collapsed" role="button" data-toggle="collapse" href="#panEmail" aria-expanded="false" aria-controls="panEmail">@Words.Email</a></li>
+            </ul>
+            <div id="panEmail" class="panel-collapse collapse panel-in" role="tabpanel" aria-labelledby="headingEmail">
+                <div style="padding: 8px 17px;">
+                    <div class="alert alert-success" role="alert" id="alertEmailSuccess" style="display:none;margin-bottom:10px;">@Words.Email_Sent</div>
+                    <div class="alert alert-danger" role="alert" id="alertEmailError" style="display:none;margin-bottom:10px;" data-error="@Words.Email_Error"></div>
+                    <form method="post" id="frmEmail">
+                        <input type="hidden" name="docs" value="@Model.DocsID.ToStringArray()" />
+                        <input type="hidden" name="email_customurl" value="" />
+                        <input type="hidden" name="email_customdata" value="" />
+                        @if (!Model.MultipleDocuments)
+                        {
+                            <input type="hidden" name="PageFrom" id="hidEmailPageFrom" value="0" />
+                            <input type="hidden" name="PageTo" id="hidEmailPageTo" value="0" />
+                        }
+                        <table cellpadding="2" style="width:100%;">
+                            <tr>
+                                <th style="padding-right:5px;"><label>@Words.Email_From</label></th>
+                                <td style="padding-bottom: 3px;">
+                                    <div class="form-group form-group-sm" style="position:relative;">
+                                        <strong>@User.Email</strong>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="padding-right:5px;vertical-align: top;padding-top: 5px;"><label for="To">@Words.Email_To</label></th>
+                                <td style="padding-bottom: 3px;">
+                                    <div class="form-group form-group-sm" style="position:relative;">
+                                        <input type="text" class="form-control" placeholder="@Words.Email_To" name="To" />
+                                    </div>
+                                    @* TODO - Save addresses
+    <div class="checkbox" style="position:relative;margin-top:5px; margin-bottom:5px;">
+        <label><input type="checkbox" style="margin:2px 0 0 -20px;" /> @Words.Email_SaveAddresses</label>
+    </div>
+                                    *@
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="padding-right:5px;"><label for="Subject">@Words.Email_Subject</label></th>
+                                <td style="padding-bottom: 3px;">
+                                    <div class="form-group form-group-sm" style="position:relative;">
+                                        <input type="text" class="form-control" placeholder="@Words.Email_Subject" name="Subject" />
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="padding-right:5px;"><label for="Message">@Words.Email_Message</label></th>
+                                <td style="padding-bottom: 3px;">
+                                    <div class="form-group form-group-sm" style="position:relative;">
+                                        <textarea class="form-control" rows="5" name="Message"></textarea>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="padding-right:5px;vertical-align: top;padding-top: 5px;"><label></label></th>
+                                <td style="padding-bottom: 3px;">
+                                    <div class="checkbox" style="position:relative;margin-top:5px; margin-bottom:5px;">
+                                        <label><input type="checkbox" style="margin:2px 0 0 -20px;" name="chkDocument" checked="checked" value="1" /> @Words.Email_AttachPages</label>
+                                    </div>
+                                    @*
+                                    @if (Model.DocsID.Length > 1 && Model.Config.Custom != null && Model.Config.Custom.GroupMultipleDocuments)
+                                    {
+                                        foreach (var item in Model.FileDetails)
+                                        {
+                                        <div class="checkbox" style="position:relative;margin-top:5px; margin-bottom:5px;">
+                                            <label><input type="checkbox" style="margin:2px 0 0 -20px;" name="chkDocument" checked="checked" value="1" /> @item.DocumentName</label>
+                                        </div>
+                                        }
+                                    }
+                                    *@
+                                    @if (!Model.MultipleDocuments && Model.Config.EnableNotes && UserPermissionsEnum.ViewNotes.IsUserAuthorized(User))
+                                    {
+                                    <div class="checkbox" style="position:relative;margin-top:5px; margin-bottom:5px;">
+                                        <label><input type="checkbox" style="margin:2px 0 0 -20px;" name="chkNotes" value="1" /> @Words.Email_IncludeNotes</label>
+                                    </div>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="text-right"><button class="btn btn-primary btn-sm">@Words.Email_Send</button></td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+}
+@{
+    bool OpenViewer = !(Model.Config.Custom != null && Model.Config.Custom.OpenViewer == false);
+    string FileExtension = "";
+    if (!OpenViewer)
+    {
+        string[] keys = Model.Result.Keys.ToArray();
+        object[] values = Model.Result.Values.ToArray();
+        for (int i = 0; i < keys.Length; i++)
+        {
+            if (keys[i] == "DocumentExtension")
+            {
+                FileExtension = values[i].ToString().ToUpper();
+                if (values[i].ToString().ToUpper() == "PDF" ||
+                    values[i].ToString().ToUpper() == "TIF" ||
+                    values[i].ToString().ToUpper() == "TIFF")
+                {
+                    OpenViewer = true;
+                }
+            }
+        }
+    }
+}
+<input type="hidden" name="OpenViewer" id="OpenViewer" value="@OpenViewer.ToString()" />
+<input type="hidden" name="FileExtension" id="FileExtension" value="@FileExtension" />
+<form action="@GetViewerUrl()" target="iDocument" method="post" style="display:none;" id="tmpForm" name="tmpForm">
+    <input type="hidden" name="startpage" id="hidStartPage" value="0" />
+    <input type="hidden" name="endpage" id="hidEndPage" value="0" />
+    <input type="hidden" name="docs" id="hidDoc" value="@Model.DocsID.ToStringArray()" data-original-guids="@Model.DocsID.ToStringArray()" />
+    <input type="hidden" name="fileLoad" id="hidFileLoad" value="" />
+    <input type="hidden" name="customViewerUrl" id="hidCustomUrl" value="" />
+    <input type="hidden" name="customViewerData" id="hidCustomData" value="" />
+    <input type='submit' value='submit' style="display:none;" />
+</form>
+<iframe id="iDocument" name="iDocument" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
+<form action="@Url.Content(string.Format("~/App/{0}/OpenFile", Model.ID))" target="iOpenFile" method="post" style="display:none;" id="tmpOpenFileForm" name="tmpOpenFileForm">
+    <input type="hidden" name="FileIdentification" id="FileIdentification" value="@Model.DocsID[0].ToString()" />
+    <input type="hidden" name="AppIdentification" id="AppIdentification" value="@Model.ID.ToString()" />
+    <input type='submit' value='submit' style="display:none;" />
+</form>
+@*<iframe id="iOpenFile" name="iOpenFile" frameborder="0" style="display:none;overflow:hidden;height:0;width:0" height="0" width="0"></iframe>*@
+<iframe id="iOpenFile" name="iOpenFile" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>

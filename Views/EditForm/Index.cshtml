@@ -1,0 +1,198 @@
+﻿@model EditForm
+@{
+    ViewBag.Title = Model.Name.ToLanguage() + " - " + ConfigBase.Settings.Name;
+}
+@section header{
+    @Styles.Render("~/content/min/css/editform")
+}
+@section footer{
+    @Scripts.Render("~/content/min/js/editform")
+    <script>
+        $(document).ready(function () {
+            OdissEditForm.allowExport = @(UserPermissionsEnum.ExportResults.IsUserAuthorized(User) ? 1 : 0);
+            OdissEditForm.baseUrl = "@Url.Content("~/editform/" + Model.ID)";
+            OdissEditForm.language = "@Language";
+            OdissEditForm.groupByPos = "@Model.Config.GroupByPos()";
+            OdissEditForm.maxPerPage = "50";//"@ConfigBase.Settings.MaxPerPage";
+            OdissEditForm.start();
+        });
+    </script>
+}
+@section sidebar
+{
+    @if (UserPermissionsEnum.ViewDocuments.IsUserAuthorized(User))
+    {
+        <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">@(string.IsNullOrWhiteSpace(Model.Config.SearchTitle) ? APWords.Search_For + ' ' + Model.Config.Name.ToLanguage() : Model.Config.SearchTitle)<span class="pull-right glyphicon glyphicon-menu-right"></span></a></li>
+        </ul>
+        <form method="post" id="frmDocuments" style="margin-bottom:20px;">
+            @foreach (var field in Model.Fields.Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchFilter).OrderBy(a => a.FilterOrder))
+            {
+                <div class="form-group form-group-sm @(field.Type == FieldTypeEnum.DateRange ? "form-group-date-range" : "")" style="position:relative;">
+
+                    @if (field.Type == FieldTypeEnum.Dropdown)
+                    {
+                        var fieldData = field.GetData();
+                        <select id="@field.ViewColumnID" class="form-control" name="@field.ViewColumnID">
+                            <option value="">@field.Name.ToLanguage()</option>
+                            @foreach (var node in fieldData)
+                            {
+                                <option value="@node.Code" @(node.Code.ToString() == Model.FormState[field.ViewColumnID] ? "selected='selected'" : string.Empty)>@node.Name</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        @FieldHelper.ShowField(field, FieldAreaEnum.Search, Model.Result, Model.FormState);
+                    }
+
+
+
+                </div>
+            }
+            <button type="submit" class="btn btn-primary">@Words.Search</button>
+            <button type="button" id="btnResetSearch" class="btn btn-default">@Words.Reset</button>
+        </form>
+    }
+}
+<h1>@Model.Name.ToLanguage()</h1>
+@if (UserPermissionsEnum.ViewDocuments.IsUserAuthorized(User))
+{
+    bool hasColumnGroups = Model.Fields.Any(a => !string.IsNullOrWhiteSpace(a.HeaderGroupName));
+
+    <form action="@Url.Content(string.Format("~/EditForm/{0}/ViewerBase", Model.ID))" target="iViewerBase" method="post" style="display:none;" id="tmpForm" name="tmpForm">
+        <input type="hidden" name="docs" id="hidDoc" value="" />
+        <input type='submit' value='submit' style="display:none;" />
+    </form>
+
+    @*<form action="@Url.Content(string.Format("~/EditForm/{0}/ViewerBaseButton", Model.ID))" target="iViewerBase" method="post" style="display:none;" id="tmpFormButton" name="tmpFormButton">
+        <input type="hidden" name="docs" id="hidDocButton" value="" />
+        <input type='submit' value='submit' style="display:none;" />
+    </form>*@
+
+    <div>
+        <table id="tbDocuments" class="table table-bordered table-striped" style="display:none;width:100%;">
+            <thead>
+                <tr>
+                @if (hasColumnGroups)
+                {
+                        <th rowspan="2">
+                            <input type="checkbox" id="chkListAll" />
+                        </th>
+                        string antGroup = string.Empty;
+                        foreach (var field in Model.Fields.Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchResults).OrderBy(a => a.ResultOrder))
+                        {
+                            if (!string.IsNullOrWhiteSpace(field.HeaderGroupName))
+                            {
+                                if (field.HeaderGroupName.ToLanguage() != antGroup)
+                                {
+                                    <th colspan="@Model.Fields.Count(a => !string.IsNullOrWhiteSpace(a.HeaderGroupName) && a.HeaderGroupName.ToLanguage() == field.HeaderGroupName.ToLanguage())" class="text-center">
+                                        @field.HeaderGroupName.ToLanguage()
+                                    </th>
+                                }
+
+                                antGroup = field.HeaderGroupName.ToLanguage();
+                            }
+                            else
+                            {
+                                <th rowspan="2">@field.Name.ToLanguage()</th>
+                                antGroup = string.Empty;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <th>
+                            <input type="checkbox" id="chkListAll" />
+                        </th>
+                        foreach (var field in Model.Fields.Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchResults).OrderBy(a => a.ResultOrder))
+                        {
+                            @*if (field.Type == FieldTypeEnum.Button)
+                            {
+                                <th>@field.Name.ToLanguage()</th>
+                            }
+                            else
+                            {*@
+                                <th>@field.Name.ToLanguage()</th>
+                            //}
+                    }
+                    }
+                </tr>
+                @if (hasColumnGroups)
+                {
+                    <tr>
+                        @foreach (var field in Model.Fields.Where(a => !string.IsNullOrWhiteSpace(a.HeaderGroupName) && (a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchResults)).OrderBy(a => a.ResultOrder))
+                        {
+                            <th>@field.Name.ToLanguage()</th>
+                        }
+                    </tr>
+                }
+            </thead>
+            <tbody>
+                @if (Model.Results != null && Model.Results.Any())
+                {
+                    foreach (var row in Model.Results)
+                    {
+                        int posField = 0;
+                        bool enableNotes = UserPermissionsEnum.ViewNotes.IsUserAuthorized(User) && (bool)row.GetValue("HasNotes");
+                        string enableNotesData = enableNotes ? ("data-placement=left data-toggle=popover data-trigger=focus data-poload=" + row.GetValue("GUID") + " title=" + Words.Notes) : string.Empty;
+                        <tr @(enableNotesData)>
+                            <td>
+                                <input type="checkbox" data-id="@row.GetValue("GUID")" />
+                            </td>
+                            @foreach (var field in Model.Fields.Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchResults).OrderBy(a => a.ResultOrder))
+                            {
+                                <td class="tdField">
+                                    @if (posField == 0)
+                                    {
+                                        var val = row.RenderValue(field);
+                                        <a href class="link-open-document" data-id="@row.GetValue("GUID")"> @(string.IsNullOrWhiteSpace((string)val) ? "<" + Words.Application_Empty + ">" : val)</a>
+                                        if (enableNotes)
+                                        {
+                                            <a tabindex="0" class="glyphicon glyphicon-file pull-right" style="cursor:normal;color:#F1D18F" @*role="button" data-toggle="popover" data-trigger="focus" title="@Words.Notes" data-poload="@row.GetValue("GUID")"*@></a>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (field.Type == FieldTypeEnum.Button)
+                                        {
+                                            <button type="button" class="btn btn-default button-create-document" data-id="@row.GetValue("GUID")"> @field.ViewColumnID </button>
+                                        }
+                                        else
+                                        {
+                                            @row.RenderValue(field)
+                                        }
+                                    }
+                                </td>
+                                posField++;
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">@Words.Error:</span>
+        @Words.Application_NoPermissionView
+    </div>
+}
+
+@if (Model.Config.EnableSubmitDocuments && UserPermissionsEnum.SubmitDocuments.IsUserAuthorized(User))
+{
+    <form action="@Url.Content(string.Format("~/EditForm/{0}/SubmitBase", Model.ID))" target="iViewerBase" method="post" style="display:none;" id="tmpSubmitForm" name="tmpSubmitForm">
+        <input type="hidden" name="docs" id="hid" value="" />
+        <input type='submit' value='submit' style="display:none;" />
+    </form>
+}
+
+@if ((Model.Config.EnableSubmitDocuments && UserPermissionsEnum.SubmitDocuments.IsUserAuthorized(User)) || (UserPermissionsEnum.ViewDocuments.IsUserAuthorized(User)))
+{
+    <div class="modal" id="modDocument" tabindex="-1" role="dialog" aria-labelledby="lblModal">
+        <iframe id="iViewerBase" name="iViewerBase" frameborder="0" style="overflow:hidden;height:100%;width:100%"></iframe>
+    </div>
+}

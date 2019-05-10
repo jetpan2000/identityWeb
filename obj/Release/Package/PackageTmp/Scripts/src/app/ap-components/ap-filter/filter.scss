@@ -1,0 +1,40 @@
+table.ap-filter-table, div.exceptions-widget {
+    display: inline-block;
+    border-radius: 10px;
+    background-color: #000;
+    color: #fff;
+    padding: 15px;
+    min-width: 300px;
+    margin-right: 30px;
+    vertical-align: top;
+}
+
+table.ap-filter-table {
+    th, td {
+        padding: 0 10px;
+    }
+
+    tbody {
+        tr:hover {
+            background-color: #ed1c31;
+            cursor: pointer;
+        }
+    }
+}
+
+div.exceptions-widget {
+    a, a:link, a:hover, a:active, a:visited, a:focus {
+        h3, h5 {
+            color: #fff;
+            text-decoration: none;
+        }
+    }
+
+    h3 {
+        margin-top: 10px;
+    }
+}
+
+.filters-container {
+    display: block;
+}

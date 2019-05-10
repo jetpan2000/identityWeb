@@ -1,0 +1,53 @@
+﻿@{
+    Layout = null;
+    HtmlHelper.ClientValidationEnabled = false;
+    HtmlHelper.UnobtrusiveJavaScriptEnabled = false;
+
+    var viewer = Html.OctacomViewer(new ViewerOptions
+    {
+        Language = Language,
+        EnablePrint = false,
+        EnableSave = false
+    });
+}
+<!DOCTYPE html>
+<html dir="ltr" mozdisallowselectionprint moznomarginboxes>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Viewer</title>
+    @viewer.Resources
+</head>
+<body tabindex="1" class="loadingInProgress">
+    @viewer.Render()
+    <script>
+        function convertBase64ToArrayBuffer(base64string) {
+            var BASE64_MARKER = ';base64,';
+
+            var base64Index = base64string.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+            var base64 = base64string.substring(base64Index);
+            var raw = window.atob(base64);
+            var rawLength = raw.length;
+            var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+            for (i = 0; i < rawLength; i++) {
+                array[i] = raw.charCodeAt(i);
+            }
+            return array;
+        }
+
+        var base64string = '@ViewBag.Base64';
+
+        var url = convertBase64ToArrayBuffer(base64string);
+
+        OctacomViewer.Load({
+            type: 'bytearray',
+            url: url,
+            data: {  },
+            onPrint: function () {  }
+        });
+    </script>
+</body>
+</html>

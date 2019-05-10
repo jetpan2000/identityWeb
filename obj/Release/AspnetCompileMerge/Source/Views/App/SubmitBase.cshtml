@@ -1,0 +1,71 @@
+﻿@model App
+@{
+    Layout = "~/Views/Shared/_LayoutSubmitBase.cshtml";
+}
+@section footer
+{
+    <script>
+    $(document).ready(function () {
+        OdissSubmitBase.language = '@Language';
+        OdissSubmitBase.baseUrl = '@Url.Content("~/app/" + Model.ID + "/")';
+        OdissSubmitBase.dateFormat = '@ConfigBase.Settings.DateFormat'.toUpperCase();
+        OdissSubmitBase.start();
+    });
+    </script>
+}
+@section sidebar
+{
+    <div class="panel">
+        <table cellpadding="2" style="width:100%;margin-top:15px;" id="tbSubmitDocument">
+            <tr>
+                <td colspan="2">
+                    <div id="clickable" class="dropzone droparea dz-message" style="margin-bottom:10px;">                      
+                        <div style="text-align:center;font-weight:bold;">
+                            @if (string.IsNullOrEmpty(Model.Config.Custom?.SubmitTitle))
+                            {@Words.Submit_Document }
+                        else
+                        { @Model.Config.Custom.SubmitTitle}
+                        </div>
+                        <br />
+                        <span class="glyphicon glyphicon-cloud-upload" style="font-size:24px;color:#CCC;"></span><br />
+                        @Words.SubmitDocument_DragAndDrop<br />
+                        @Words.Or, <button type="button" class="btn btn-sm btn-default">@Words.SubmitDocument_Browse</button>
+                        <div id="previews"></div> <div style="display:none" id="customFormFieldsSettings">@Html.Raw(Model.FieldsSettingJson)</div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div style="display:none;" id="tblSaveContent">
+            <ul class="nav nav-sidebar">
+                <li><a role="button">@Words.Viewer_Properties</a></li>
+            </ul>
+            <div class="panel-collapse collapse in panel-in">
+                <div style="padding: 8px 17px;">
+                    <form method="post" id="frmSaveNew" @* role="form" data-toggle="validator"*@>
+                        <input type="hidden" name="TemporaryFileID" id="TemporaryFileID" />
+                        <input type="hidden" name="TemporaryFileName" id="TemporaryFileName" />
+                        <div class="alert alert-success" role="alert" id="alertEditSuccess" style="display:none;margin-bottom:10px;">@Words.SubmitDocument_Success <a href="javascript:void(0);" id="lnkSendAnotherDocument">@Words.SubmitDocument_SendAnother</a></div>
+                        <div class="alert alert-danger" role="alert" id="alertEditError" style="display:none;margin-bottom:10px;">@Words.Properties_Error
+                            <label id="lbl_errorDetails" />
+                        </div>
+                        <table cellpadding="2" style="width:100%;">
+                            @foreach (var field in Model.Fields.Where(a => !a.NotVisibleList).OrderBy(a => a.FilterOrder))
+                            {
+                                @FieldHelper.ShowRow(field, FieldAreaEnum.Upload, null)
+                            }
+                            <tr>
+                                <td></td>
+                                <td class="text-right"><button type="submit" class="btn btn-primary btn-sm" id="btnSaveDocument">@Words.SubmitDocument_Submit</button></td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<form action="@Url.Content(string.Format("~/App/{0}/ViewerSubmit", Model.ID))" target="iDocument" method="post" style="display:none;" id="tmpSubmitForm" name="tmpSubmitForm">
+    <input type="hidden" name="docs" id="hidDoc" value="@Model.DocsID" />
+    <input type='submit' value='submit' style="display:none;" />
+</form>
+<iframe id="iDocument" name="iDocument" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>

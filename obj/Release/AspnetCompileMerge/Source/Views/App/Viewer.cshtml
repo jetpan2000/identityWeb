@@ -1,0 +1,93 @@
+﻿@model App
+@{
+    Layout = null;
+    HtmlHelper.ClientValidationEnabled = false;
+    HtmlHelper.UnobtrusiveJavaScriptEnabled = false;
+
+    var viewer = Html.OctacomViewer(new ViewerOptions {
+        Language = Language,
+        EnablePrint = User.HasPermission(UserPermissionsEnum.PrintDocuments),
+        EnableSave = User.HasPermission(UserPermissionsEnum.SaveDocuments) || User.HasPermission(UserPermissionsEnum.PrintDocuments)
+    });
+
+    bool hasCustomViewer = false;
+
+    if (Model?.Config != null)
+    {
+        hasCustomViewer = Model.Config.HasCustomView(Octacom.Odiss.Library.Custom.CustomActionFilterEnum.AppViewer);
+    }
+}
+@if (hasCustomViewer)
+{
+    @Model.Config.GetCustomPartialView(Html, Octacom.Odiss.Library.Custom.CustomActionFilterEnum.AppViewer, Model);
+}
+else
+{
+<!DOCTYPE html>
+<html dir="ltr" mozdisallowselectionprint moznomarginboxes>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Viewer</title>
+    @if (!hasCustomViewer)
+    {
+        @viewer.Resources
+    }
+</head>
+<body tabindex="1" class="loadingInProgress">
+    @viewer.Render()
+    <script>
+        function changePage(from, to, doc, customViewerUrl, customViewerData) {
+
+            if (from == 0 && to == 0)
+            {
+                // All pages
+            }
+            else {
+                to = to - from + 1;
+            }
+
+            if (customViewerUrl != null && customViewerUrl != '')
+            {
+                var parsedData = JSON.parse(customViewerData);
+
+                OctacomViewer.Load({
+                    url : customViewerUrl,
+                    data : parsedData
+                    //onSave: function
+                    //onPrint:
+                    //autoSearch
+                });
+            }
+            else
+            {
+                if (!doc)
+                    doc = @(Html.Raw(Model.DocsIDJson));
+
+                OctacomViewer.Load({
+                    url: '@Url.Action("Doc/" + Html.Raw(Model.DownloadDocName))',
+                    data: {
+                        Ref: '',
+                        StartPage: from,
+                        TotalPages: to,
+                        AppID: '@Model.ID',
+                        FileLoad: '@Model.FileLoad',
+                        List: doc
+                    },
+                    onSave: function(){ par.saveActionDownload(@Html.Raw(Model.DocsIDJson)); },
+                    onPrint: function(){ par.saveActionPrint(@Html.Raw(Model.DocsIDJson)); },
+                    autoSearch: '@Model.AutoSearch'
+                });
+            }
+        }
+
+        var par = window.parent.OdissViewerBase;
+        DocumentReady(function() {
+            changePage(0, 0, @Html.Raw(Model.DocsIDJson), '@Html.Raw(Model.CustomViewerUrl)', '@Html.Raw(Model.CustomViewerData)');
+        });
+    </script>
+</body>
+</html>
+}

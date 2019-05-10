@@ -1,0 +1,11 @@
+﻿{
+  "presets": [
+    "es2015",
+    "react",
+    "stage-2",
+    "mobx"
+  ],
+  "plugins": [
+    "babel-plugin-styled-components"
+  ]
+}

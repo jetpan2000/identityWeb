@@ -1,0 +1,163 @@
+﻿/* LFC
+.basecustom a {
+    color: #00975C;
+}
+
+.basecustom .nav-sidebar > li > a {
+    background: #00975C;
+}
+
+.basecustom .nav-sidebar > li > a {
+    background: #00975C;
+}
+
+.basecustom .nav-sidebar > li > a.collapsed {
+    background-color: #dddddd;
+}
+
+.basecustom .btn-primary { background-color: #00975C; border-color: #00975C; }
+*/
+
+/*MRLF
+.basecustom a {
+    color: #87c407;
+}
+
+.basecustom .nav-sidebar > li > a {
+    background: #959595;
+}
+
+.basecustom .nav-sidebar > li > a {
+    background: #959595;
+}
+
+.basecustom .nav-sidebar > li > a.collapsed {
+    background-color: #dddddd;
+} 
+
+.basecustom .btn-primary { background-color: #94d60a; border-color: #94d60a; }
+.basecustom .btn-primary.disabled:hover { background-color: #CCC; border-color: #CCC; }
+ */
+
+/*ACC*/
+.basecustom a {
+    color: #F01428;
+}
+
+.basecustom .nav-sidebar > li > a {
+    background: #959595;
+}
+
+.basecustom .nav-sidebar > li > a {
+    background: #959595;
+}
+
+    .basecustom .nav-sidebar > li > a.collapsed {
+        background-color: #dddddd;
+    }
+
+.basecustom .btn-primary {
+    background-color: #F01428;
+    border-color: #F01428;
+}
+
+.basecustom .btn-primary.disabled:hover {
+    background-color: #CCC;
+    border-color: #CCC;
+}
+
+.tab-content-custom {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0px 0px 4px 4px;
+    padding: 10px;
+}
+
+.nav-tabs > li > a:hover {
+    color:#000;
+    background-color: #dddddd;
+}
+
+
+/* CARDINAL HEALTH 
+.basecustom a {
+    color: #e41f35;
+}
+
+.basecustom .nav-sidebar > li > a {
+    background: #959595;
+}
+
+.basecustom .nav-sidebar > li > a {
+    background: #959595;
+}
+
+    .basecustom .nav-sidebar > li > a.collapsed {
+        background-color: #dddddd;
+    }
+
+.basecustom .btn-primary {
+    background-color: #e41f35;
+    border-color: #e41f35;
+}
+
+    .basecustom .btn-primary.disabled:hover {
+        background-color: #CCC;
+        border-color: #CCC;
+    }
+
+.tab-content-custom {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0px 0px 4px 4px;
+    padding: 10px;
+}
+
+.nav-tabs > li > a:hover {
+    color: #000;
+    background-color: #dddddd;
+}
+*/
+
+/* WFP 
+.basecustom a {
+    color: #58960C;
+}
+
+.basecustom .nav-sidebar > li > a {
+    background: #959595;
+}
+
+.basecustom .nav-sidebar > li > a {
+    background: #959595;
+}
+
+    .basecustom .nav-sidebar > li > a.collapsed {
+        background-color: #dddddd;
+    }
+
+.basecustom .btn-primary {
+    background-color: #58960C;
+    border-color: #58960C;
+}
+
+    .basecustom .btn-primary.disabled:hover {
+        background-color: #CCC;
+        border-color: #CCC;
+    }
+
+.tab-content-custom {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0px 0px 4px 4px;
+    padding: 10px;
+}
+
+.nav-tabs > li > a:hover {
+    color: #000;
+    background-color: #dddddd;
+}
+*/

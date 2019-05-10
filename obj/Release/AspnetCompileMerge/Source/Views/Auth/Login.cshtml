@@ -1,0 +1,24 @@
+﻿@model Octacom.Odiss.ABCgroup.Web.Models.LoginViewModel
+
+@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <title>Sign in - Octacom</title>
+</head>
+<body>
+    @Html.AntiForgeryToken()
+
+    <div id="react-root"></div>
+
+    <script type="text/javascript">
+        window.__appData = JSON.parse('@Html.Raw(Model.AsJson)');
+        window.__baseUrl = '@Url.Content("~/")';
+    </script>
+
+    @Styles.Render("~/content/min/css/base")
+    @Scripts.Render("~/Scripts/src/dist/login-page.bundle.js")
+</body>
+</html>

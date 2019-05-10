@@ -1,0 +1,86 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    @*<meta name="viewport" content="width=device-width" />
+    <title>ViewerDownload</title>*@
+    @Scripts.Render("~/content/min/js/base")
+    @Styles.Render("~/content/min/css/base")
+    <style>
+        #downloadButton {
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            margin-top: -120px;
+            margin-left: -64px;
+        }
+
+        .link-open-file{
+            margin: 20px 0 0 0;
+            width: 128px;
+        }
+
+        #iconFile {
+            cursor: pointer;
+        }
+
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            var imagePath = imagePath = "../../../content/img/";
+            switch (parent.OdissViewerBase.getFileExtension()) {
+                case "XLS":
+                case "XLSX":
+                    imagePath += "excel.png";
+                    break;
+                case "DOC":
+                case "DOCX":
+                    imagePath += "word.png";
+                    break;
+                case "VSD":
+                case "VSS":
+                case "VST":
+                case "VSW":
+                case "VDX":
+                case "VSX":
+                case "VTX":
+                case "VSDX":
+                case "VSDM":
+                case "VSSX":
+                case "VSSM":
+                case "VSTX":
+                case "VSTM":
+                    imagePath += "visio.png";
+                    break;
+                default:
+                    imagePath += "image.png";
+                    break;
+            }
+            $("#iconFile").attr("src", imagePath);
+            $("#divDownload").height(parent.OdissViewerBase.getHeight() * 0.85);
+            $("#divDownload").width(parent.OdissViewerBase.getWidth() * 0.95);
+            $(".link-open-file").on('click', function () {
+                parent.OdissViewerBase.downloadFile();
+            });
+            $("#iconFile").on('click', function () {
+                parent.OdissViewerBase.downloadFile();
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="divDownload">
+        <div id="downloadButton">
+            <div>
+                <img id="iconFile" src="" />
+            </div>
+            <div>
+                <button type="button" class="link-open-file btn btn-primary">Open File</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

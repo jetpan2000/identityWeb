@@ -1,0 +1,40 @@
+﻿@model App
+@{
+    Layout = null;
+    HtmlHelper.ClientValidationEnabled = false;
+    HtmlHelper.UnobtrusiveJavaScriptEnabled = false;
+}
+<!DOCTYPE html>
+<html dir="ltr" mozdisallowselectionprint moznomarginboxes>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Viewer</title>
+    <script type="text/javascript">
+        function load(){
+            "use strict";
+            try
+            {
+                var j = window.parent.jQuery;
+                window.document.forms[0].submit();
+            }
+            catch(_) {};
+        }
+    </script>
+</head>
+<body onload="load();">
+    <form action="@Url.Action("Doc/Doc_" + DateTime.Now.ToString("yyyyMMddHHmmssFFFF") + ".pdf")" method="post">
+        @Html.Hidden("Ref", "")
+        @Html.Hidden("StartPage", Model.PageRangeFrom)
+        @Html.Hidden("TotalPages", Model.PageRangeTotal)
+        @Html.Hidden("AppID", Model.ID)
+        @Html.Hidden("FileLoad", Model.FileLoad)
+        @foreach (var doc in Model.DocsID)
+        {
+            @Html.Hidden("List[]", doc)
+        }
+    </form>
+</body>
+</html>

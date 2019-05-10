@@ -1,0 +1,195 @@
+﻿@*
+    Generator: MvcHelper
+    GeneratePrettyNames : true
+*@
+
+@using Octacom.Odiss.Library
+@helper ShowRow(Settings.Field field, Octacom.Odiss.Library.Config.FieldAreaEnum area, IDictionary<string, object> value)
+{
+    var requiredSpan = field.IsRequired && area != Octacom.Odiss.Library.Config.FieldAreaEnum.Search ? "*" : string.Empty;
+    <tr>
+        <th style="padding-right:5px;"><label for="@field.ViewColumnID" @*style="white-space:nowrap;"*@>@field.GetCompleteName() <span style='color:red;'>@requiredSpan</span></label></th>
+        <td style="padding-bottom: 3px;">@ShowField(field, area, value)</td>
+    </tr>
+}
+@helper ShowField(Settings.Field field, Octacom.Odiss.Library.Config.FieldAreaEnum area, IDictionary<string, object> value, System.Web.Mvc.FormCollection formData = null)
+{
+    var classDate = field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.DateRange ? "form-group-date" : string.Empty;
+    var classDisabled = field.IsFilledByAutoComplete ? "disabled" : string.Empty;
+    var classFilledByAutoComplete = field.IsFilledByAutoComplete ? "isFilledByAutoComplete" : string.Empty;
+    var propertyDisabled = field.IsFilledByAutoComplete ? "readonly='readonly'" : string.Empty;
+    var classAutoCompleteCaller = field.IsAutoCompleteCaller ? "autoCompleteCaller" : string.Empty;
+    var propertyPrevData = string.Empty;
+    var required = field.IsRequired && area != Octacom.Odiss.Library.Config.FieldAreaEnum.Search ? "required" : string.Empty;
+    var valueToString = string.Empty;
+
+    if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Edit)
+    {
+        propertyPrevData = field.IsAutoCompleteCaller ? "data-prevalue='" + value.RenderValue(field) + "'" : string.Empty;
+    }
+    else if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Upload)
+    {
+        propertyPrevData = field.IsAutoCompleteCaller ? "data-prevalue=''" : string.Empty;
+    }
+
+    <div class="form-group form-group-sm @classDate @classDisabled" style="position:relative;">
+        @{
+            string sFieldID = string.IsNullOrEmpty(field.NameForView) ? field.ViewColumnID : field.NameForView;
+
+            string validateMessage = "";
+            if (field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.Number)
+            {
+                validateMessage = Octacom.Odiss.ABCgroup.Web.Globalization.APWords.FormInvalidNumber;
+            }
+            else if (field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.DateRange)
+            {
+                validateMessage = Octacom.Odiss.ABCgroup.Web.Globalization.APWords.FormInvalidDate;
+            }
+            else if (!string.IsNullOrEmpty(field.Settings?.Validation))
+            {
+                validateMessage = Octacom.Odiss.ABCgroup.Web.Globalization.APWords.FormInvalidNumber;
+            }
+
+            string requiredMessage = "";
+            if (field.IsRequired && area != Octacom.Odiss.Library.Config.FieldAreaEnum.Search)
+            {
+                requiredMessage = field.GetCompleteName() + Octacom.Odiss.ABCgroup.Web.Globalization.APWords.FormRequired;
+            }
+
+            //string dataValidation = "";
+            //if (!string.IsNullOrEmpty(validateMessage))
+            //{
+            //    dataValidation += @"data-validate-type=""" + field.Type + @"""
+            //                        data-validate-message=""" + validateMessage + @"""
+            //                        data-validate-required=""" + requiredMessage + @"""";
+            //}
+
+        }
+
+        @if (field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.Number || field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.Text || field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.NumberRange || field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.MultipleLink)
+        {
+            if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Edit)
+            {
+                valueToString = (string)value.RenderValue(field.DBColumnName);
+            }
+            else if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Search && formData != null)
+            {
+                valueToString = formData[field.ViewColumnID];
+            }
+
+            <input type="text"
+                   data-validate-type="@field.Type"
+                   data-validate-message="@validateMessage"
+                   data-validate-required="@requiredMessage"
+                   data-validate-regex="@(field.Settings?.Validation)"
+                   class="form-control input-sm @classAutoCompleteCaller @classFilledByAutoComplete"
+                   id="@sFieldID" name="@sFieldID"
+                   @required
+                   placeholder="@field.GetCompleteName()"
+                   title="@field.GetCompleteName()"
+                   value="@valueToString" @propertyDisabled @propertyPrevData />
+        }
+        else if (field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.TextArea)
+        {
+            if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Edit)
+            {
+                valueToString = (string)value.RenderValue(field.DBColumnName);
+            }
+
+            <textarea data-validate-type="@field.Type"
+                      data-validate-message="@validateMessage"
+                      data-validate-required="@requiredMessage"
+                      class="form-control input-sm @classAutoCompleteCaller @classFilledByAutoComplete"
+                      id="@sFieldID" name="@sFieldID"
+                      @required
+                      placeholder="@field.GetCompleteName()"
+                      title="@field.GetCompleteName()"
+                      value="@valueToString" @propertyDisabled @propertyPrevData
+                      rows="6">@valueToString</textarea>
+        }
+        else if (field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.DateRange)
+        {
+            if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Edit)
+            {
+                valueToString = (string)value.RenderValue(field.DBColumnName);
+            }
+
+            <input type="text"
+                   data-validate-type="@field.Type"
+                   data-validate-message="@validateMessage"
+                   data-validate-required="@requiredMessage"
+                   id="@sFieldID"
+                   class="form-control @classFilledByAutoComplete"
+                   @required
+                   name="@sFieldID"
+                   placeholder="@field.GetCompleteName() (@Octacom.Odiss.Library.Config.ConfigBase.Settings.DateFormat.ToLower())"
+                   title="@field.GetCompleteName() (@Octacom.Odiss.Library.Config.ConfigBase.Settings.DateFormat.ToLower())"
+                   value="@valueToString" @propertyDisabled />
+            <i class="glyphicon glyphicon-calendar"></i>
+        }
+        else if (field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.AutoComplete)
+        {
+            if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Edit)
+            {
+                valueToString = (string)value.RenderValue(field.DBColumnName);
+            }
+            else if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Search && formData != null)
+            {
+                valueToString = formData[field.ViewColumnID];
+            }
+            <input type="text" class="form-control control-filter autocompletesearch" id="@field.ViewColumnID" @required data-validate-type="@field.Type" data-validate-message="@validateMessage" data-validate-required="@requiredMessage" name="@field.ViewColumnID" placeholder="@field.GetCompleteName()" value="@valueToString" title="@field.GetCompleteName()" />
+            string autoCompleteHiddenName = "hidden" + field.ViewColumnID;
+            <input type="hidden" id="@autoCompleteHiddenName" name="@autoCompleteHiddenName" value="@valueToString" />
+        }
+        else if (field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.Tree || field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.Dropdown || field.Type == Octacom.Odiss.Library.Config.FieldTypeEnum.Radio)
+        {
+            var fieldData = field.GetData(false, User);
+            <select id="@field.ViewColumnID" name="@field.ViewColumnID" class="form-control @classFilledByAutoComplete" @propertyDisabled title="@field.GetCompleteName()">
+                @if (fieldData.Any(a => a.ParentCode != null))
+                {
+                    foreach (var node in fieldData.Where(a => a.ParentCode == null))
+                    {
+                        if (!node.Selectable)
+                        {
+                            @:<optgroup label="@node.Name">
+                            }
+                            else
+                            {
+                                <option value="@node.Code" @(FieldExtensions.IsSelected(value.GetValue(field.DBColumnName), node.Code) ? "selected='selected'" : string.Empty)>@node.Name.ToLanguage()</option>
+                            }
+                            foreach (var subnode in fieldData.Where(a => a.ParentCode == node.Code))
+                            {
+                                if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Edit)
+                                {
+                                    <option value="@subnode.Code" @(FieldExtensions.IsSelected(value.GetValue(field.DBColumnName), subnode.Code) ? "selected='selected'" : string.Empty)>@(node.Selectable ? new string(' ', 6) + " - " : string.Empty)@subnode.Name.ToLanguage()</option>
+                                }
+                                else if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Upload)
+                                {
+                                    <option value="@subnode.Code">@(node.Selectable ? new string(' ', 6) + " - " : string.Empty)@subnode.Name.ToLanguage()</option>
+                                }
+                            }
+                            if (!node.Selectable)
+                            {
+                            @:</optgroup>
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var node in fieldData.Where(a => a.Selectable))
+                    {
+                        if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Edit)
+                        {
+                            <option value="@node.Code" @(FieldExtensions.IsSelected(value.GetValue(field.DBColumnName), node.Code) ? "selected='selected'" : string.Empty)>@node.Name.ToLanguage()</option>
+                        }
+                        else if (area == Octacom.Odiss.Library.Config.FieldAreaEnum.Upload)
+                        {
+                            <option value="@node.Code">@node.Name.ToLanguage()</option>
+                        }
+                    }
+                }
+            </select>
+        }
+
+    </div>
+}

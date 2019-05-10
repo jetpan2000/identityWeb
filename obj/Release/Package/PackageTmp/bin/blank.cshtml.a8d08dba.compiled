@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/Home/Blank.cshtml" hash="6a9576bb" filehash="e9ff233e81" flags="110000" assembly="ABCgroup" type="ASP._Page_Views_Home_Blank_cshtml">
+  <filedeps>
+    <filedep name="/Views/Home/Blank.cshtml" />
+  </filedeps>
+</preserve>

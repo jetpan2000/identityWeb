@@ -1,0 +1,267 @@
+﻿@{
+    Layout = null;
+}
+@functions
+{
+    public IEnumerable<Octacom.Odiss.Library.Settings.Application> ApplicationsForLoggedUser()
+    {
+        if (ConfigBase.Settings != null && ConfigBase.Settings.Applications != null)
+            return ConfigBase.Settings.Applications.FilterForLoggedUser(User);
+
+        return new List<Octacom.Odiss.Library.Settings.Application>();
+    }
+
+    public IEnumerable<Octacom.Odiss.Library.Settings.Application> VisibleApplicationsForLoggedUser()
+    {
+        return ApplicationsForLoggedUser()
+            .Where(a => (a.Custom?.HideTab ?? false) ? (!ApplicationsForLoggedUser().Any(b => b.ID == a.Custom?.SubApplicationId)) : true)
+        ;
+    }
+
+    public bool IsAnyReportEnabled()
+    {
+        return ApplicationsForLoggedUser().Any(a => a.EnableReports);
+    }
+
+    public string GetUserNameTitle()
+    {
+        if (User.GetUserFullNameOrUsername() == User.UserName)
+        {
+            return $"{Words.UserType}: {User.UserType}";
+        }
+        else
+        {
+            return $"{Words.Username}: {User.UserName}&#13;{Words.UserType}: {User.UserType}";
+        }
+    }
+}
+@helper FormatMenuApplicationLine(IEnumerable<Settings.Application> apps)
+{
+
+    @*if (!ConfigBase.Settings.GroupApplications && appsLoggedUser.Any(a => !string.IsNullOrEmpty(a.Custom?.GroupName)))
+        {
+            using (var app = appsLoggedUser.GetEnumerator())
+            {
+                string prevGroupName = string.Empty;
+
+                while (app.MoveNext())
+                {
+                    string appBaseUrl = app.Current.AppBaseUrl;
+
+                    if (!string.IsNullOrEmpty(app.Current.Custom?.GroupName))
+                    {
+                        if (prevGroupName != app.Current.Custom.GroupName)
+                        {
+                            if (prevGroupName != string.Empty)
+                            {
+                                @: </ul>
+                                @: </li>
+                            }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(appBaseUrl))
+                        {
+                            <li class="@(ViewBag.AppActive == app.Current.ID ? "active" : string.Empty)"><a href="@Url.Content("~/" + appBaseUrl + "/" + app.Current.ID)">@app.Current.Name.ToLanguage()</a></li>
+                        }
+
+                        if (prevGroupName != app.Current.Custom.GroupName)
+                        {
+                        @:<li class="dropdown">
+                          <a href="javascript:void(0);" class="dropdown-toggle appDropDownMenu" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>
+                        @:<ul class="dropdown-menu">
+                        }
+
+                        prevGroupName = app.Current.Custom.GroupName;
+                    }
+                    else
+                    {
+                        if (prevGroupName != string.Empty)
+                        {
+                            @: </ul>
+                            @: </li>
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(appBaseUrl))
+                        {
+                            <li class="@(ViewBag.AppActive == app.Current.ID ? "active" : string.Empty)"><a href="@Url.Content("~/" + appBaseUrl + "/" + app.Current.ID)">@app.Current.Name.ToLanguage()</a></li>
+                        }
+
+                        prevGroupName = string.Empty;
+                    }
+                }
+
+                if (prevGroupName != string.Empty)
+                {
+                    @: </ul>
+                    @: </li>
+                }
+            }
+        }*@
+//else
+//{
+foreach (var app in apps)
+{
+    string appBaseUrl = app.AppBaseUrl;
+
+    if (!string.IsNullOrWhiteSpace(appBaseUrl))
+    {
+            <li class="@(ViewBag.AppActive == app.ID ? "active" : string.Empty)"><a href="@Url.Content("~/" + appBaseUrl + "/" + app.ID)" data-application-id="@app.ID" data-application-badge="@(app.Custom != null && app.Custom.ShowTotalRowsBadge ? "1" : "0")">@app.Name.ToLanguage() <span class="badge" style="display:none;position: absolute;top: 5px;right: 7px;opacity: 0.5;background-color: #ff0000; padding: 2px 4px;font-size:11px;border-radius:4px;"></span></a></li>
+    }
+}
+//}
+}
+<!DOCTYPE html>
+<html lang="@Language" ng-app="@ViewBag.AngularApp">
+<head>
+    <title>@ViewBag.Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="Octacom">
+    <meta name="version" content="@Octacom.Odiss.ABCgroup.Web.Code.OdissVersion.Get" />
+    <meta name="format-detection" content="telephone=no" />
+    <base href="@Url.Content("~")" />
+    <script>
+        function waitInner(method) { if (window.jQuery) { method(); } else { setTimeout(function () { waitInner(method) }, 50); } }
+        function waitInnerVar(method, variable) { try { eval(variable); method(); } catch (e) { setTimeout(function () { waitInnerVar(method, variable) }, 50); } }
+    </script>
+    @Styles.Render("~/content/min/css/base")
+    <script>
+        window.__baseUrl = '@Url.Content("~/")';
+    </script>
+    @RenderSection("header", false)
+    @if (!string.IsNullOrEmpty(ConfigBase.Settings.ShortcutIcon))
+    {
+        <link href="data:image/png;base64,@ConfigBase.Settings.ShortcutIcon" rel="shortcut icon">
+    }
+    else
+    {
+        <link type="image/x-icon" href="@Url.Content("~/content/img/octa-icon.png")" rel="icon">
+        <link href="@Url.Content("~/content/img/octa-icon.png")" rel="shortcut icon">
+    }
+    <!--[if lt IE 9]>
+    @Scripts.Render("~/content/min/js/ie8")
+    <![endif]-->
+    <!--
+    Octacom Odiss: @Octacom.Odiss.ABCgroup.Web.Code.OdissVersion.Get
+    -->
+</head>
+<body class="base@(ConfigBase.Settings.ColorScheme)">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid" style="padding-left:0px;">
+            <div class="navbar-header col-md-2 text-center">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">@Words.ToggleNavigation</span>
+                    <span class="glyphicon glyphicon-th-list"></span>
+                </button>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">@Words.ToggleNavigation</span>
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+                <a class="" href="@Url.Content("~/")"><img src="data:image/png;base64,@ConfigBase.Settings.Logo" title="@ConfigBase.Settings.Name" /></a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-left">
+                    @if (User != null)
+                    {
+                        var appsLoggedUser = VisibleApplicationsForLoggedUser();
+
+                        if (ConfigBase.Settings.GroupApplications && appsLoggedUser.Count() > 1)
+                        {
+                            @:<li class="dropdown @(appsLoggedUser.Any(a => a.ID == ViewBag.AppActive) ? "active" : "")">
+                                <a href="javascript:void(0);" class="dropdown-toggle appDropDownMenu" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@ConfigBase.Settings.GroupApplicationsName <span class="caret"></span></a>
+                                @:<ul class="dropdown-menu">
+                        }
+
+                        @FormatMenuApplicationLine(appsLoggedUser);
+
+                        if (ConfigBase.Settings.GroupApplications && appsLoggedUser.Count() > 1)
+                        {
+                            @:  </ul>
+                            @:</li>
+                        }
+                        if (IsAnyReportEnabled() && User.HasPermission(UserPermissionsEnum.ViewReports))
+                        {
+                            <li class="@(ViewBag.ActiveMenu == MenuEnum.Reports ? "active" : string.Empty)"><a href="@Url.Content("~/reports")">@Words.Reports</a></li>
+                        }
+                        if (User.HasAdminPermissions())
+                        {
+                            <li class="@(ViewBag.ActiveMenu == MenuEnum.Users ? "active" : string.Empty)"><a href="@Url.Content("~/users")">@Words.Users</a></li>
+                        }
+                        if (User.HasPermission(UserPermissionsEnum.ViewAudits))
+                        {
+                            <li class="@(ViewBag.ActiveMenu == MenuEnum.Audit ? "active" : string.Empty)"><a href="@Url.Content("~/audit")">@Words.Audit</a></li>
+                        }
+                    }
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @*
+                    <li><a href="mailto:helpdesk@octacom.ca">helpdesk@octacom.ca</a></li>
+                    @if (!string.IsNullOrWhiteSpace(ConfigBase.Settings?.Custom?.HelpLink))
+                    {
+                    <li><a href="@Url.Content(ConfigBase.Settings.Custom.HelpLink.ToLanguage())" target="HelpTarget"><span class="glyphicon glyphicon-question-sign" style="color:#2D89DB;"></span></a></li>
+                    }
+                    *@
+                    <li class="dropdown @(ViewBag.ActiveMenu == MenuEnum.UserSettings ? "active" : string.Empty)">
+                        <a href="javascript:void(0)" class="dropdown-toggle small" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="@Html.Raw(GetUserNameTitle())"><span class="glyphicon glyphicon-user" style="top:2px;"></span> @User.GetUserFullNameOrUsername() <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header">@Words.Help</li>
+                            @if (!string.IsNullOrWhiteSpace(ConfigBase.Settings?.Custom?.HelpLink))
+                            {
+                            <li><a href="@Url.Content(ConfigBase.Settings.Custom.HelpLink.ToLanguage())" target="HelpTarget"><span class="menu-options-icon glyphicon glyphicon-question-sign pull-right" style="color:#2D89DB;"></span>@Words.UserGuide</a></li>
+                            }
+                            <li><a href="mailto:helpdesk@octacom.ca"><span class="menu-options-icon glyphicon glyphicon-envelope pull-right"></span>@Words.ContactSupport&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="@Url.Content("~/users/settings")"><span class="menu-options-icon glyphicon glyphicon-cog pull-right"></span> @Words.Settings</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li><a href="@Url.Content("~/logoff")"><span class="menu-options-icon glyphicon glyphicon-log-out pull-right"></span> @Words.Logoff</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        @if (IsSectionDefined("sidebar"))
+        {
+            <div class="content-wraper" id="boxMainController" ng-controller="@ViewBag.AngularController">
+                <div class="sidebar" id="sidebar">
+                    @RenderSection("sidebar", false)
+                </div>
+                <div class="main">
+                    @RenderBody()
+                </div>
+            </div>
+        }
+        else if ((bool?)@ViewBag.NoAngular == true)
+        {
+            @RenderBody()
+        }
+        else
+        {
+            <div id="boxMainController" ng-controller="@ViewBag.AngularController">
+                <div class="main">
+                    @RenderBody()
+                </div>
+            </div>
+        }
+    </div>
+    @Scripts.Render("~/content/min/js/base")
+    <!--[if lte IE 9]>
+    <script src="@Url.Content("~/Content/js/libs/jquery.placeholder.js")"></script>
+    <script>
+        /* HTML5 Placeholder doesn't work in IE 9 or lower. Workaround = Gambi */
+        $('input, textarea').placeholder({customClass: 'ie9-placeholder'});
+    </script>
+    <![endif]-->
+    <script>
+        window.__baseUrl = '@Url.Content("~/")';
+        lang = '@Language';
+        OdissBase.baseUrl = '@Url.Content("~/")';
+        OdissBase.dateFormat = '@ConfigBase.Settings.DateFormat'.toUpperCase();
+        OdissBase.start();
+    </script>
+    @RenderSection("footer", false)
+    @Html.Partial("~/Views/Shared/ModalSessionDisconnected.cshtml")
+    </body>
+</html>

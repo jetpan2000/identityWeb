@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<preserve resultType="2" virtualPath="/Views/Error/Forbidden.cshtml" hash="6a9576bb" filehash="ffffcb28800aa9f5" flags="110000" assembly="ABCgroup" type="ASP._Page_Views_Error_Forbidden_cshtml">
+  <filedeps>
+    <filedep name="/Views/Error/Forbidden.cshtml" />
+  </filedeps>
+</preserve>

@@ -1,0 +1,15 @@
+﻿@model string
+@helper GetSelectedItemClass(string itemName)
+{
+    if (!string.IsNullOrEmpty(Model) && Model == itemName)
+    {
+        <text>glyphicon-chevron-right</text>
+    }
+}
+<ul class="nav nav-sidebar" style="margin-bottom:0px;">
+    <li class="active"><a href="@Url.Content("~/users/settings")" style="cursor:default;">@Words.Settings <span class="pull-right glyphicon glyphicon-cog"></span></a></li>
+</ul>
+<ul class="nav nav-sidebar2" style="margin-right: -21px; margin-bottom: 20px; margin-left: -20px;">
+    <li><a href="@Url.Content("~/users/changepassword")" title="@Words.ChangePassword_Description">@Words.ChangePassword<span class="pull-right glyphicon @GetSelectedItemClass("ChangePassword")"></span></a></li>
+    <li><a href="@Url.Content("~/users/changelanguage")" title="@Words.Language_Description">@Words.Language<span class="pull-right glyphicon @GetSelectedItemClass("ChangeLanguage")"></span></a></li>
+</ul>

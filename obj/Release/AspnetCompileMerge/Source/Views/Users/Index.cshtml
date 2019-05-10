@@ -1,0 +1,369 @@
+﻿@model UserIndex
+@{
+    ViewBag.Title = Words.Users + " - " + ConfigBase.Settings.Name;
+    var showDocumentsSecurity = ConfigBase.Settings.Applications.Any(a => a.RestrictDocumentAccess && a.Fields.Any(b => b.EnableRestriction));
+    var showGroups = ConfigBase.Settings.Custom?.User != null && ConfigBase.Settings.Custom.User.EnableGroups;
+    var userStatuses = new List<SelectListItem>() {
+new SelectListItem(){ Value = "true", Text = Words.Users_Active },
+new SelectListItem(){ Value = "false", Text = Words.Users_Inactive }
+};
+}
+@section header{
+    @Styles.Render("~/content/min/css/users")
+}
+@section footer{
+    <script>
+        var Words = @Html.Raw(Languages.GetJson(new [] {
+                   "User_PermissionsCopied",
+                   "User_ErrorCopyingPermissions",
+                   "User_ConfirmUserDelete",
+                   "User_Removed",
+                   "User_ErrorRemoving",
+                   "User_NoPermissionEdit",
+                   "User_ErrorLoading"
+               }));
+    </script>
+    @Scripts.Render("~/content/min/js/angular")
+    @Scripts.Render("~/content/min/js/users")
+    @Scripts.Render("~/Scripts/src/dist/users.bundle.js")
+}
+@section sidebar
+{
+    <ul class="nav nav-sidebar">
+        <li class="active"><a href="javascript:void(0);" style="cursor:default;">@Words.Search <span class="pull-right glyphicon glyphicon-search"></span></a></li>
+    </ul>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmUsers", data_intro = Words.User_IntroSearch, data_position = "top" }))
+    {
+        @Html.Hidden("page", "0")
+        @Html.Hidden("sort", "")
+        <div class="form-group form-group-sm">
+            @Html.TextBoxFor(m => m.User.UserName, new { @class = "form-control", placeholder = Words.Username })
+        </div>
+        <div class="form-group form-group-sm">
+            @Html.TextBoxFor(m => m.User.FirstName, new { @class = "form-control", placeholder = Words.FirstName })
+        </div>
+        <div class="form-group form-group-sm">
+            @Html.TextBoxFor(m => m.User.LastName, new { @class = "form-control", placeholder = Words.LastName })
+        </div>
+        <div class="form-group form-group-sm">
+            @Html.DropDownListFor(m => m.User.Active, new SelectList(userStatuses, "Value", "Text"), new { @class = "form-control" })
+        </div>
+        <div class="form-group form-group-sm">
+            @Html.DropDownListFor(m => m.User.Type, new SelectList(Model.UserTypes, "Value", "Text"), Words.UserType, new { @class = "form-control" })
+        </div>
+        <button type="submit" class="btn btn-primary">@Words.Search</button>
+    }
+    <hr style="border-top: 1px solid #e6e6e6;margin: 20px -20px;" />
+    <div class="list-group">
+        <a href ng-click="users.addUser()" class="list-group-item">@Words.Users_AddUser <span class="pull-right glyphicon glyphicon-plus"></span></a>
+    </div>
+}
+
+@helper ShowDocumentFieldTree(Node<TreeData> node, Settings.Application app, Settings.Field field)
+{
+    <ul>
+        @foreach (var child in node.Children)
+        {
+            <li id="tree-@app.ID-@(field.ID)_@(child.Item.Code)">
+                <a href="javascript:void(0);" title="@child.Item.Name">@child.Item.Name</a>
+
+                if (!child.IsLeaf)
+                {
+                @ShowDocumentFieldTree(child, app, field);
+                }
+            </li>
+        }
+    </ul>
+}
+
+<h1>@Words.Users</h1>
+<div>
+    <input type="hidden" ng-model="LoggedUserID" ng-init="LoggedUserID='@User.ID'" />
+    <input type="hidden" ng-model="LoggedUserType" ng-init="LoggedUserType='@((byte)User.UserType)'" />
+    <table id="tbUsers" class="table table-bordered table-striped table-condensed" style="display:none;">
+        <thead>
+            <tr>
+                <th>@Words.Username</th>
+                <th>@Words.UserType</th>
+                <th>@Words.FirstName</th>
+                <th>@Words.LastName</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Users != null)
+            {
+                foreach (var user in Model.Users)
+                {
+                    <tr>
+                        <td><a href ng-click="users.editUser('@user.ID', $event)" data-target="#modModify" data-toggle="modal">@user.UserName</a></td>
+                        <td>
+                            @user.UserTypeString
+                            @if (user.Type.HasValue)
+                            {
+                                switch ((UserTypeEnum)user.Type)
+                                {
+                                    case UserTypeEnum.Octacom:
+                                        <span class="glyphicon glyphicon-ok-sign" style="color: green"></span>
+                                        break;
+
+                                    case UserTypeEnum.Super:
+                                        <span class="glyphicon glyphicon-star"></span>
+                                        break;
+
+                                    case UserTypeEnum.Administrator:
+                                        <span class="glyphicon glyphicon-star-empty"></span>
+                                        break;
+                                }
+                            }
+                        </td>
+                        <td>@user.FirstName</td>
+                        <td>@user.LastName</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div class="modal" id="modModify" tabindex="-1" role="dialog" aria-labelledby="lblModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <form class="form-horizontal" id="frmSaveUser" novalidate name="SaveForm" ng-submit="users.saveUser($event)" method="post" data-add="@Words.User_AddedMessage" data-error="@Words.User_AddedErrorMessage" data-edit="@Words.User_Updated">
+                @if (ConfigBase.Settings.RestrictAppsAccess)
+                {
+                    <input type="hidden" name="hidApplications" id="hidApplications" />
+                }
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="@Words.Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="lblModal">{{Editing ? '@Words.User_Edit.EscapeSingleQuote() ' : '@Words.User_Add'}} <small ng-show="Editing" class="label label-default">{{User.UserName}}</small></h4>
+                </div>
+                <div class="modal-body" style="background-color:#f3f3f3;">
+                    <div class="">
+                        <ul class="nav nav-tabs" id="tabsUser">
+                            <li class="active"><a href="#details" data-toggle="tab">@Words.User_Details</a></li>
+                            <li><a href="#permissions" data-toggle="tab">@Words.Permissions</a></li>
+                        </ul>
+                    </div>
+                    <div class="tab-content tab-content-modal">
+                        <div class="tab-pane active" id="details">
+                            <div class="form-group form-group-sm" ng-class="{ 'has-error': SaveForm.UserName.$error.username || (SaveForm.UserName.$invalid && SaveForm.$submitted) }">
+                                <label for="UserName" class="col-sm-3 control-label">@Words.Username</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" ng-show="!Editing" name="UserName" id="UserName" ng-model-options="{ debounce: 500 }" ng-disabled="Editing" ng-model="User.UserName" placeholder="@Words.Username" maxlength="16" required check-username>
+                                    <strong ng-show="Editing">{{User.UserName}}</strong>
+                                    <small ng-show="SaveForm.UserName.$error.required && SaveForm.$submitted" class="help-block">@Words.User_EnterUsername</small>
+                                    @*<small ng-show="SaveForm.UserName.$pending.username" class="help-block">Checking if this name is available...</small>*@
+                                    <small ng-show="SaveForm.UserName.$error.username" class="help-block">@Words.User_UserNameTaken</small>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="cboUserType" class="col-sm-3 control-label">@Words.UserType</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" name="cboUserType" id="cboUserType" ng-show="users.canEditUserType()" ng-disabled="Editing && !AllowEdit" ng-options="item.value as item.name for item in users.userTypeCombo()" ng-model="User.Type"></select>
+                                    <strong ng-hide="users.canEditUserType()">{{(UserTypes | filter:{value:User.Type})[0].name}}</strong>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm" ng-class="{'has-error':SaveForm.Expire.$error.required}" ng-show="User.Type == 1" style="position:relative;">
+                                <label for="Expire" class="col-sm-3 control-label">@Words.User_ExpireAccess</label>
+                                <div class="col-sm-9">
+                                    <div class="form-group-date" ng-show="User.Type == 1" style="position:relative;">
+                                        <input type="text" class="form-control" name="Expire" id="Expire" format-date ng-model="User.Expire" placeholder="@Words.User_ExpireAccess" maxlength="255" ng-required="User.Type == 1" />
+                                        <i class="glyphicon glyphicon-calendar form-control-feedback"></i>
+                                    </div>
+                                    <small ng-show="SaveForm.Expire.$error.required && SaveForm.$submitted" class="help-block">@Words.User_SetExpireDate</small>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="txtFirstName" class="col-sm-3 control-label">@Words.FirstName</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="txtFirstName" id="txtFirstName" ng-disabled="Editing && !AllowEdit" ng-model="User.FirstName" placeholder="@Words.FirstName" maxlength="255" />
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="txtLastName" class="col-sm-3 control-label">@Words.LastName</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="txtLastName" id="txtLastName" ng-disabled="Editing && !AllowEdit" ng-model="User.LastName" placeholder="@Words.LastName" maxlength="255" />
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="txtPhoneOffice" class="col-sm-3 control-label">@Words.User_PhoneNumberOffice</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" name="txtPhoneOffice" id="txtPhoneOffice" ng-disabled="Editing && !AllowEdit" ng-model="User.PhoneOffice" placeholder="@Words.User_PhoneNumberOffice" maxlength="50" />
+                                </div>
+                                <div class="col-sm-3">
+                                    <label for="txtPhoneMobile" class="control-label">@Words.User_PhoneNumberMobile</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control" name="txtPhoneMobile" id="txtPhoneMobile" ng-disabled="Editing && !AllowEdit" ng-model="User.PhoneMobile" placeholder="@Words.User_PhoneNumberMobile" maxlength="50" />
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm" ng-class="{ 'has-error': (SaveForm.Email.$error.checkEmail && SaveForm.Email.$dirty) || (SaveForm.Email.$invalid && SaveForm.$submitted) }">
+                                <label for="Email" class="col-sm-3 control-label">@Words.Email</label>
+                                <div class="col-sm-9">
+                                    <input type="email" class="form-control" name="Email" id="Email" ng-disabled="Editing && !AllowEdit" ng-model-options="{ debounce: 500 }" ng-model="User.Email" placeholder="@Words.Email" maxlength="255" required check-email />
+                                    <small ng-show="SaveForm.Email.$error.required && SaveForm.$submitted" class="help-block">@Words.User_EnterEmail</small>
+                                    <small ng-show="(SaveForm.Email.$error.checkEmail && SaveForm.Email.$dirty) || (!SaveForm.Email.$error.required && SaveForm.Email.$invalid && SaveForm.$submitted)" class="help-block">@Words.User_EmailTaken</small>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <label for="txtCompany" class="col-sm-3 control-label">@Words.Company</label>
+                                <div class="col-sm-9">
+                                    <input type="text" class="form-control" name="txtCompany" id="txtCompany" ng-disabled="Editing && !AllowEdit" ng-model="User.Company" placeholder="@Words.Company" maxlength="255" />
+                                </div>
+                            </div>
+
+                            <div class="form-group form-group-sm" id="boxChangePassword" ng-show="Editing && AllowEdit">
+                                <label for="txtPassword" class="col-sm-3 control-label"></label>
+                                <div class="col-sm-9">
+                                    <label class="control-label">
+                                        <input type="checkbox" name="chkPasswordChanged" id="chkPasswordChanged" ng-model="User.PasswordChanged" ng-checked="User.PasswordChanged" value="true" />
+                                        @Words.ChangePassword
+                                    </label>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="hidForcePasswordStrength" ng-init="users.setPasswordLengthLimits('@ConfigBase.Settings.MinimumPasswordLength','@ConfigBase.Settings.MaximumPasswordLength')" id="hidForcePasswordStrength" value="@ConfigBase.Settings.ForcePasswordStrength.ToString()" />
+
+                            <div class="form-group form-group-sm box-password" ng-class="{ 'has-error': SaveForm.Password.$invalid && SaveForm.$submitted }" ng-show="User.PasswordChanged || !Editing">
+                                <label for="txtPassword" class="col-sm-3 control-label">{{User.PasswordChanged ? '@Words.Password_New' : '@Words.User_Password'}}</label>
+                                <div class="col-sm-9">
+                                    @{
+                                        string sPasswordStrengh = Words.User_PasswordStrengh;
+
+                                        if (ConfigBase.Settings.ForcePasswordStrength == false)
+                                        {
+                                            sPasswordStrengh = "";
+                                        }
+                                    }
+                                    <input type="password" class="form-control" name="Password" ng-model="User.Password" id="txtPassword" ng-required="User.PasswordChanged || !Editing" placeholder="{{User.PasswordChanged ? '@Words.Password_New' : '@Words.User_Password'}}" maxlength="16" password>
+                                    <small ng-show="SaveForm.Password.$error.required && SaveForm.$submitted" class="help-block">@Words.Password_EnterPassword</small>
+                                    <small ng-show="SaveForm.Password.$error.password && SaveForm.$submitted" class="help-block">@Html.Raw(string.Format(Words.Password_Rules, ConfigBase.Settings.MinimumPasswordLength, ConfigBase.Settings.MaximumPasswordLength, sPasswordStrengh))</small>
+
+                                    @*<div  ng-show="SaveForm.Password.$error.passwordStrength"  class="alert alert-danger" role="alert">
+                                            <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                                            @Html.Raw(Words.User_PasswordStrengh)
+                                        </div>*@
+
+                                </div>
+                            </div>
+                            <div class="form-group form-group-sm box-password" ng-class="{ 'has-error' : SaveForm.ConfirmPassword.$invalid && SaveForm.$submitted }" ng-show="User.PasswordChanged || !Editing">
+                                <label for="txtConfirmPassword" class="col-sm-3 control-label">{{User.PasswordChanged ? '@Words.Password_ConfirmNew' : '@Words.User_PasswordConfirm'}}</label>
+                                <div class="col-sm-9">
+                                    <input type="password" class="form-control" name="ConfirmPassword" ng-model="User.ConfirmPassword" ng-required="User.PasswordChanged || !Editing" compare-to="User.Password" id="txtConfirmPassword" placeholder="{{User.PasswordChanged ? '@Words.Password_ConfirmNew' : '@Words.User_PasswordConfirm'}}" maxlength="16">
+                                    <small ng-show="SaveForm.ConfirmPassword.$error.required && SaveForm.$submitted" class="help-block">@Words.Password_ConfirmationPasswordRequired</small>
+                                </div>
+                            </div>
+                            <div class="form-changep-heading form-group form-group-sm" id="boxRequestPasswordChange" ng-disabled="Editing && !AllowEdit">
+                                <label for="chkChangePassword" class="col-sm-3 control-label"></label>
+                                <div class="col-sm-9">
+                                    <label class="control-label">
+                                        <input type="checkbox" name="chkChangePassword" id="chkChangePassword" ng-model="User.ChangePassword" ng-checked="User.ChangePassword" value="true" />
+                                        @Words.ChangePassword_RequirePasswordChange
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="permissions">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="list-group">
+                                        <a href ng-click="TabPermission='actions'" class="list-group-item" ng-class="{'active':TabPermission=='actions'}"><span class="badge" id="spanCountPermissions">{{users.hasAnyPermission() ? '@Words.Permissions_All' : users.totalPerms()}}</span> @Words.User_Actions</a>
+                                        @if (ConfigBase.Settings.RestrictAppsAccess)
+                                        {
+                                            <a href ng-click="TabPermission='applications'" class="list-group-item" ng-class="{'active':TabPermission=='applications'}"><span class="badge" id="spanCountApplications">{{users.hasAnyApp() ? '@Words.Permissions_All' : users.totalApps()}}</span> @Words.Applications</a>
+                                        }
+                                        <a ng-show="User.Type === 0 || User.Type === 2" href ng-click="TabPermission='documents'; SetAPView('documents');" class="list-group-item" ng-class="{'active':TabPermission=='documents'}"> Documents</a>
+                                        <a ng-show="User.Type === 0 || User.Type === 2" href ng-click="TabPermission='workflow'; SetAPView('workflow');" class="list-group-item" ng-class="{'active':TabPermission=='workflow'}"> Workflow</a>
+                                    </div>
+                                    <div ng-show="User.Type != 1 && User.Type != 3 && User.Type != 4">
+                                        <strong class="small" style="display: block; margin-bottom: 3px; color: #888;">@Words.User_CopyPermissions</strong>
+                                        <input type="text" class="form-control" ng-disabled="Editing && !AllowEdit" id="txtUsernameCopyPermissions" placeholder="@Words.User_TypeName" />
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div ng-show="TabPermission=='actions'">
+                                        <div id="ulPermissions" class="form-control-aspect">
+                                            <ul>
+                                                <li>
+                                                    <a href="javascript:void(0);">@Words.Audit_Action_Documents</a>
+                                                    <ul>
+                                                        <li id="chk@(UserPermissionsEnum.ViewDocuments)"><a href="javascript:void(0);">@Words.Audit_Action_Documents_View</a></li>
+                                                        <li id="chk@(UserPermissionsEnum.SubmitDocuments)"><a href="javascript:void(0);">@Words.Audit_Action_SubmitDocument</a></li>
+                                                        <li id="chk@(UserPermissionsEnum.ExportResults)"><a href="javascript:void(0);">@Words.Audit_Action_Export</a></li>
+                                                        <li>
+                                                            <a href="javascript:void(0);">@Words.Audit_Action_Notes</a>
+                                                            <ul>
+                                                                <li id="chk@(UserPermissionsEnum.ViewNotes)">@Words.Audit_Action_ViewNotes</li>
+                                                                <li id="chk@(UserPermissionsEnum.AddNotes)">@Words.Audit_Action_AddNotes</li>
+                                                                <li id="chk@(UserPermissionsEnum.DeleteNotes)">@Words.Audit_Action_DeleteNotes</li>
+                                                            </ul>
+                                                        </li>
+                                                        <li id="chk@(UserPermissionsEnum.EditProperties)">@Words.Audit_Action_EditProperties</li>
+                                                        <li id="chk@(UserPermissionsEnum.PrintDocuments)">@Words.Audit_Action_PrintDocument</li>
+                                                        <li id="chk@(UserPermissionsEnum.EmailDocument)">@Words.Audit_Action_SendEmail</li>
+                                                        <li id="chk@(UserPermissionsEnum.SaveDocuments)">@Words.Audit_Action_SaveDocument</li>
+
+                                                        @if (!string.IsNullOrWhiteSpace(ConfigBase.Settings.HiddenFieldsOptionName))
+                                                        {
+                                                            <li id="chk@(UserPermissionsEnum.ViewHiddenFields)">@ConfigBase.Settings.HiddenFieldsOptionName</li>
+                                                        }
+                                                    </ul>
+                                                </li>
+                                                <li id="chk@(UserPermissionsEnum.ViewAudits)">
+                                                    <a href="javascript:void(0);">@Words.Audit_Action_ViewAudit</a>
+                                                </li>
+                                                @if (ConfigBase.Settings.Applications.Any(a => a.EnableReports))
+                                                {
+                                                    <li id="chk@(UserPermissionsEnum.ViewReports)">
+                                                        <a href="javascript:void(0);">@Words.Audit_Action_ViewReports</a>
+                                                    </li>
+                                                }
+                                                <li id="chk@(Octacom.Odiss.ABCgroup.Entities.Settings.AppUserPermission.ViewConfidentialDocuments)">View Confidential Documents</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div ng-show="TabPermission=='applications'">
+                                        @if (ConfigBase.Settings.RestrictAppsAccess)
+                                        {
+                                            <p class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" name="chkAnyApplication" ng-checked="User.Type == 3 || User.Type == 4" ng-disabled="User.Type == 3 || User.Type == 4 || (Editing && !AllowEdit)" bit-mask="@((int)UserPermissionsEnum.AnyApplication)" ng-model="User.Permissions" id="chkAnyApplication" /> @Words.User_AccessAnyApplication
+                                                </label>
+                                            </p>
+                                            <div ng-show="!users.hasAnyApp()">
+                                                <div class="wrap-centre-line">
+                                                    <div class="centre-line"><span>@Words.Or</span></div>
+                                                </div>
+                                                <span>@Words.User_ChooseApplications:</span>
+                                                <div id="ulApplications" class="form-control-aspect" style="margin-top:4px;" disabled="disabled">
+                                                    <ul>
+                                                        @foreach (var app in ConfigBase.Settings.Applications.OrderBy(a => a.Name.ToLanguage()))
+                                                        {
+                                                            <li id="chkAPP@(app.ID)" data-id="@app.ID"><a href="javascript:void(0);">@app.Name.ToLanguage()</a></li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div ng-show="TabPermission=='workflow' || TabPermission=='documents'" id="ap-react-root"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="alert alert-success text-left" role="alert" ng-show="Message">{{Message}}</div>
+                    <div class="alert alert-danger text-left" role="alert" ng-show="MessageError">{{MessageError}}</div>
+                    <div class="alert alert-danger text-left" role="alert" ng-show="MessageWarning">{{MessageWarning}}</div>
+                    <button type="button" class="btn pull-left" data-dismiss="modal" id="btnDeleteUser" ng-click="users.removeUser()" ng-show="users.canDelete()" title="@Words.Users_DeleteUser">@Words.Delete</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@Words.Close</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveUser" ng-show="(Editing && AllowEdit) || !Editing" ng-disabled="!SaveForm.$dirty && !Edited">{{Editing ? '@(Words.SaveChanges)' : '@(Words.Save)'}}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@if (Model.ExtraData != null)
+{
+    <div ng-init='EXTRAINFO=@Html.Raw(Model.ExtraData);MaxPerPage=@ConfigBase.Settings.MaxPerPage'></div>
+}

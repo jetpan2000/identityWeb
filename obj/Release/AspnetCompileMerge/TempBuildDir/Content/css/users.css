@@ -1,0 +1,18 @@
+﻿.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;}
+.autocomplete-suggestion { padding: 4px 10px; white-space: nowrap; overflow: hidden; cursor:pointer; }
+.autocomplete-selected { background: #F0F0F0; cursor:pointer; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-group { padding: 4px 10px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+.form-horizontal .has-feedback .form-control-feedback { right:0px; }
+
+
+.form-control-tree-documents{
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+option,
+select {
+    color: #000;
+}

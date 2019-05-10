@@ -1,0 +1,41 @@
+.rt-thead {
+    background-color: #000;
+    color: white;
+    font-weight: bold;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+.-sort-asc, .-sort-desc {
+    box-shadow: none !important;
+}
+.ReactTable {
+    border: none;
+}
+.ReactTable.-striped .rt-tr.-odd {
+    background-color: #f9f9f9;
+}
+.ReactTable.-striped .rt-tr.-even {
+    background-color: transparent;
+}
+.rt-resizable-header-content {
+    display: inline;
+}
+
+.rt-tr {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.sort-icon {
+    opacity: 0.2;
+    font-weight: bold;
+    -webkit-text-stroke: 4px #84776e;
+}
+
+.is-sorted {
+    opacity: 0.5 !important;
+}
+
+.sticky-inner-wrapper {
+    z-index: 100
+}

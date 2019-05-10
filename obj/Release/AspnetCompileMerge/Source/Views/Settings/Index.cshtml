@@ -1,0 +1,847 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutSettings.cshtml";
+    ViewBag.Title = ConfigBase.Settings.Name + " - Odiss Settings";
+}
+@section sidebar
+{
+    <ul class="nav nav-sidebar">
+        <li ng-class="{'active': Tab == 'basic'}"><a href ng-click="Tab='basic'">Global Settings<span class="pull-right glyphicon glyphicon-menu-right"></span></a></li>
+        <li ng-class="{'active': Tab == 'databases'}"><a href ng-click="Tab='databases'">Databases<span class="pull-right glyphicon glyphicon-menu-right"></span></a></li>
+        <li ng-class="{'active': Tab == 'applications'}"><a href ng-click="Tab='applications'">Applications<span class="pull-right glyphicon glyphicon-menu-right"></span></a></li>
+        <li ng-class="{'active': Tab == 'structure'}"><a href ng-click="Tab='structure'">Validate structure<span class="pull-right glyphicon glyphicon-menu-right"></span></a></li>
+        <li ng-class="{'active': Tab == 'savechanges'}"><a href ng-click="Tab='savechanges'; StaticDiff=settings.getDiff()" ng-show="settings.getDiff().length > 0">Save changes<span class="pull-right glyphicon glyphicon-menu-right"></span></a></li>
+    </ul>
+}
+<form method="POST" @*ng-submit="settings.submit()"*@ novalidate id="SettingsForm" name="SettingsForm">
+    <div ng-show="Tab=='basic'">
+        <h3>Global Settings</h3>
+        <br />
+        <div class="row">
+            <div class="col-md-3 col-lg-2">
+                <div class="list-group">
+                    <a href class="list-group-item" ng-class="{'active':GlobalSubTab=='basic'}" ng-click="GlobalSubTab='basic'">Basic <span class="glyphicon glyphicon-chevron-right pull-right" ng-show="GlobalSubTab=='basic'"></span></a>
+                    <a href class="list-group-item" ng-class="{'active':GlobalSubTab=='lookandfeel'}" ng-click="GlobalSubTab='lookandfeel'">Look and feel <span class="glyphicon glyphicon-chevron-right pull-right" ng-show="GlobalSubTab=='lookandfeel'"></span></a>
+                    <a href class="list-group-item" ng-class="{'active':GlobalSubTab=='security'}" ng-click="GlobalSubTab='security'">Security <span class="glyphicon glyphicon-chevron-right pull-right" ng-show="GlobalSubTab=='security'"></span></a>
+                    <a href class="list-group-item" ng-class="{'active':GlobalSubTab=='reset'}" ng-click="GlobalSubTab='reset'">Reset <span class="glyphicon glyphicon-chevron-right pull-right" ng-show="GlobalSubTab=='reset'"></span></a>
+                    <a href class="list-group-item" ng-class="{'active':GlobalSubTab=='refresh'}" ng-click="GlobalSubTab='refresh'">Refresh <span class="glyphicon glyphicon-chevron-right pull-right" ng-show="GlobalSubTab=='refresh'"></span></a>
+                </div>
+            </div>
+            <div class="col-md-9 col-lg-10" ng-show="GlobalSubTab=='basic'">
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Name</label>
+                            <input type="text" class="form-control {{Config.Name != BaseConfig.Name ? 'txt-changed' : ''}}" id="txtName" name="txtName" placeholder="Customer Name" ng-model="Config.Name">
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Date Format</label>
+                            <select id="cboDateFormat" name="cboDateFormat" class="form-control" ng-model="Config.DateFormat" ng-options="i for i in DateFormatList"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Max records</label>
+                            <select id="cboMaxRecords" name="cboMaxRecords" class="form-control {{Config.MaxRecords != BaseConfig.MaxRecords ? 'txt-changed' : ''}}" ng-model="Config.MaxRecords" ng-options="i for i in MaxRecordsList"></select>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Max records per page</label>
+                            <select id="cboMaxRecordsPage" name="cboMaxRecordsPage" class="form-control" ng-model="Config.MaxPerPage" ng-options="i for i in MaxRecordsPageList"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Available Languages</label>
+                            <div class="list-group">
+                                <a href class="list-group-item" ng-repeat="lang in Languages" ng-click="settings.toggleLanguage(lang)" ng-class="{'active':settings.isLanguageActive(lang)}">{{lang.name}} <span class="glyphicon glyphicon-ok pull-right" ng-show="settings.isLanguageActive(lang)"></span></a>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Temporary Submitted Files Path</label>
+                            <input type="text" class="form-control" ng-model="Config.TemporarySubmitFilesPath" />
+                            <small>Only needed if the "Submit" feature is enabled in any Application</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Viewer Type</label>
+                            <select id="cboViewerType" name="cboViewerType" class="form-control" ng-model="Config.ViewerType" ng-options="i.value as i.name for i in ViewerTypeList"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 col-lg-10" ng-show="GlobalSubTab=='lookandfeel'">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <form name="LogoForm">
+                                <label>Logo</label><br />
+                                <div class="panel">
+                                    <div class="panel-body">
+                                        <img ng-src="data:image/png;base64,{{Config.Logo}}" />
+                                    </div>
+                                    <div class="panel-footer">
+                                        <small><strong>Recommendations</strong><br /> Maximum width: 220px, Maximum height: 45px</small><br />
+                                    </div>
+                                </div>
+                                <canvas id="canvasLogo" style="display:none;"></canvas>
+                                <span class="btn btn-default btn-file">
+                                    Change... <input type="file" name="Logo" id="inputLogo" custom-on-change="settings.changeLogo">
+                                </span>
+                                <span class="btn btn-default" ng-show="OldLogo != null" ng-click="settings.resetLogo()">
+                                    Cancel...
+                                </span>
+                            </form>
+                            <hr />
+                            <form name="ShortcutIconForm">
+                                <label>Shortcut Icon</label><br />
+                                <div class="panel">
+                                    <div class="panel-body">
+                                        <img ng-src="data:image/png;base64,{{Config.ShortcutIcon}}" ng-show="Config.ShortcutIcon != null" />
+                                        <span ng-show="Config.ShortcutIcon == null">None</span>
+                                    </div>
+                                </div>
+                                <canvas id="canvasShortcutIcon" style="display:none;"></canvas>
+                                <span class="btn btn-default btn-file">
+                                    Change... <input type="file" name="ShortcutIcon" id="inputShortcutIcon" custom-on-change="settings.changeShortcutIcon">
+                                </span>
+                                <span class="btn btn-default" ng-show="OldShortcutIcon != null" ng-click="settings.resetShortcutIcon()">
+                                    Cancel
+                                </span>
+                                <span class="btn btn-default" ng-show="Config.ShortcutIcon != null" ng-click="settings.removeShortcutIcon()">Remove</span>
+                            </form>
+
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Color scheme</label><br />
+                            <div class="list-group">
+                                <a href class="list-group-item" ng-click="Config.ColorScheme = 'blue'" style="background-color:#000;color:#fff;">Blue <span ng-show="Config.ColorScheme == 'blue'" class="glyphicon glyphicon-ok pull-right"></span></a>
+                                <a href class="list-group-item" ng-click="Config.ColorScheme = 'green'" style="background-color:#00a851;color:#fff;">Green <span ng-show="Config.ColorScheme == 'green'" class="glyphicon glyphicon-ok pull-right"></span></a>
+                                <a href class="list-group-item" ng-click="Config.ColorScheme = 'red'" style="background-color:#be2122;color:#fff;">Red <span ng-show="Config.ColorScheme == 'red'" class="glyphicon glyphicon-ok pull-right"></span></a>
+                                <a href class="list-group-item" ng-click="Config.ColorScheme = 'black'" style="background-color:#000;color:#fff;">Black <span ng-show="Config.ColorScheme == 'black'" class="glyphicon glyphicon-ok pull-right"></span></a>
+                                <a href class="list-group-item" ng-click="Config.ColorScheme = 'usc'" style="background-color:#393536;color:#fff;">USC <span ng-show="Config.ColorScheme == 'usc'" class="glyphicon glyphicon-ok pull-right"></span></a>
+                                <a href class="list-group-item" ng-click="Config.ColorScheme = 'abc'" style="background-color:#000;color:#fff;">ABC <span ng-show="Config.ColorScheme == 'abc'" class="glyphicon glyphicon-ok pull-right"></span></a>
+                                <a href class="list-group-item" ng-click="Config.ColorScheme = 'brk'" style="background-color:#0f3557;color:#fff;">BRK <span ng-show="Config.ColorScheme == 'brk'" class="glyphicon glyphicon-ok pull-right"></span></a>
+                                <a href class="list-group-item" ng-click="Config.ColorScheme = 'wdl'" style="background-color:#632569;color:#fff;">WDL <span ng-show="Config.ColorScheme == 'wdl'" class="glyphicon glyphicon-ok pull-right"></span></a>
+                                <a href class="list-group-item" ng-click="Config.ColorScheme = 'gray'" style="background-color:#888;color:#fff;">Gray <span ng-show="Config.ColorScheme == 'gray'" class="glyphicon glyphicon-ok pull-right"></span></a>
+                                <div class="list-group-item" style="color:#000;">Custom color suffix<br /><input type="text" class="form-control" ng-model="Config.ColorScheme" /></div>
+                                <div class="list-group-item"><label><input type="checkbox" ng-checked="Config.CustomCSS" ng-model="Config.CustomCSS"> Use Custom CSS files</label></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Navigation bar options</div>
+                                <div class="panel-body">
+                                    <div class="form-group">
+                                        <label><input type="checkbox" ng-checked="Config.GroupApplications" ng-model="Config.GroupApplications"> Group applications on a sub-menu</label>
+                                        <br />
+                                        <small style="color:#555;">If checked, navigation menu will be grouped as a drop down menu. </small>
+                                    </div>
+                                    <div class="form-group" ng-show="Config.GroupApplications">
+                                        <input id="txtGroupApplicationsName" name="txtGroupApplicationsName" class="form-control" ng-model="Config.GroupApplicationsName" />
+                                        <small style="color:#555;">Name for the dropdown menu. If blank, the application name will be used.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 col-lg-10" ng-show="GlobalSubTab=='security'">
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Maximum wrong login attempts</label>
+                            <select id="cboLockAfterAttempts" name="cboLockAfterAttempts" class="form-control" ng-model="Config.LockUserAfterAttempts" ng-options="i for i in UserAttemptsList"></select>
+                            <small style="color:#555;">After {{Config.LockUserAfterAttempts}} wrong tries, lock the user account. Set to 0 to never lock.</small>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Lock user account for X minutes after maximum attempts</label>
+                            <select id="cboLockUserMinutes" name="cboLockUserMinutes" class="form-control" ng-model="Config.LockUserForMinutes" ng-options="i for i in LockUserMinutesList"></select>
+                            <small style="color:#555;">The user account will be locked for <span>{{Config.LockUserForMinutes}}</span> minutes.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Maximum concurrent users</label>
+                            <input id="txtMaxConcurrentUsers" name="txtMaxConcurrentUsers" class="form-control" ng-model="Config.MaxConcurrentUsers" />
+                            <small style="color:#555;">Maximum concurrent connected users. Set to 0 for unlimited.</small>
+                            <div ng-show="Config.MaxNamedUsers > 0 || Config.MaxConcurrentUsers > 0">
+                                <br />
+                                <label>Usernames to not include in the limit (concurrent and named)</label>
+                                <input id="txtNamedUserOutOfMaxLimit" name="txtNamedUsersOutOfMaxLimit" class="form-control" ng-model="Config.NamedUsersOutOfMaxLimit" />
+                                <small style="color:#555">Usernames out of the maximum named/concurrent users limit. Separated by comma (,)</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label>Maximum named users</label>
+                            <input id="txtMaxNamedUsers" name="txtMaxNamedUsers" class="form-control" ng-model="Config.MaxNamedUsers" />
+                            <small style="color:#555;">Maximum active users (created users). Set to 0 for unlimited.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Maximum session timeout</label>
+                            <select id="cboMaximumSessionTimeout" name="cboMaximumSessionTimeout" class="form-control" ng-model="Config.MaximumSessionTimeout" ng-options="i for i in MaximumSessionTimeoutList"></select>
+                            <small style="color:#555;">Maximum session timeout (in hours).</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="chkRestrictApplications" name="chkRestrictApplications" ng-model="Config.RestrictAppsAccess"> Restrict applications access</label><br />
+                                <small style="color:#555;">Restricting application access, allow admin/super users to specify which applications users have access.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Password</div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label>Minimum Password Length</label>
+                                    <select id="cboMinimumPasswordLength" name="cboMinimumPasswordLength" class="form-control" ng-model="Config.MinimumPasswordLength" ng-options="i for i in MinimumPasswordLengthList"></select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Maximum Password Length</label>
+                                    <select id="cboMaximumPasswordLength" name="cboMaximumPasswordLength" class="form-control" ng-model="Config.MaximumPasswordLength" ng-options="i for i in MaximumPasswordLengthList"></select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Force Password Strength</label>
+                                    <select id="cboForcePasswordStrength" name="cboForcePasswordStrength" class="form-control" ng-model="Config.ForcePasswordStrength" ng-options="i for i in ForcePasswordStrengthList"></select>
+                                    <small style="color:#555;">If "true", password must contain at least one uppercase letter, at least on lowercase letter, at least one number, at least one special character (!, @@, #, $, %, &, *)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Recover options</div>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label>Enable username reminder</label>
+                                    <select id="cboUsernameReminder" name="cboUsernameReminder" class="form-control" ng-model="Config.UsernameReminder" ng-options="i for i in UsernameReminderList"></select>
+                                    <small style="color:#555;">If "true", users will be able to provide their email address and their username will be sent to them. </small>
+                                </div>
+                                <div class="form-group">
+                                    <label>Enable password reset</label>
+                                    <select id="cboPasswordReset" name="cboPasswordReset" class="form-control" ng-model="Config.PasswordReset" ng-options="i for i in PasswordResetList"></select>
+                                    <small style="color:#555;">If "true", users will be able to provide their email address and a new password will be sent to them. </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 col-lg-10" ng-show="GlobalSubTab=='reset'">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Reset site data to pre-defined values</label><br />
+                            <button type="button" ng-show="Config.ResetProcedure" class="btn btn-default" ng-click="settings.resetData()">Reset</button>
+                            <span ng-show="!Config.ResetProcedure">The reset procedure needs to be set. Contact the developer.</span>
+                            <span id="spanResetStatus"></span>
+                            @*To call this function, you need to set the key ResetProcedure with a stored procedure to reset all site data. Once is set, the button will be enabled. *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 col-lg-10" ng-show="GlobalSubTab=='refresh'">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Refresh site settings (Global)</label><br />
+                            <span>Load all site settings from DB to global variable</span><br /><br />
+                            <button type="button" class="btn btn-default" ng-click="settings.refreshSettings()">Refresh</button>
+                            <span id="spanRefreshStatus"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="Tab=='databases'">
+        <h3>Databases</h3>
+        <p style="margin-bottom:20px;">A database is mandatory for each application. The main database contains the base tables (users, permissions and audit information) and can be used as a application database.</p>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="list-group">
+                    <a href class="list-group-item" ng-repeat="database in Config.Databases | orderBy:'-Type' | filter: { ID: '' }" ng-class="{'active':db.ID==database.ID}" ng-click="settings.showDatabase(database)">{{database.DBSchema}} <span ng-show="database.Adding && database.DBSchema == ''">&lt;empty&gt;</span> <span class="glyphicon glyphicon-star pull-right" ng-show="database.Type == 1" title="Main database"></span><span class="glyphicon glyphicon-asterisk pull-right" ng-show="database.Adding" title="New database"></span></a>
+                    <a href class="list-group-item list-group-item-info" ng-click="settings.addDb($event)" data-new="-- Adding new database --"><span class="glyphicon glyphicon-plus"></span> Add new database</a>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label>Database</label>
+                            <input type="text" class="form-control" id="txtDBName" name="txtDBName" placeholder="Database" ng-model="db.DBSchema">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label>Used by</label><br />
+                            <span ng-show="(Config.Applications | filter: { IDDatabase: db.ID }).length == 0">&lt;None&gt;</span>
+                            <span ng-show="(Config.Applications | filter: { IDDatabase: db.ID }).length > 0">{{settings.formatLanguage((Config.Applications | filter: { IDDatabase: db.ID })[0].Name)}}</span>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="checkbox">
+                                <label><input type="checkbox" id="chkMainDatabase" name="chkMaindatabase" ng-checked="db.Type == 1" ng-model="db.Type" ng-true-value="1" ng-false-value="0"> Main database</label><br />
+                                <small>You can only select 1 main database</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" ng-show="(Config.Applications | filter: { IDDatabase: db.ID }).length == 0 && db.Type == 0">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <button class="btn btn-default" ng-click="settings.removeDb()">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div ng-show="Tab=='applications'">
+        <h3>Applications</h3>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" ng-class="{'active':app.ID == appList.ID}" data-1="{{app.ID}}" data-2="{{appList.ID}}" ng-repeat="appList in Config.Applications | orderBy:'TabOrder'"><a href role="tab" ng-click="settings.showApp(appList)" data-toggle="tab"><button class="btn btn-default btn-xs glyphicon glyphicon-triangle-left" ng-click="settings.moveTab(appList, -1)" ng-show="OrderingAppTabs && appList.TabOrder > 1"></button><span class="glyphicon glyphicon-cog" ng-show="appList.Type == 1" title="Custom Application"></span> {{settings.formatLanguage(appList.Name)}} <span class="glyphicon glyphicon-asterisk pull-right" ng-show="appList.Adding" title="New application"></span> <button ng-click="settings.moveTab(appList, 1)" class="btn btn-default btn-xs glyphicon glyphicon-triangle-right" ng-show="OrderingAppTabs && appList.TabOrder < Config.Applications.length"></button></a></li>
+            <li role="presentation"><a href ng-click="settings.addApp($event)">Add <span class="glyphicon glyphicon-plus"></span></a></li>
+            <li class="pull-right" ng-show="Config.Applications.length > 1"><button class="btn btn-default btn-sm glyphicon glyphicon-transfer" ng-class="{'active': OrderingAppTabs}" ng-click="settings.toggleReorder()"></button></li>
+        </ul>
+        <div class="tab-content tab-content-modal" ng-show="app != null">
+            <div class="row">
+                <div class="col-md-3 col-lg-2">
+                    <div class="list-group">
+                        <a href class="list-group-item" ng-class="{'active':SubTab=='basic'}" ng-click="SubTab='basic'">Basic <span class="glyphicon glyphicon-chevron-right pull-right" ng-show="SubTab=='basic'"></span></a>
+                        <a href class="list-group-item" ng-class="{'active':SubTab=='viewer'}" ng-click="SubTab='viewer'">Viewer <span class="glyphicon glyphicon-chevron-right pull-right" ng-show="SubTab=='viewer'"></span></a>
+                        <a href class="list-group-item" ng-class="{'active':SubTab=='fields'}" ng-click="SubTab='fields'">Fields <span class="badge pull-right" ng-show="SubTab!='fields'">{{app.Fields.length}}</span> <span class="glyphicon glyphicon-chevron-right pull-right" ng-show="SubTab=='fields'"></span></a>
+                        @*<a href class="list-group-item disabled" ng-class="{'active':SubTab=='reports'}" ng-click="SubTab='reports'" ng-show="app.EnableReports">Reports <span class="glyphicon glyphicon-chevron-right pull-right" ng-show="SubTab=='reports'"></span></a>*@
+                        <a href class="list-group-item disabled" ng-class="{'active':SubTab=='workflow'}" ng-click="SubTab='workflow'" ng-show="app.EnableWorkflow">Workflow <span class="glyphicon glyphicon-chevron-right pull-right" ng-show="SubTab=='workflow'"></span></a>
+                        <div class="list-group-item list-group-item-info" ng-show="SubTab=='fields' && app != null && app.Fields != null && app.Fields.length > 0">
+                            <small>
+                                Show position by:<br />
+                                <label class="radio-inline">
+                                    <input type="radio" name="fieldPositionOrder" id="radFieldPositionFilter" value="FilterOrder" ng-model="FieldPosition"> Filter
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="fieldPositionOrder" id="radFieldPositionResults" value="ResultOrder" ng-model="FieldPosition"> Search Results
+                                </label>
+                            </small>
+                            <span class="badge pull-right" ng-show="app != null && app.Fields != null && app.Fields.length > 0" title="{{settings.fieldPositionsAreEqual() ? 'Field positions for Filter and Search Results are EQUAL' : 'Field positions for Filter and Search Results are DIFFERENT'}}">{{settings.fieldPositionsAreEqual() ? '=' : '!='}}</span>
+                        </div>
+                        <a href class="list-group-item" ng-show="SubTab=='fields'" ng-repeat="field in app.Fields | orderBy:FieldPosition | filter: { ID: '' }" ng-class="{'list-group-item-info':field==app.field}" ng-click="app.field=field" ng-model="app.field">
+                            <span class="glyphicon" ng-class="{'glyphicon-chevron-right':field==app.field}">{{field==app.field ? '' : '&nbsp;'}}</span>
+                            <small>
+                                {{settings.formatLanguage(field.Name)}}
+                            </small>
+                            <i ng-show="field.Type==1 || field.Type == 8" class="glyphicon pull-right">&#9312;</i>
+                            <i ng-class="{'glyphicon-font':field.Type==2,'glyphicon-calendar':field.Type==3,'glyphicon-list-alt':field.Type==4,'glyphicon-list':field.Type==5}" class="glyphicon pull-right"></i>
+                            <i ng-class="{'glyphicon-lock': !field.Editable}" class="glyphicon pull-right" style="margin-right:5px;"></i>
+                        </a>
+                        <a href class="list-group-item list-group-item-success" ng-show="SubTab=='fields'" is-disabled="true" ng-click="settings.addField($event)" data-new="Field Name"><span class="glyphicon">&nbsp;</span> <small>Add new field </small><span class="glyphicon glyphicon-plus pull-right"></span></a>
+                    </div>
+                </div>
+                <div class="col-md-9 col-lg-10" ng-show="SubTab=='basic'">
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Type</label>
+                                <select class="form-control" ng-options="i.value as i.name for i in ApplicationTypeList" ng-model="app.Type"></select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <br />
+                            <div class="col-sm-6">
+                                <label>Name</label>
+                                <div class="input-group" id="listAppName" style="margin-bottom:5px;" ng-repeat="lang in Languages | filterArray:Config.EnabledLanguages:'initials'">
+                                    <span class="input-group-addon" style="min-width:40px;text-align:left;">{{lang.initials}}</span>
+                                    <input type="text" class="form-control" placeholder="Application Name in {{lang.name}}" ng-model="app.NameJSON[lang.initials]" ng-change="settings.setAppJSON(lang, 'Name', app.Name, app.NameJSON)">
+                                </div>
+                            </div>
+                            <div class="col-sm-6" ng-if="app.Type !== 6">
+                                <label>Search Title</label>
+                                <div class="input-group" style="margin-bottom:5px;" ng-repeat="lang in Languages | filterArray:Config.EnabledLanguages:'initials'">
+                                    <span class="input-group-addon" style="min-width:40px;text-align:left;">{{lang.initials}}</span>
+                                    <input type="text" class="form-control" placeholder="Search Title in {{lang.name}}" ng-model="app.SearchTitleJSON[lang.initials]" ng-change="settings.setAppJSON(lang, 'SearchTitle', app.SearchTitle, app.SearchTitleJSON)">
+                                </div>
+                                <small style="color:#ccc;">If empty, the text: "@Words.Search_Documents" will be used.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="app.Type !== 6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>Database</label>
+                                <select class="form-control" ng-options="item.ID as item.DBSchema for item in Config.Databases | filter: { ID: '' }" ng-model="app.IDDatabase"></select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label>Group rows by</label>
+                                <select class="form-control" ng-options="item.ID as settings.formatLanguage(item.Name) for item in app.Fields | filter: { ID: '' }" ng-model="app.IDFieldGroupBy">
+                                    <option value="">-- None --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>Documents Path</label>
+                                <input type="text" ng-model="app.DocumentsPath" class="form-control" empty-to-null />
+                            </div>
+                            <div class="col-sm-6">
+                                <label>Sort rows by</label>
+                                <input type="text" class="form-control" ng-model="app.SortBy" empty-to-nyll />
+                                <small style="color:#ccc">Example: I_CaptureDate DESC</small>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Options</strong>
+                                <br />
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" ng-model="app.RestrictDocumentAccess"> Restrict documents access</label><br />
+                                            <small style="color:#CCC;">Restricting documents access, allow admin/super users to specify which documents users have access.</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" ng-model="app.EnableSubmitDocuments"> Enable Submit Documents</label><br />
+                                            <small style="color:#CCC;">Enable users to submit documents.</small> <small style="color:red;" ng-show="Config.TemporarySubmitFilesPath == ''"><br /><strong>Error:</strong> You must set the <strong>Global Settings</strong> &gt; <strong>Basic</strong> &gt; <strong>Temporary Submitted Files Path</strong></small>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" ng-model="app.EnableReports" /> Enable Reports</label><br />
+                                            <small style="color:#CCC;">Enable users to view reports.</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12" style="display:none;">
+                                        <div class="checkbox">
+                                            <label><input type="checkbox" ng-model="app.EnableWorkflow" /> Enable Workflow</label><br />
+                                            <small style="color:#CCC;">Enable workflow for this application.</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Custom Data</strong>
+                                <br />
+                                <textarea class="form-control" ng-model="app.CustomData" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="app.Type === 6">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label>Database</label>
+                                <select class="form-control" ng-options="item.ID as item.DBSchema for item in Config.Databases | filter: { ID: '' }" ng-model="app.IDDatabase"></select>
+                            </div>
+                            <div class="col-sm-6" ng-if="app.IDDatabase">
+                                <label>Table</label>
+                                <select class="form-control" ng-options="item.FullName as item.FullName for item in db.Tables" ng-model="app.TableName">
+                                    <option value="">-- None --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" ng-model="app.EnableCreate">Create</label>
+                                </div>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" ng-model="app.EnableUpdate">Update</label>
+                                </div>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" ng-model="app.EnableDelete">Delete</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9 col-lg-10" ng-show="SubTab=='viewer'">
+                    <div class="form-group">
+                        <div class="row">
+                            <br />
+                            <div class="col-sm-4">
+                                <label style="margin-bottom:15px;">Modules</label>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel" ng-class="{'panel-info':app.EnablePages, 'panel-default':!app.EnablePages}">
+                                            <div class="panel-heading">
+                                                <div class="checkbox" style="margin:0px;">
+                                                    <i class="glyphicon glyphicon-list-alt pull-right"></i>
+                                                    <label><input type="checkbox" ng-model="app.EnablePages"> Page range filter</label><br />
+                                                    <small>Show document page range filter.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="panel" ng-class="{'panel-info':app.EnableProperties, 'panel-default':!app.EnableProperties}">
+                                            <div class="panel-heading">
+                                                <div class="checkbox" style="margin:0px;">
+                                                    <i class="glyphicon glyphicon-list-alt pull-right"></i>
+                                                    <label><input type="checkbox" ng-model="app.EnableProperties"> Properties</label><br />
+                                                    <small>Show document properties.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="panel" ng-class="{'panel-info':app.EnableEditProperties, 'panel-default':!app.EnableEditProperties}">
+                                            <div class="panel-heading">
+                                                <div class="checkbox" style="margin:0px;">
+                                                    <i class="glyphicon glyphicon-pencil pull-right"></i>
+                                                    <label><input type="checkbox" ng-model="app.EnableEditProperties"> Edit Properties</label><br />
+                                                    <small>Enable users to edit document's properties.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="panel" ng-class="{'panel-info':app.EnableNotes, 'panel-default':!app.EnableNotes}">
+                                            <div class="panel-heading">
+                                                <div class="checkbox" style="margin:0px;">
+                                                    <i class="glyphicon glyphicon-file pull-right"></i>
+                                                    <label><input type="checkbox" ng-model="app.EnableNotes"> Notes</label><br />
+                                                    <small>Enable users to add/remove notes to documents.</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="panel" ng-class="{'panel-info':app.EnableEmail, 'panel-default':!app.EnableEmail}">
+                                            <div class="panel-heading">
+                                                <div class="checkbox" style="margin:0px;">
+                                                    <i class="glyphicon glyphicon-envelope pull-right"></i>
+                                                    <label><input type="checkbox" ng-model="app.EnableEmail"> E-mail</label><br />
+                                                    <small>Enable users to send documents via e-mail.</small>
+                                                </div>
+                                            </div>
+                                            @*
+                                                <div class="panel-body" ng-show="app.EnableEmail">
+                                                    <span>Restrict domains</span>
+                                                    <input type="text" class="form-control" ng-model="app.CustomData.EmailModule.DomainsRestriction" />
+                                                    <small>Separate domains by semi-colon (;)</small>
+                                                </div>
+                                            *@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9 col-lg-10" ng-show="SubTab=='fields'">
+
+                    <div class="form-group">
+                        <div class="row">
+                            <br />
+                            <div class="col-sm-12" ng-show="app.field != null">
+                                <label>Edit field ({{app.field.ID}})</label>
+                                <div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>Name</label>
+                                            @*<input type="text" class="form-control" id="txtFieldName" name="txtFieldName" placeholder="Field Name" ng-model="app.field.Name">*@
+                                            <div class="input-group" style="margin-bottom:5px;" id="listFields" ng-repeat="lang in Languages | filterArray:Config.EnabledLanguages:'initials'">
+                                                <span class="input-group-addon" style="min-width:40px;text-align:left;">{{lang.initials}}</span>
+                                                <input type="text" class="form-control" placeholder="Field Name in {{lang.name}}" ng-model="app.field.NameJSON[lang.initials]" ng-change="settings.setAppJSON(lang, 'Field', app.field.Name, app.field.NameJSON)" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label>Options</label>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" ng-model="app.field.Editable"> Enable property edit</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" ng-model="app.field.IsKey"> Key</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" ng-model="app.field.IsRequired" ng-disabled="!app.field.Editable">Required (editing or submitting)</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" ng-checked="app.field.EnableAutoComplete" ng-model="app.field.EnableAutoComplete" ng-disabled="[1,2].indexOf(app.field.Type) == -1"> Enable auto complete</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" ng-checked="app.field.EnableRestriction" ng-model="app.field.EnableRestriction" ng-disabled="[1,2,4,5,6].indexOf(app.field.Type) == -1"> Enable restriction (to document)</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" ng-checked="app.field.HeaderGroupName != null" ng-model="app.field.GroupHeaderByName"> Group header by name</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" ng-checked="app.field.NotVisibleList" ng-model="app.field.NotVisibleList">Set List Invisible</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" ng-checked="app.field.NotVisibleSubmit" ng-model="app.field.NotVisibleSubmit">Set Submit Invisible</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" ng-checked="app.field.NotVisibleViewer" ng-model="app.field.NotVisibleViewer">Set Viewer Invisible</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" ng-checked="app.field.NotVisibleFilter" ng-model="app.field.NotVisibleFilter">Set Filter Invisible</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label>Position</label>
+                                            <div class="input-group">
+                                                Filter Order:<input type="text" class="form-control" ng-model="app.field.FilterOrder" />
+                                            </div>
+                                            <div class="input-group">
+                                                Result Order:<input type="text" class="form-control" ng-model="app.field.ResultOrder" />
+                                            </div>
+                                            <div class="input-group">
+                                                Max Length:<input type="text" class="form-control" ng-model="app.field.MaxLen" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label>Map To</label>
+                                            <div class="input-group">
+                                                <select class="form-control" ng-options="i.ColumnName as i.ColumnName for i in app.ColumnsMapTo" ng-model="app.field.MapTo"></select>
+                                                <span class="input-group-addon"><span class="glyphicon glyphicon-refresh" ng-click="settings.getColumns()"></span></span>
+                                            </div>
+                                            <div class="input-group" style="margin-top:3px;">
+                                                <input type="text" class="form-control" ng-model="app.field.MapTo" />
+                                                <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+                                            </div>
+                                            <small style="color:#ccc;">Column name (from database table/view)</small>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label>Type</label>
+                                            <select class="form-control" ng-options="i.value as i.name for i in FieldTypeList" ng-model="app.field.Type"></select>
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-if="app.Type === 6">
+                                        <label>Input Validation</label>
+                                        <input type="checkbox" ng-model="app.field.ValidationRules.IsRequired" />Required
+                                        <input type="checkbox" ng-model="app.field.ValidationRules.IsAlpha" />Alpha
+                                        <input type="checkbox" ng-model="app.field.ValidationRules.IsAlphanumeric" />Alphanumeric
+                                    </div>
+                                    <br />
+                                    <div ng-if="app.Type !== 6">
+                                        <div class="row">
+                                            <div class="col-sm-6" ng-show="[1,2,3,7,10].indexOf(app.field.Type) != -1">
+                                                <label>Format</label>
+                                                <input type="text" ng-model="app.field.Format" class="form-control" empty-to-null />
+                                                <small style="color:#ccc;">Format the text/value (decimal, numbers, text), using C# string format.</small>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label>Visibility</label>
+                                                <select class="form-control" ng-options="i.value as i.name for i in FieldVisibilityTypeList" ng-model="app.field.VisibilityType"></select>
+                                            </div>
+                                            @*
+                                                <div class="col-sm-6">
+                                                    <label>Alignment</label>
+                                                    <select class="form-control" ng-options="i.value as i.name for i in FieldAlignment" ng-model="app.field.Alignment"></select>
+                                                    <small style="color:#ccc;">Text alignment for search result.</small>
+                                                </div>
+                                            *@
+                                        </div>
+                                        <br />
+                                    </div>
+                                    <div class="row" ng-show="app.field.GroupHeaderByName" ng-if="app.Type !== 6">
+                                        <div class="col-sm-6">
+                                            <label>Header's group name</label>
+                                            <div class="input-group" style="margin-bottom:5px;" ng-repeat="lang in Languages | filterArray:Config.EnabledLanguages:'initials'">
+                                                <span class="input-group-addon" style="min-width:40px;text-align:left;">{{lang.initials}}</span>
+                                                <input type="text" class="form-control" placeholder="Name in {{lang.name}}" ng-model="app.field.HeaderGroupNameJSON[lang.initials]" ng-change="settings.setAppJSON(lang, 'Header', app.field.HeaderGroupName, app.field.HeaderGroupNameJSON)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <div class="row" ng-show="app.field.EnableAutoComplete" ng-if="app.Type !== 6">
+                                        <div class="col-sm-12">
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading">Auto complete</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <label>Filter Type</label>
+                                                            <select class="form-control" ng-options="item.value as item.name for item in AutoComplete_FieldFilterTypeList" ng-model="app.field.AutoComplete_FilterType"></select>
+                                                        </div>
+                                                    </div><br />
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <label>Filter Command</label>
+                                                            <input type="text" class="form-control" ng-model="app.field.AutoComplete_FilterCommand" />
+                                                        </div>
+                                                    </div><br />
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <label>Map Fields</label>
+                                                            <input type="text" class="form-control" ng-model="app.field.AutoComplete_MapFields" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" ng-show="[4,5,6,10,12].indexOf(app.field.Type) != -1" ng-if="app.Type !== 6">
+                                        <div class="col-sm-12">
+                                            <div class="panel panel-info">
+                                                <div class="panel-heading">Data Source</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-sm-6">
+                                                            <label>Type</label>
+                                                            <select class="form-control" ng-options="item.id as item.name for item in FieldFilterType" ng-model="app.field.FilterType"></select>
+                                                        </div>
+                                                        <div class="col-sm-6" ng-show="app.field.FilterType == 1">
+                                                            <label>Filter Command</label>
+                                                            <input type="text" class="form-control" ng-model="app.field.FilterCommand" />
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    <div class="row" ng-show="app.field.FilterType == 2">
+                                                        @*
+                                                            <div class="col-sm-6" ng-init="filterdata = settings.getFromJson(app.field.FilterData)">
+                                                                <label>Data</label>
+                                                                <div class="row" ng-repeat="itemsssss in filterdata">
+                                                                    <div class="form-group">
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" class="form-control col-md-6" placeholder="Code" />
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <input type="text" class="form-control col-md-6" placeholder="Value" />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        *@
+                                                        <div class="col-sm-6">
+                                                            <label>Data</label>
+                                                            <textarea type="text" class="form-control" ng-model="app.field.FilterData" rows="10"></textarea>
+                                                        </div>
+                                                        @*
+                                                            <div class="col-sm-12">
+                                                                <label>Data Tree</label>
+                                                                <div id="divDataTree" style="width:100%;height:100%;"></div>
+                                                            </div>
+                                                        *@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <button class="btn btn-default" ng-click="settings.removeField()">Remove</button>
+                                                <button class="btn btn-default" ng-click="settings.moveUpField()" ng-disabled="!settings.allowedToMoveUp()">Move up <span class="glyphicon glyphicon-triangle-top"></span></button>
+                                                <button class="btn btn-default" ng-click="settings.moveDownField()" ng-disabled="!settings.allowedToMoveDown()">Move down <span class="glyphicon glyphicon-triangle-bottom"></span></button>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label>Options</label>
+                                                <textarea type="text" class="form-control" rows="10" disabled="disabled"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9 col-lg-10" ng-show="SubTab=='reports'">
+                    <span>Not implemented.</span>
+                </div>
+                <div class="col-md-9 col-lg-10" ng-show="SubTab=='workflow'">
+                    <span>Not implemented.</span>
+                </div>
+            </div>
+            <div style="clear:both;"></div>
+        </div>
+    </div>
+
+    <div ng-show="Tab=='structure'">
+        <h3>Validate structure</h3>
+
+        <div>
+            <p>Once all the configuration, databases, applications and fields are setup, the next step is to check if all the database structure is correct and if all the features are going to work properly.</p>
+        </div>
+
+        <div>
+            <div class="row">
+                <div class="col-md-8">
+                    <ul class="list-group">
+                        <li class="list-group-item" id="liCheck0">1. Check database connections <i class="glyphicon {{Checks[0].status}} pull-right"></i></li>
+                        <li class="list-group-item" id="liCheck1">2. Check the structure of main database <i class="glyphicon {{Checks[1].status}} pull-right"></i></li>
+                        <li class="list-group-item" id="liCheck2">3. Check the image viewer <i class="glyphicon {{Checks[2].status}} pull-right"></i></li>
+                        <li class="list-group-item" id="liCheck3">4. Check connectivity to image paths <i class="glyphicon {{Checks[3].status}} pull-right"></i></li>
+                    </ul>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="btnValidate" type="button" ng-click="settings.validate()">Validate</button>
+        </div>
+    </div>
+
+    <div ng-show="Tab=='savechanges'">
+        <h3>Save changes</h3>
+
+        <div>
+            <p>Once all the configuration, databases, applications and fields are setup, the next step is to save the changes.</p>
+        </div>
+        <div style="display:none;">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>What</th>
+                        <th>From</th>
+                        <th>To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="difval in StaticDiff">
+                        <td>{{difval.path}}</td>
+                        <td>{{difval.lhs}}</td>
+                        <td>{{difval.rhs}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <div class="alert alert-success" ng-show="Saved">
+                <span></span>Changes saved <strong>successfully.</strong>
+            </div>
+            <button type="button" class="btn btn-success im-done" ng-click="settings.submit()">Save</button>
+        </div>
+    </div>
+</form>
+<br />
+<pre style="display:block;">
+{{settings.formatDiff()}}
+</pre>

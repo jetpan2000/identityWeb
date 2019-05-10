@@ -1,0 +1,18 @@
+﻿@model Octacom.Odiss.ABCgroup.Web.Models.InvoiceTabModel
+@{
+    Layout = null;
+}
+
+<div id="react-invoice-tab-root"></div>
+
+<script type="text/javascript">
+    window.__appData = JSON.parse('@Html.Raw(Model.DataJson)');
+    window.__invoiceTabState = {
+        documentId: '@Model.DocumentId'
+    };
+    window.__baseUrl = '@Url.Content("~/")';
+    window.__getSupportingDocumentUrl = '@Url.Action("GetSupportingDocument", "App", new { appId = ViewContext.RouteData.Values["appId"] })'
+    window.__pageName = '@ViewBag.PageName';
+</script>
+
+@Scripts.Render("~/Scripts/src/dist/invoice-tab.bundle.js")

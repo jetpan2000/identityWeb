@@ -1,0 +1,131 @@
+﻿body{
+  background-color: #eee;
+}
+
+.center-login{
+    float:none;
+    margin: 0 auto;
+    max-width:600px;
+}
+
+.version{
+    text-align:center;
+    color:#ccc;
+    font-size:11px;
+}
+
+form.formlogin {
+  max-width: 430px;
+  padding: 15px;
+  margin: 0 auto;
+}
+form.formlogin .form-signin-heading,
+form.formlogin .checkbox {
+  margin-bottom: 10px;
+}
+form.formlogin .checkbox {
+  font-weight: normal;
+}
+form.formlogin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+form.formlogin .form-control:focus {
+  z-index: 2;
+}
+form.formlogin input[type="text"], form.formlogin .pass1 {
+  margin-bottom: -1px !important;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 4px !important;
+  border-top-right-radius: 4px !important;
+}
+form.formlogin input[type="password"], form.formlogin .pass2 {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+select.input-validation-error,
+input[type="text"].input-validation-error,
+input[type="password"].input-validation-error,
+textarea.input-validation-error
+{
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+}
+
+h1 {
+    font-size:17px;
+    font-weight:bold;
+}
+
+
+.baseusc .logoBoxLogin
+{
+    background-color: #393536;
+}
+
+.baseusc .center-login .panel-body
+{
+    background-color: #393536;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.baseusc h1.form-signin-heading {
+    color: #fff;
+}
+
+.baseabc .logoBoxLogin
+{
+    background-color: #000;
+}
+
+.baseabc .center-login .panel-body
+{
+    background-color: #000;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.baseabc h1.form-signin-heading {
+    color: #fff;
+}
+
+
+
+.basebrk .logoBoxLogin
+{
+    background-color: #0f3557;
+}
+
+.basebrk .center-login .panel-body
+{
+    background-color: #0f3557;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.basebrk h1.form-signin-heading {
+    color: #fff;
+}
+
+
+
+.basewdl .logoBoxLogin
+{
+    background-color: #fff;
+}
+
+.basewdl .center-login .panel-body
+{
+    background-color: #fff;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.basewdl h1.form-signin-heading {
+    color: #000;
+}

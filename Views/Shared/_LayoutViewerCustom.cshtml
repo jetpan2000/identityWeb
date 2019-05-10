@@ -1,0 +1,41 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="@Language" ng-app="@ViewBag.AngularApp" style="height:100%;width:100%;">
+<head>
+    <title>@ViewBag.Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="Octacom">
+    <meta name="version" content="@Octacom.Odiss.ABCgroup.Web.Code.OdissVersion.Get" />
+    <meta name="format-detection" content="telephone=no" />
+    <base href="@Url.Content("~")" />
+    <script>
+        function waitInner(method) { if (window.jQuery) { method(); } else { setTimeout(function () { waitInner(method) }, 50); } }
+    </script>
+    @Styles.Render("~/content/min/css/viewercustom")
+    @RenderSection("header", false)
+    @if (!string.IsNullOrEmpty(ConfigBase.Settings.ShortcutIcon))
+    {
+        <link href="data:image/png;base64,@ConfigBase.Settings.ShortcutIcon" rel="shortcut icon">
+    }
+    else
+    {
+        <link type="image/x-icon" href="@Url.Content("~/content/img/octa-icon.png")" rel="icon">
+        <link href="@Url.Content("~/content/img/octa-icon.png")" rel="shortcut icon">
+    }
+    <!--[if lt IE 9]>
+    @Scripts.Render("~/content/min/js/ie8")
+    <![endif]-->
+    <!--
+    Octacom Odiss: @Octacom.Odiss.ABCgroup.Web.Code.OdissVersion.Get
+    -->
+</head>
+<body style="width:100%;height:100%;" class="base@(ConfigBase.Settings.ColorScheme)">
+    @RenderBody()
+    @Scripts.Render("~/content/min/js/base")
+    @RenderSection("footer", false)
+</body>
+</html>

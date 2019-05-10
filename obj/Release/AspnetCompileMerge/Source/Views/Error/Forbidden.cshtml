@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutError.cshtml";
+    ViewBag.Title = "Forbidden";
+}
+<div class="container">
+    <div class="jumbotron">
+        <h1><i class="fa fa-ban red"></i> Forbidden</h1>
+        <p class="lead">Sorry! You don't have access permissions for that.</p>
+        <p>
+            <a href="@Url.Content("~/")" class="btn btn-default btn-lg"><span class="">Take me to the homepage</span></a>
+        </p>
+    </div>
+</div>
+<div class="container">
+    <div class="body-content">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>What happened?</h2>
+                <p class="lead">A forbidden error status indicates that you don't have permission to access the file or page. In general, web servers and websites have directories and files that are not open to the public web for security reasons.</p>
+            </div>
+            <div class="col-md-6">
+                <h2>What can I do?</h2>
+                <p class="lead">If you're a site user</p>
+                <p>Please use your browsers back button and check that you're in the right place. If you need immediate assistance, please send us an email.</p>
+            </div>
+        </div>
+    </div>
+</div>

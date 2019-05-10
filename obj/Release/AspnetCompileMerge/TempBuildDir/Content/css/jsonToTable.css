@@ -1,0 +1,12 @@
+﻿.number {
+    color: #D036D0;
+}
+.boolean {
+    color: #2525CC;
+}
+.string {
+    color: #2DB669;
+}
+.void {
+    color:gray;
+}

@@ -1,0 +1,129 @@
+﻿.modal-dialog-full {
+    /*
+    width: 98%;
+    height: 97.9%;
+    */
+    width: 98%;
+    width: calc(100% - 20px);
+    height: 97.9%;
+    height: calc(100% - 20px);
+    padding: 0;
+    margin: 10px auto;
+}
+.modal-content-full {
+    /*height: 98%;*/
+    height:100%;
+    overflow:auto;
+}
+.modal-content-full-body {
+    background-color: #f3f3f3;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+    height: 85%;
+    height: calc(100% - 121px);
+}
+.modal-header .close {
+    margin-top: 0px;
+}
+.checkBoxColumn{
+    width:20px;
+}
+.btnExpand{
+    top: 8px;
+    left: 4px;
+    height: 16px;
+    width: 16px;
+    display: block;
+    color: white;
+    border: 2px solid white;
+    border-radius: 16px;
+    box-shadow: 0 0 3px #444;
+    box-sizing: content-box;
+    font-family: 'Courier New', Courier, monospace;
+    text-indent: 4px;
+    line-height: 16px;
+    content: '+';
+    background-color: #000;
+}
+
+.autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; width: 350px !important;}
+.autocomplete-suggestion { padding: 4px 10px; white-space: nowrap; cursor:pointer; font-size: 12px; }
+.autocomplete-selected { background: #F0F0F0; cursor:pointer; }
+.autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
+.autocomplete-no-suggestion { padding:4px 10px; }
+.autocomplete-group { padding: 4px 10px; }
+.autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+.form-horizontal .has-feedback .form-control-feedback { right:0px; }
+
+.divTableButtons{
+    margin-bottom:5px;
+}
+.arraypopup{
+    cursor: pointer;
+}
+
+.popoverarray > .popover-title {
+    /*font-family: Courier New, Courier, monospace;*/
+    font-size: 12px;
+    font-weight: bold;
+}
+.popoverarray > .popover-content {
+   /* font-family: Courier New, Courier, monospace;*/
+    font-size: 12px;
+    overflow-y: auto;
+    max-height: 600px;
+}
+
+.popoverarray > .popover-content thead {
+    background-color:#888 !important;
+    font-weight:bold;
+}
+
+.popoverarray{
+    max-width: 100%;
+}
+
+option,
+select{
+    color: #000;
+}
+
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
+    top: 8px;
+    left: 6px;
+    width: 12px;
+    height: 12px;
+    text-indent: 1px;
+    box-shadow: none;
+    border: 1px solid #888;
+    line-height:15px;
+}
+
+/* Reposition details button DATATABLES */
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child, table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child {
+    padding-right:2px;
+}
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
+
+}
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child:before {
+    border-radius:0px;
+}
+table.dataTable.table-condensed > thead > tr > th:first-child {
+    padding-right:7px;
+    text-align:center;
+}
+table.table-bordered.dataTable tbody td:first-child:not(.child) {
+    text-align:center;
+}
+table.dataTable.dtr-inline.collapsed > tbody > tr > td:first-child, table.dataTable.dtr-inline.collapsed > tbody > tr > th:first-child {
+    padding-left:23px;
+}
+div.dataTables_wrapper div.dataTables_paginate {
+    text-align:center;
+}
+.close-button-container {
+    display: inline-block;
+    margin-right: 10px;
+}

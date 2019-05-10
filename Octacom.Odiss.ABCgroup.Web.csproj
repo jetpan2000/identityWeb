@@ -1,0 +1,736 @@
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D54ED128-7726-495A-A248-89375D3BC321}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Octacom.Odiss.ABCgroup.Web</RootNamespace>
+    <AssemblyName>Octacom.Odiss.ABCgroup.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
+    <WebGreaseLibPath>..\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.4.1.9004, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr.3.4.1.9004\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoAudit, Version=0.0.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.AutoAudit.0.0.6\lib\net452\AutoAudit.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Dapper, Version=1.60.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.1.60.6\lib\net451\Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.7.2.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.7.2\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.2\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.2\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.DapperRepository, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.DapperRepository.1.1.3\lib\net452\Octacom.DapperRepository.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Business, Version=0.1.23.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Business.0.1.25\lib\net47\Octacom.Odiss.Core.Business.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Common.0.0.6\lib\net47\Octacom.Odiss.Core.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Contracts, Version=0.1.22.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Contracts.0.1.24\lib\net47\Octacom.Odiss.Core.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Contracts.DataLayer.Repository.Document, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Contracts.DataLayer.Repository.Document.1.0.0\lib\net47\Octacom.Odiss.Core.Contracts.DataLayer.Repository.Document.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.DataLayer.Repository.Document.EF, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.DataLayer.Repository.Document.EF.1.1.0\lib\net47\Octacom.Odiss.Core.DataLayer.Repository.Document.EF.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Contracts.DataLayer.Search, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Contracts.DataLayer.Search.1.2.0\lib\net47\Octacom.Odiss.Core.Contracts.DataLayer.Search.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Contracts.Infrastructure, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Contracts.Infrastructure.1.1.0\lib\net45\Octacom.Odiss.Core.Contracts.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Contracts.Settings, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Contracts.Settings.1.3.0\lib\net47\Octacom.Odiss.Core.Contracts.Settings.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Contracts.Validation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Contracts.Validation.1.0.0\lib\net47\Octacom.Odiss.Core.Contracts.Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.DataLayer, Version=0.1.19.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.DataLayer.0.1.20\lib\net47\Octacom.Odiss.Core.DataLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.DataLayer.Search.EF, Version=1.3.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.DataLayer.Search.EF.1.3.3\lib\net47\Octacom.Odiss.Core.DataLayer.Search.EF.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Entities, Version=0.1.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Entities.0.1.17\lib\net47\Octacom.Odiss.Core.Entities.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Identity, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Identity.1.6.0\lib\net47\Octacom.Odiss.Core.Identity.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Identity.Bootstrap.Odiss5, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Identity.Bootstrap.Odiss5.1.5.5\lib\net472\Octacom.Odiss.Core.Identity.Bootstrap.Odiss5.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Identity.Dapper, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Identity.Dapper.1.6.0\lib\net47\Octacom.Odiss.Core.Identity.Dapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Infrastructure.Odiss5, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Infrastructure.Odiss5.1.0.0\lib\net472\Octacom.Odiss.Core.Infrastructure.Odiss5.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Odiss5Adapters, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Odiss5Adapters.2.0.0\lib\net472\Octacom.Odiss.Core.Odiss5Adapters.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Settings, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Settings.1.3.0\lib\net47\Octacom.Odiss.Core.Settings.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Core.Validation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Odiss.Core.Validation.1.0.0\lib\net47\Octacom.Odiss.Core.Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Odiss.Library, Version=5.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Octacom.Odiss\Octacom.Odiss.Library\bin\Debug\Octacom.Odiss.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Search.EF, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Search.EF.1.2.2\lib\net47\Octacom.Search.EF.dll</HintPath>
+    </Reference>
+    <Reference Include="Octacom.Viewer.Control, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octacom.Viewer.1.0.11.504\lib\net45\Octacom.Viewer.Control.dll</HintPath>
+    </Reference>
+    <Reference Include="ONet452, Version=1.1.6725.14413, Culture=neutral, processorArchitecture=x86">
+      <HintPath>..\packages\ONet454.4.5.9\lib\net451\ONet452.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.2.8.0\lib\net46\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Settings.AppSettings, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Settings.AppSettings.2.2.2\lib\net45\Serilog.Settings.AppSettings.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.File.4.0.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.RollingFile, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.RollingFile.3.3.0\lib\net45\Serilog.Sinks.RollingFile.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector, Version=4.3.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.4.3.0\lib\net45\SimpleInjector.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Integration.Web, Version=4.3.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.Integration.Web.4.3.0\lib\net40\SimpleInjector.Integration.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Integration.Web.Mvc, Version=4.3.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.Integration.Web.Mvc.4.3.0\lib\net40\SimpleInjector.Integration.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="SimpleInjector.Integration.WebApi, Version=4.3.0.0, Culture=neutral, PublicKeyToken=984cb50dea722e99, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimpleInjector.Integration.WebApi.4.3.0\lib\net45\SimpleInjector.Integration.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="StackExchange.Exceptional, Version=1.0.130.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StackExchange.Exceptional.1.0.130\lib\net40\StackExchange.Exceptional.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Packaging, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Packaging.4.0.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Linq.Dynamic, Version=1.0.6132.35681, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Dynamic.1.0.7\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.6\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.6\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.6\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\css\apform.css" />
+    <Content Include="Content\css\apformviewerbase.css" />
+    <Content Include="Content\css\app.css" />
+    <Content Include="Content\css\audit.css" />
+    <Content Include="Content\css\changepassword.css" />
+    <Content Include="Content\css\custom.css" />
+    <Content Include="Content\css\custom_client.css" />
+    <Content Include="Content\css\editform.css" />
+    <Content Include="Content\css\editformviewerbase.css" />
+    <Content Include="Content\css\editformviewerbase_client.css" />
+    <Content Include="Content\css\error.css" />
+    <Content Include="Content\css\jsonToTable.css" />
+    <Content Include="Content\css\libs\bootstrap.min.css" />
+    <Content Include="Content\css\libs\buttons.bootstrap.min.css" />
+    <Content Include="Content\css\libs\dataTables.bootstrap.min.css" />
+    <Content Include="Content\css\libs\daterangepicker.css" />
+    <Content Include="Content\css\libs\dropzone.css" />
+    <Content Include="Content\css\libs\fixedHeader.dataTables.min.css" />
+    <Content Include="Content\css\libs\fullcalendar.min.css" />
+    <Content Include="Content\css\libs\fullcalendar.print.css" />
+    <Content Include="Content\css\libs\jstree.min.css" />
+    <Content Include="Content\css\libs\ng-tags-input.bootstrap.min.css" />
+    <Content Include="Content\css\libs\ng-tags-input.min.css" />
+    <Content Include="Content\css\libs\responsive.bootstrap.min.css" />
+    <Content Include="Content\css\login.css" />
+    <Content Include="Content\css\login_client.css" />
+    <Content Include="Content\css\reports.css" />
+    <Content Include="Content\css\settings.css" />
+    <Content Include="Content\css\submit.css" />
+    <Content Include="Content\css\submit_client.css" />
+    <Content Include="Content\css\users.css" />
+    <Content Include="Content\css\viewer.css" />
+    <Content Include="Content\css\viewercustom.css" />
+    <Content Include="Content\css\viewer_client.css" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\img\excel.png" />
+    <Content Include="Content\img\image.png" />
+    <Content Include="Content\img\libs\jstree\32px.png" />
+    <Content Include="Content\img\libs\jstree\40px.png" />
+    <Content Include="Content\img\libs\jstree\throbber.gif" />
+    <Content Include="Content\img\loadingSpinner.gif" />
+    <Content Include="Content\img\octa-icon.png" />
+    <Content Include="Content\img\octa-wm.png" />
+    <Content Include="Content\img\visio.png" />
+    <Content Include="Content\img\word.png" />
+    <Content Include="Content\js\apform.js" />
+    <Content Include="Content\js\apformviewerbase.js" />
+    <Content Include="Content\js\app.js" />
+    <Content Include="Content\js\audit.js" />
+    <Content Include="Content\js\base.js" />
+    <Content Include="Content\js\editform.js" />
+    <Content Include="Content\js\editformviewerbase.js" />
+    <Content Include="Content\js\jsonToTable.js" />
+    <Content Include="Content\js\libs\angular-1.4.8.min.js" />
+    <Content Include="Content\js\libs\bootstrap-notify.js" />
+    <Content Include="Content\js\libs\bootstrap.min.js" />
+    <Content Include="Content\js\libs\bootstrap.validator.js" />
+    <Content Include="Content\js\libs\buttons.bootstrap.min.js" />
+    <Content Include="Content\js\libs\buttons.html5.min.js" />
+    <Content Include="Content\js\libs\canvasloader-min.js" />
+    <Content Include="Content\js\libs\chart-2.1.6.min.js" />
+    <Content Include="Content\js\libs\chart-2.5.0.min.js" />
+    <Content Include="Content\js\libs\chart-PieceLabel.min.js" />
+    <Content Include="Content\js\libs\dataTables.bootstrap.min.js" />
+    <Content Include="Content\js\libs\dataTables.buttons.min.js" />
+    <Content Include="Content\js\libs\dataTables.conditionalPaging.js" />
+    <Content Include="Content\js\libs\dataTables.fixedHeader.min.js" />
+    <Content Include="Content\js\libs\dataTables.locale.js" />
+    <Content Include="Content\js\libs\dataTables.responsive.min.2.0.0.js" />
+    <Content Include="Content\js\libs\dataTables.responsive.min.js" />
+    <Content Include="Content\js\libs\daterangepicker.js" />
+    <Content Include="Content\js\libs\daterangepicker.locale.js" />
+    <Content Include="Content\js\libs\dropzone.js" />
+    <Content Include="Content\js\libs\fullcalendar.min.js" />
+    <Content Include="Content\js\libs\html5shiv-3.7.2.min.js" />
+    <Content Include="Content\js\libs\jquery-1.11.3.min.js" />
+    <Content Include="Content\js\libs\jquery.autocomplete.min.js" />
+    <Content Include="Content\js\libs\jquery.dataTables.min.js" />
+    <Content Include="Content\js\libs\jquery.fileDownload.js" />
+    <Content Include="Content\js\libs\jquery.mask.min.js" />
+    <Content Include="Content\js\libs\jquery.placeholder.js" />
+    <Content Include="Content\js\libs\jquery.validate.min.js" />
+    <Content Include="Content\js\libs\jstree.min.js" />
+    <Content Include="Content\js\libs\jstreegrid.js" />
+    <Content Include="Content\js\libs\livestamp.min.js" />
+    <Content Include="Content\js\libs\moment-with-locales.js" />
+    <Content Include="Content\js\libs\moment.min.js" />
+    <Content Include="Content\js\libs\ng-tags-input.min.js" />
+    <Content Include="Content\js\libs\respond-1.4.2.min.js" />
+    <Content Include="Content\js\login.js" />
+    <Content Include="Content\js\reports.js" />
+    <Content Include="Content\js\settings.js" />
+    <Content Include="Content\js\submitbase.js" />
+    <Content Include="Content\js\upload.js" />
+    <Content Include="Content\js\users.js" />
+    <Content Include="Content\js\viewerbase.js" />
+    <Content Include="Content\ts\base.js" />
+    <Content Include="Content\ts\changepassword.js" />
+    <Content Include="favicon.ico" />
+    <Content Include="Global.asax" />
+    <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular.js" />
+    <Content Include="Scripts\angular.min.js" />
+    <Content Include="Scripts\lodash.js" />
+    <Content Include="Scripts\lodash.min.js" />
+    <Content Include="Scripts\postal.js" />
+    <Content Include="Scripts\postal.min.js" />
+    <Content Include="Scripts\src\app\ap-components\ap-filter\apfilter-store.js" />
+    <Content Include="Scripts\src\app\ap-components\ap-filter\exception-widget.jsx" />
+    <Content Include="Scripts\src\app\ap-components\ap-filter\filter.jsx" />
+    <Content Include="Scripts\src\app\ap-components\ap-filter\filter.scss" />
+    <Content Include="Scripts\src\app\ap-components\ap-filter\index.js" />
+    <Content Include="Scripts\src\app\ap-components\ap-filter\invoice-filter.jsx" />
+    <Content Include="Scripts\src\app\ap-components\vendor-name.jsx" />
+    <Content Include="Scripts\src\app\ap.js" />
+    <Content Include="Scripts\src\app\datagrid.js" />
+    <Content Include="Scripts\src\app\document-tabs\header.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\alert.invoice.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\alert.js" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\debit-credit.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\document-tab-main.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\edit-action-bar.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\forward-to-other-plant.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\index.js" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\invoice-history.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\store.js" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\supporting-documents.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\submit-invoice\alert.submit-invoice.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\submit-invoice\index.js" />
+    <Content Include="Scripts\src\app\document-tabs\submit-invoice\main.submit-invoice.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\submit-invoice\store.tab.submit-invoice.js" />
+    <Content Include="Scripts\src\app\document-tabs\submit-invoice\tab.submit-invoice.jsx" />
+    <Content Include="Scripts\src\app\document-tabs\submit-invoice\typedefs.submit-invoice.js" />
+    <Content Include="Scripts\src\app\helpers\gl-code-formatter.js" />
+    <Content Include="Scripts\src\app\helpers\odiss-old.js" />
+    <Content Include="Scripts\src\app\helpers\react.js" />
+    <Content Include="Scripts\src\app\helpers\string.js" />
+    <Content Include="Scripts\src\app\invoice-tab.js" />
+    <Content Include="Scripts\src\app\login.js" />
+    <Content Include="Scripts\src\app\services\api\ap-roles.js" />
+    <Content Include="Scripts\src\app\services\api\ap-users.js" />
+    <Content Include="Scripts\src\app\services\api\app-grid.js" />
+    <Content Include="Scripts\src\app\services\api\documents.js" />
+    <Content Include="Scripts\src\app\services\api\plants.js" />
+    <Content Include="Scripts\src\app\services\api\users.js" />
+    <Content Include="Scripts\src\app\styles\custom-react-table.css" />
+    <Content Include="Scripts\src\app\users.js" />
+    <Content Include="Scripts\src\app\users\helpers.js" />
+    <Content Include="Scripts\src\app\users\tabs\ap\index.js" />
+    <Content Include="Scripts\src\app\users\tabs\ap\main-tab.jsx" />
+    <Content Include="Scripts\src\app\users\tabs\ap\react-tags.css" />
+    <Content Include="Scripts\src\app\users\tabs\ap\store.js" />
+    <Content Include="Scripts\src\app\utilities\custom-validators.js" />
+    <Content Include="Scripts\src\app\utilities\datetime-formatter.js" />
+    <Content Include="Scripts\src\app\vendors-entry.js" />
+    <Content Include="Scripts\src\app\vendors\index.js" />
+    <Content Include="Scripts\src\app\vendors\main.vendors.jsx" />
+    <Content Include="Scripts\src\dist\ap.bundle.js" />
+    <Content Include="Scripts\src\dist\datagrid.bundle.js" />
+    <Content Include="Scripts\src\dist\invoice-tab.bundle.js" />
+    <Content Include="Scripts\src\dist\login-page.bundle.js" />
+    <Content Include="Scripts\src\dist\submit-invoice.bundle.js" />
+    <Content Include="Scripts\src\dist\users.bundle.js" />
+    <Content Include="Scripts\src\dist\vendors.bundle.js" />
+    <Content Include="Scripts\src\webpack.config.js" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adapters\JetsDocumentsAdapter.cs" />
+    <Compile Include="Adapters\IUserAdapter.cs" />
+    <Compile Include="Adapters\UserAdapter.cs" />
+    <Compile Include="App_Start\AppConfig.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\Inject.cs" />
+    <Compile Include="App_Start\MappingRegistrations.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Code\ABCApplicationService.cs" />
+    <Compile Include="Code\ABCPrincipalService.cs" />
+    <Compile Include="Code\AngularAttribute.cs" />
+    <Compile Include="Code\AngularControllerEnum.cs" />
+    <Compile Include="Code\ApplicationJsonConverter.cs" />
+    <Compile Include="Code\GZipBundle.cs" />
+    <Compile Include="Code\ABCJsonContractResolver.cs" />
+    <Compile Include="Code\MenuAttribute.cs" />
+    <Compile Include="Code\MenuEnum.cs" />
+    <Compile Include="Code\OdissHelper.cs" />
+    <Compile Include="Code\SpreadsheetService.cs" />
+    <Compile Include="Code\Version.cs" />
+    <Compile Include="Controllers\api\AppGridController.cs" />
+    <Compile Include="Controllers\api\APRolesController.cs" />
+    <Compile Include="Controllers\api\APUsersController.cs" />
+    <Compile Include="Controllers\api\CountriesController.cs" />
+    <Compile Include="Controllers\api\CurrenciesController.cs" />
+    <Compile Include="Controllers\api\DocumentsController.cs" />
+    <Compile Include="Controllers\api\ExceptionCodesController.cs" />
+    <Compile Include="Controllers\api\FieldController.cs" />
+    <Compile Include="Controllers\api\InvoiceStatusesController.cs" />
+    <Compile Include="Controllers\api\InvoiceSubmissionStatusesController.cs" />
+    <Compile Include="Controllers\api\LookupTypeController.cs" />
+    <Compile Include="Controllers\api\PlantsGridController.cs" />
+    <Compile Include="Controllers\api\POHeadersController.cs" />
+    <Compile Include="Controllers\api\SearchController.cs" />
+    <Compile Include="Controllers\api\TermsCodesController.cs" />
+    <Compile Include="Controllers\api\UsersController.cs" />
+    <Compile Include="Controllers\api\VendorsController.cs" />
+    <Compile Include="Controllers\api\VendorTypesController.cs" />
+    <Compile Include="Controllers\AppController.cs" />
+    <Compile Include="Controllers\AuditController.cs" />
+    <Compile Include="Controllers\APMiniController.cs" />
+    <Compile Include="Controllers\AuthController.cs" />
+    <Compile Include="Controllers\EditFormController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\SettingsController.cs" />
+    <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Controllers\VendorController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Globalization\APWords.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>APWords.resx</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Globalization\Languages.cs" />
+    <Compile Include="Globalization\Words.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Words.resx</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Globalization\Words.es.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Words.es.resx</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Globalization\Words.fr.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Words.fr.resx</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Globalization\Words.pt.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Words.pt.resx</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="Infrastructure\CachingService.cs" />
+    <Compile Include="Infrastructure\Logger.cs" />
+    <Compile Include="Models\AppIndex.cs" />
+    <Compile Include="Models\DocumentApplication.cs" />
+    <Compile Include="Models\AuditIndex.cs" />
+    <Compile Include="Models\ChangePasswordIndex.cs" />
+    <Compile Include="Models\DataGridModel.cs" />
+    <Compile Include="Models\InvoiceTabModel.cs" />
+    <Compile Include="Models\LoginIndex.cs" />
+    <Compile Include="Models\LoginModel.cs" />
+    <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\ModelBase.cs" />
+    <Compile Include="Models\EnhancedSearchOptions.cs" />
+    <Compile Include="Models\ReportsIndex.cs" />
+    <Compile Include="Models\ResetPassword.cs" />
+    <Compile Include="Models\UserIndex.cs" />
+    <Compile Include="Models\UsernameReminder.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="app.config" />
+    <Content Include="App_Code\FieldHelper.cshtml" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\ts\base.js.map" />
+    <Content Include="Content\ts\changepassword.js.map" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Scripts\angular.min.js.map" />
+    <Content Include="Views\App\Index.cshtml" />
+    <Content Include="Views\App\SubmitBase.cshtml" />
+    <Content Include="Views\App\SubmitBaseMultiple.cshtml" />
+    <Content Include="Views\App\Viewer.cshtml" />
+    <Content Include="Views\App\ViewerBase.cshtml" />
+    <Content Include="Views\App\ViewerBrowserNative.cshtml" />
+    <Content Include="Views\App\ViewerDownload.cshtml" />
+    <Content Include="Views\App\ViewerEmailBody.cshtml" />
+    <Content Include="Views\App\ViewerLocal.cshtml" />
+    <Content Include="Views\App\ViewerProtected.cshtml" />
+    <Content Include="Views\App\ViewerSubmit.cshtml" />
+    <Content Include="Views\Audit\Index.cshtml" />
+    <Content Include="Views\EditForm\Index.cshtml" />
+    <Content Include="Views\EditForm\ViewerBase.cshtml" />
+    <Content Include="Views\Error\CustomError.cshtml" />
+    <Content Include="Views\Error\Forbidden.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Home\Blank.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Reports\Index.cshtml" />
+    <Content Include="Views\Settings\Index.cshtml" />
+    <Content Include="Views\Shared\APForm\_LayoutViewerBase.cshtml" />
+    <Content Include="Views\Shared\EditForm\_LayoutViewerBase.cshtml" />
+    <Content Include="Views\Shared\ModalChangePassword.cshtml" />
+    <Content Include="Views\Shared\ModalSessionDisconnected.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_LayoutError.cshtml" />
+    <Content Include="Views\Shared\_LayoutSettings.cshtml" />
+    <Content Include="Views\Shared\_LayoutSubmitBase.cshtml" />
+    <Content Include="Views\Shared\_LayoutSubmitBaseCustom.cshtml" />
+    <Content Include="Views\Shared\_LayoutViewerBase.cshtml" />
+    <Content Include="Views\Shared\_LayoutViewerCustom.cshtml" />
+    <Content Include="Views\Upload\Index.cshtml" />
+    <Content Include="Views\Users\ChangeLanguage.cshtml" />
+    <Content Include="Views\Users\ChangePassword.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Users\Settings.cshtml" />
+    <Content Include="Views\Users\Sidebar.cshtml" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\App\DataGrid.cshtml" />
+    <Content Include="Scripts\src\package.json" />
+    <Content Include="Scripts\src\.babelrc" />
+    <Content Include="Scripts\src\dist\datagrid.bundle.js.map" />
+    <Content Include="Scripts\src\package-lock.json" />
+    <Content Include="Scripts\src\dist\users.bundle.js.map" />
+    <Content Include="Views\APMini\Invoice.cshtml" />
+    <Content Include="Scripts\src\dist\invoice-tab.bundle.js.map" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <Content Include="Views\APMini\AppFooter.cshtml" />
+    <Content Include="Views\APMini\AppHeader.cshtml" />
+    <Content Include="Scripts\src\dist\ap.bundle.js.map" />
+    <Content Include="Scripts\src\.tfignore" />
+    <Content Include="Views\Vendor\Index.cshtml" />
+    <Content Include="Scripts\src\dist\vendors.bundle.js.map" />
+    <Content Include="Views\App\InvoiceNoModal.cshtml" />
+    <Content Include="Views\Auth\Login.cshtml" />
+    <Content Include="Scripts\src\dist\login-page.bundle.js.map" />
+    <Content Include="Views\App\SubmitInvoiceNoModal.cshtml" />
+    <Content Include="Scripts\src\dist\submit-invoice.bundle.js.map" />
+    <Content Include="Views\App\ViewerBase64.cshtml" />
+    <Content Include="Scripts\src\app\document-tabs\header.scss" />
+    <Content Include="Scripts\src\app\document-tabs\submit-invoice\styles.submit-invoice.scss" />
+    <Content Include="Scripts\src\app\document-tabs\invoice\document-tab.scss" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Globalization\APWords.resx">
+      <LastGenOutput>APWords.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Words.es.resx">
+      <LastGenOutput>Words.es.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Words.fr.resx">
+      <LastGenOutput>Words.fr.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Words.pt.resx">
+      <LastGenOutput>Words.pt.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Globalization\Words.resx">
+      <LastGenOutput>Words.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="Content\ts\base.ts" />
+    <TypeScriptCompile Include="Content\ts\changepassword.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\static\" />
+    <Folder Include="Views\AdaptedBase\" />
+    <Folder Include="Views\Login\" />
+    <Folder Include="Views\VendorPlants\" />
+    <Folder Include="Views\Vendors\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Octacom.Odiss.ABCgroup.Business\Octacom.Odiss.ABCgroup.Business.csproj">
+      <Project>{82CEAAF2-BF3E-408E-A24B-337E92F1D260}</Project>
+      <Name>Octacom.Odiss.ABCgroup.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Octacom.Odiss.ABCgroup.DataLayer\Octacom.Odiss.ABCgroup.DataLayer.csproj">
+      <Project>{FC7442C4-5167-462D-970E-8A9378683E40}</Project>
+      <Name>Octacom.Odiss.ABCgroup.DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Octacom.Odiss.ABCgroup.Entities\Octacom.Odiss.ABCgroup.Entities.csproj">
+      <Project>{FD43141E-9FE0-4A68-A106-EFD9B32772B5}</Project>
+      <Name>Octacom.Odiss.ABCgroup.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>3950</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:3950/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

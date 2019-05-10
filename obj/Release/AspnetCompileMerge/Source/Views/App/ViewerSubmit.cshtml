@@ -1,0 +1,47 @@
+﻿@model App
+@{
+    Layout = null;
+    HtmlHelper.ClientValidationEnabled = false;
+    HtmlHelper.UnobtrusiveJavaScriptEnabled = false;
+
+    var viewer = Html.OctacomViewer(new ViewerOptions
+    {
+        Language = Language,
+        EnablePrint = false,
+        EnableSave = false
+    });
+}
+<!DOCTYPE html>
+<html dir="ltr" mozdisallowselectionprint moznomarginboxes>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Viewer</title>
+    @viewer.Resources
+</head>
+<body tabindex="1" class="loadingInProgress">
+    @viewer.Render()
+    <script>
+    var par = window.parent.OdissViewerBase;
+    function LoadTempFile(id) {
+        DocumentReady(function () {
+                OctacomViewer.Load({
+                    url: '@Url.Action("DocSubmit/Doc_" + DateTime.Now.ToString("yyyyMMddHHmmssFFFF") + ".pdf")',
+                    data: {
+                        Start: 0,
+                        Total: 0,
+                        AppID: '@Model.ID',
+                        List: [id]
+                    }
+                });
+        });
+    }
+
+    function CloseViewer() {
+        OctacomViewer.Close();
+    }
+    </script>
+</body>
+</html>

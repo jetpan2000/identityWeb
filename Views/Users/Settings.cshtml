@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = Words.Settings + " - " + ConfigBase.Settings.Name;
+}
+@section sidebar
+{
+    @Html.Partial("~/Views/Users/Sidebar.cshtml")
+}
+<style>
+    .box-settings{
+        background-color:#fff;padding:0px;margin:0px;
+    }
+    .box-settings a {
+        display:block;
+        padding:20px;
+    }
+    .box-settings a:hover span {
+        text-decoration:none;
+        display:inline-block;
+    }
+    .box-settings h3{
+        margin:0px;
+    }
+</style>
+<h1>@Words.Settings</h1>
+<br />
+<div class="row">
+    <div class="col-md-3">
+        <div class="img-rounded box-settings bg-info well" style="text-align:center;">
+            <a href="@Url.Content("~/users/changepassword")">
+                <span class="glyphicon glyphicon-lock" style="font-size:48px;margin-bottom:15px;"></span>
+                <h3>@Words.ChangePassword</h3>
+                <span>@Words.ChangePassword_Description</span>
+            </a>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="img-rounded box-settings bg-info well" style="text-align:center;">
+            <a href="@Url.Content("~/users/changelanguage")">
+                <span class="glyphicon glyphicon-globe" style="font-size:48px;margin-bottom:15px;"></span>
+                <h3>@Words.Language</h3>
+                <span>@Words.Language_Description</span>
+            </a>
+        </div>
+    </div>
+</div>

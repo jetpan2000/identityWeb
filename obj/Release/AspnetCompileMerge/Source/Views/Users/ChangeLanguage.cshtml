@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = Words.Language + " - " + ConfigBase.Settings.Name;
+}
+@section sidebar
+{
+    @Html.Partial("~/Views/Users/Sidebar.cshtml", "ChangeLanguage")
+}
+
+<h1>@Words.Language</h1>
+<div class="row">
+    <div class="col-lg-4 col-md-8 col-sm-12">
+        <div class="list-group">
+            @foreach (var lang in Languages.GetAllEnabled())
+            {
+                <div class="radio list-group-item">
+                    <label>
+                        <input type="radio" name="optLanguage" value="@lang.Initials" data-lang="@lang.Initials" @(Language == lang.Initials ? "checked" : "") />@lang.Name
+                    </label>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<button type="button" id="btnSaveLanguage" class="btn btn-primary">@Words.Save</button>
+@section footer
+{
+    <script>
+        $(document).ready(function () {
+            $("#btnSaveLanguage").click(function () {
+                var l = $('input[name=optLanguage]:checked').val();
+
+                $.post("./change-language", { l: l })
+                    .done(function (data) {
+                        if (data.status) {
+                            window.location.href = window.location.href;
+                        }
+                    });
+            });
+        });
+    </script>
+}

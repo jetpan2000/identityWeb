@@ -1,0 +1,20 @@
+.submit-document-btn {
+    width: 100%;
+    background-color: #eaeaea !important;
+    border: none;
+    height: 40px;
+    text-align: left;
+    padding-left: 20px;
+    padding-right: 15px;
+
+    .submit-document-icon {
+        float: right;
+        font-size: 16px;
+    }
+}
+
+#react-submit-invoice-root {
+    margin-left: -20px;
+    margin-right: -21px;
+    margin-bottom: 20px;
+}

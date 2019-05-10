@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="@Language">
+<head>
+    <title>@ViewBag.Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="author" content="Octacom">
+    <base href="@Url.Content("~")" />
+    @if (!string.IsNullOrEmpty(ConfigBase.Settings.ShortcutIcon))
+    {
+        <link href="data:image/png;base64,@ConfigBase.Settings.ShortcutIcon" rel="shortcut icon">
+    }
+    else
+    {
+        <link type="image/x-icon" href="@Url.Content("~/content/img/octa-icon.png")" rel="icon">
+        <link href="@Url.Content("~/content/img/octa-icon.png")" rel="shortcut icon">
+    }
+    @Styles.Render("~/content/min/css/error")
+    <!--[if lt IE 9]>
+      @Scripts.Render("~/content/min/js/ie8")
+    <![endif]-->
+</head>
+<body class="base@(ConfigBase.Settings.ColorScheme)">
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid" style="padding-left:0px;">
+            <div class="navbar-header col-md-2 text-center">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">@Words.ToggleNavigation</span>
+                    <span class="glyphicon glyphicon-th-list"></span>
+                </button>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#sidebar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">@Words.ToggleNavigation</span>
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+                <a class="" href="@Url.Content("~/")"><img src="data:image/png;base64,@ConfigBase.Settings.Logo" title="@ConfigBase.Settings.Name" /></a>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="main">
+            @RenderBody()
+        </div>
+    </div>
+    @Scripts.Render("~/content/min/js/base")
+    <script>
+        OdissBase.baseUrl = '@Url.Content("~/")';
+        OdissBase.dateFormat = '@ConfigBase.Settings.DateFormat'.toUpperCase();
+    </script>
+    @RenderSection("footer", false)
+</body>
+</html>

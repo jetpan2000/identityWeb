@@ -1,0 +1,536 @@
+﻿@model App
+@{
+    ViewBag.Title = Model.Name.ToLanguage() + " - " + ConfigBase.Settings.Name;
+    bool enableExport = true;
+    bool isSearchResultResponsive = true;
+    bool enableSelection = true;
+    bool autoSearch = false;
+    bool searchRefreshOnModalClose = false;
+    bool requiresOneFieldForSearch = false;
+    AppCustomData customData = Model.Config.Custom;
+
+    if (customData != null)
+    {
+        enableExport = customData.EnableExport;
+        enableSelection = customData.EnableSelection;
+        isSearchResultResponsive = customData.IsSearchResultResponsive;
+        autoSearch = customData.ShowTotalRowsBadge || customData.AutoSearch;
+        searchRefreshOnModalClose = customData.SearchRefreshOnModalClose;
+        requiresOneFieldForSearch = customData.RequiresOneFieldForSearch;
+    }
+
+    var fieldsEvents = Model.Fields.Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchFilter).Where(a => UserPermissionsEnum.ViewHiddenFields.IsUserAuthorized(User) || customData?.HiddenFields == null || customData.HiddenFields.All(f => f != a.ID)).OrderBy(a => a.FilterOrder);
+}
+@functions
+{
+    string GetViewerTitle()
+    {
+        string viewerTitle = Model.Name.ToLanguage();
+
+        if (Model.Config.Custom?.ViewerTitle != null)
+        {
+            if (Model.Config.Custom?.ViewerTitle != string.Empty)
+            {
+                viewerTitle += " - " + Model.Config.Custom.ViewerTitle.ToLanguage();
+            }
+        }
+        else
+        {
+            viewerTitle += " - " + Words.Application_DocumentViewer;
+        }
+
+        return viewerTitle;
+    }
+}
+@section header{
+    @Styles.Render("~/content/min/css/app")
+    @if (!enableSelection)
+    {
+        <style>
+            .checkBoxColumn {
+                padding-left: 7px !important;
+            }
+        </style>
+    }
+}
+@section footer{
+    @Scripts.Render("~/content/min/js/app")
+
+    @foreach (var field in fieldsEvents)
+    {
+        if (field.Settings?.Events == null)
+        {
+            continue;
+        }
+        <script>
+            $(document).ready(function(){
+                OdissApp.fieldEvents.push({Field:"@field.ID", Events: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(field.Settings.Events))});
+            });
+        </script>
+    }
+    <script>
+        $(document).ready(function () {
+            OdissApp.allowExport = @(UserPermissionsEnum.ExportResults.IsUserAuthorized(User) && enableExport ? 1 : 0);
+            OdissApp.enableSelection = @(enableSelection ? 1 : 0);
+            OdissApp.blankUrl = "@Url.Content("~/blank")";
+            OdissApp.baseUrl = "@Url.Content("~/app/" + Model.ID)";
+            OdissApp.language = "@Language";
+            OdissApp.groupByPos = "@Model.Config.GroupByPos()";
+            OdissApp.groupByPositions = [@Model.Config.GroupByPositions()];
+            OdissApp.maxPerPage = @ConfigBase.Settings.MaxPerPage;
+            OdissApp.emptyColumn = "@(Words.Application_Empty)";
+            OdissApp.isSearchResultResponsive = @(isSearchResultResponsive ? "true" : "false");
+            OdissApp.loadingText = "@(Words.Loading)";
+            OdissApp.searchRefreshOnModalClose = @(searchRefreshOnModalClose ? 1 : 0);
+            OdissApp.requiresOneFieldForSearch = @(requiresOneFieldForSearch ? 1 : 0);
+            OdissApp.start();
+            @if (autoSearch)
+            {
+                <text>OdissApp.refreshSearch();</text>
+            }
+        });
+
+        window.__submitViewerUrl = '@Url.Content(string.Format("~/App/{0}/ViewerBase", Model.ID))';
+        window.__submitUrl = '@Url.Action("ViewerBase64", "App", new { id = ViewContext.RouteData?.Values["id"]?.ToString() })';
+
+    </script>
+
+    @if (Model.Config.HasCustomView(Octacom.Odiss.Library.Custom.CustomActionFilterEnum.AppFooter))
+    {
+        @Model.Config.GetCustomPartialView(Html, Octacom.Odiss.Library.Custom.CustomActionFilterEnum.AppFooter, Model);
+    }
+
+    @Scripts.Render("~/Scripts/src/dist/submit-invoice.bundle.js")
+}
+
+@helper ShowTree(Node<TreeData> node, Settings.Field field)
+{
+    <ul>
+        @foreach (var child in node.Children)
+        {
+            <li id="@(field.ViewColumnID)_@(child.Item.Code)">
+                <a href="javascript:void(0);" title="@child.Item.Name.ToLanguage()">@child.Item.Name.ToLanguage()</a>
+
+                @if (!child.IsLeaf)
+                {
+                    @ShowTree(child, field);
+                }
+            </li>
+        }
+    </ul>
+}
+
+@section sidebar
+{
+    @if (UserPermissionsEnum.ViewDocuments.IsUserAuthorized(User))
+    {
+        <ul class="nav nav-sidebar">
+            <li class="active"><a href="javascript:void(0);" style="cursor:default;">@(string.IsNullOrWhiteSpace(Model.Config.SearchTitle) ? Words.Search_Documents : Model.Config.SearchTitle.ToLanguage())<span class="pull-right glyphicon glyphicon-search"></span></a></li>
+        </ul>
+        <form method="post" id="frmDocuments" style="margin-bottom:20px;">
+            <div class="alert alert-danger" role="alert" id="boxRequiresOneFieldSearch" style="display:none;">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>
+                <span>@Words.AtLeastOneFieldRequired</span>
+            </div>
+            @Html.Hidden("page", "0")
+            @Html.Hidden("sort", "")
+            @Html.Hidden("exporting", "")
+            @Html.Hidden("INTERNAL_ODISS_QUERY", "")
+            @foreach (var field in Model.Fields.Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchFilter).Where(a => UserPermissionsEnum.ViewHiddenFields.IsUserAuthorized(User) || customData?.HiddenFields == null || customData.HiddenFields.All(f => f != a.ID)).OrderBy(a => a.FilterOrder))
+            {
+                if (!string.IsNullOrEmpty(field.Settings?.FieldVisibilityByUser?.ValidateFieldCommand))
+                {
+                    bool isVisible = field.Settings.FieldVisibilityByUser.IsFieldVisible(field.ID, User.ID);
+
+                    if (!isVisible) { continue; }
+                }
+
+                string extraClasses = "";
+
+                if (field.Type == FieldTypeEnum.DateRange)
+                {
+                    extraClasses += " form-group-date-range ";
+                }
+                else if (field.Type == FieldTypeEnum.AutoComplete)
+                {
+                    extraClasses += " form-group-autocomplete ";
+                }
+
+                if (field.Settings?.Multiple != null && field.Settings.Multiple.Enable)
+                {
+                    extraClasses += " form-group-multiple-values ";
+                }
+
+                <div class="form-group form-group-sm @extraClasses" style="position:relative;">
+                    @if (field.Type == FieldTypeEnum.Number || field.Type == FieldTypeEnum.Text || field.Type == FieldTypeEnum.Array || field.Type == FieldTypeEnum.MultipleLink)
+                    {
+                        <input type="text" data-validate-type="@field.Type" id="@field.ViewColumnID"
+                               data-validate-minLength="@field.Settings.SearchMinimumLength" data-validate-minLengthMessage="@string.Format(Words.Validation_SearchMinimumLength, field.Settings.SearchMinimumLength)"
+                               data-validate-maxLength="@field.Settings.SearchMaximumLength" data-validate-maxLengthMessage="@string.Format(Words.Validation_SearchMaximumLength, field.Settings.SearchMaximumLength)"
+                               class="form-control control-filter form-group-validate-required" name="@field.ViewColumnID" placeholder="@field.GetCompleteName()" value="@(field.Settings?.DefaultValueSearch)" title="@field.GetCompleteName()" />
+                        if (field.Settings?.Multiple != null)
+                        {
+                            <span title="@Words.UploadFileMultipleField"><i class="glyphicon glyphicon-open-file multipleValuesFieldButton" data-value-id="@field.ViewColumnID"></i></span>
+                        }
+                    }
+                    else if (field.Type == FieldTypeEnum.TextArea)
+                    {
+                        <textarea class="form-control control-filter" name="@field.ViewColumnID" placeholder="@field.GetCompleteName()" title="@field.GetCompleteName()" rows="5">@Model.FormState[field.ViewColumnID]</textarea>
+                    }
+                    else if (field.Type == FieldTypeEnum.NumberRange)
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="input-group">
+                                    <input type="text" class="form-control control-filter" name="@(field.ViewColumnID)[0]" placeholder="@field.GetCompleteName()" value="@Model.FormState[field.ViewColumnID + "[0]"]" title="@field.GetCompleteName()" />
+                                    <div class="input-group-addon pointer copy-from-to" style="border:0px;border-top: 1px solid #ccc;border-bottom: 1px solid #ccc;" data-from="@(field.ViewColumnID)[0]" data-to="@(field.ViewColumnID)[1]"><small>@Words.Viewer_Pages_To</small></div>
+                                    <input type="text" class="form-control control-filter" name="@(field.ViewColumnID)[1]" placeholder="@field.GetCompleteName()" value="@Model.FormState[field.ViewColumnID + "[1]"]" title="@field.GetCompleteName()" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else if (field.Type == FieldTypeEnum.DateRange)
+                    {
+                        <input type="text" id="@field.ViewColumnID" data-validate-type="@field.Type" data-validate-message="@Words.Validation_InvalidDate" class="form-control control-filter form-group-validate-required" name="@field.ViewColumnID" placeholder="@field.GetCompleteName() (@ConfigBase.Settings.DateFormatDescription)" value="@Model.FormState[field.ViewColumnID]" title="@field.GetCompleteName()" />
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    }
+                    else if (field.Type == FieldTypeEnum.Tree)
+                    {
+                        var fieldData = field.GetDataAsTree();
+                        <input type="hidden" id="@field.ViewColumnID" class="hidTreeValue" name="@field.ViewColumnID" value="@Model.FormState[field.ViewColumnID]" />
+                        <label><small>@field.GetCompleteName()</small></label>
+                        <input type="text" class="form-control form-search-tree" placeholder="@Words.Application_SearchFor @field.GetCompleteName()" style="margin-bottom:5px;" />
+                        <div class="form-control-aspect form-control-tree" data-id="@field.ViewColumnID">
+                            @if (fieldData != null)
+                            {
+                                @ShowTree(fieldData.Root, field)
+                            }
+                        </div>
+                    }
+                    else if (field.Type == FieldTypeEnum.Dropdown)
+                    {
+                        var fieldData = field.GetData();
+                        var defaultValueSearch = field.Settings?.DefaultValueSearch ?? string.Empty;
+                        object[] filterByUserValues = field.Settings?.FieldValuesByUser?.GetValues(field.ID, User.ID);
+
+                        if (filterByUserValues != null)
+                        {
+                            fieldData = fieldData.Join(filterByUserValues, a => a.Code.ToString(), b => b.ToString(), (a, b) => a);
+                        }
+
+                        <select id="@field.ViewColumnID" class="form-control form-group-validate-required" name="@field.ViewColumnID" title="@field.GetCompleteName()">
+                            <option value="">@field.GetCompleteName()</option>
+                            @if (fieldData != null)
+                            {
+                                if (fieldData.Any(a => a.ParentCode != null))
+                                {
+                                    foreach (var node in fieldData.Where(a => a.ParentCode == null))
+                                    {
+                                        if (!node.Selectable)
+                                        {
+                                            @:<optgroup label="@node.Name">
+                                            }
+                                        else
+                                        {
+                                                <option value="@node.Code">@node.Name.ToLanguage()</option>
+                                        }
+                                        foreach (var subnode in fieldData.Where(a => a.ParentCode == node.Code))
+                                        {
+                                                <option value="@subnode.Code" @(subnode.Code.ToString() == defaultValueSearch ? "selected=selected" : string.Empty)>@(subnode.Selectable ? new string(' ', 6) : string.Empty)@subnode.Name.ToLanguage()</option>
+                                        }
+                                        if (!node.Selectable)
+                                        {
+                                            @:</optgroup>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (var node in fieldData.Where(a => a.Selectable))
+                                    {
+                                        <option value="@node.Code" @(node.Code.ToString() == defaultValueSearch ? "selected=selected" : string.Empty)>@node.Name.ToLanguage()</option>
+                                    }
+                                }
+                            }
+                        </select>
+                    }
+                    else if (field.Type == FieldTypeEnum.AutoComplete)
+                    {
+                        <input type="text" class="form-control control-filter autocompletesearch form-group-validate-required" data-autocomplete-shownosuggestions="@((field.Settings?.AutoCompleteShowNoSuggestions ?? true) ? "1" : "0")" data-autocomplete-minchars="@(field.Settings?.AutoCompleteMinChars)" id="@field.ViewColumnID" name="@field.ViewColumnID" placeholder="@field.GetCompleteName()" value="@Model.FormState[field.ViewColumnID]" title="@field.GetCompleteName()" />
+                        <i class="glyphicon glyphicon-search"></i>
+                        string autoCompleteHiddenName = "hidden" + field.ViewColumnID;
+                        <input type="hidden" id="@autoCompleteHiddenName" name="@autoCompleteHiddenName" value="" />
+                    }
+                    else if (field.Type == FieldTypeEnum.Radio || field.Type == FieldTypeEnum.RadioQuery)
+                    {
+                        <label><small>@field.GetCompleteName():</small></label>
+                        <div class="radioList panel panel-body form-group-sm" style="border: 1px solid #ccc;-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);box-shadow: inset 0 1px 1px rgba(0,0,0,.075); -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s; -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;padding:10px 15px;">
+                            @{var fieldData = field.GetData(); }
+                            @if (fieldData != null)
+                            {
+                                int i = 0;
+                                foreach (var node in fieldData.Where(a => a.ParentCode == null))
+                                {
+                                    <div class="radio radioListSelect" id="radioList_@field.ViewColumnID" style="margin:0px;">
+                                        <label><input type="radio" value="@(node.Code ?? "")" name="@field.ViewColumnID" @((i == 0 && Model.FormState[field.ViewColumnID] == null || (field.Settings?.DefaultValueSearch != null && field.Settings.DefaultValueSearch == node.Code)) ? "checked=checked" : (Model.FormState[field.ViewColumnID] == node.Code ? "checked=checked" : string.Empty)) /> @node.Name.ToLanguage()</label>
+                                    </div>
+                                    if (fieldData.Any(a => a.ParentCode != null && a.ParentCode == node.Code))
+                                    {
+                                        <select class="form-control" id="@(field.ViewColumnID)_@(node.Code)_NODES" name="@(field.ViewColumnID)_@(node.Code)_NODES" style="@(i == 0 && Model.FormState[field.ViewColumnID] == null ? "" : (Model.FormState[field.ViewColumnID] == node.Code ? "" : "display:none;"))margin-top:5px;">
+                                            <option value="INTERNAL_ODISS_ALL">@Words.All</option>
+                                            @foreach (var nodeSub in fieldData.Where(a => a.ParentCode != null && a.ParentCode == node.Code))
+                                            {
+                                                <option value="@nodeSub.Code" @(Model.FormState[field.ViewColumnID + "_" + node.Code + "_NODES"] == nodeSub.Code ? "selected=selected" : string.Empty)>@nodeSub.Name</option>
+                                            }
+                                        </select>
+                                    }
+                                    i++;
+                                }
+                            }
+                        </div>
+                                }
+                                else if ((int)field.Type == 16)
+                                {
+                        <select id="@field.ViewColumnID" class="form-control form-group-validate-required" name="@field.ViewColumnID" title="@field.GetCompleteName()">
+                            <option value="">@field.GetCompleteName()</option>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                                }
+                </div>
+                                }
+            <div class="alert alert-info" role="alert" id="boxCustomSearchAlert" style="display:none;">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                <span>You selected a custom search criteria. To dismiss click <a href="javascript:void(0);" id="lnkDismissCustomSearch">here</a></span>
+            </div>
+            <button type="submit" class="btn btn-primary">@Words.Search</button>
+            <button type="button" id="btnResetSearch" class="btn btn-default">@Words.Reset</button>
+        </form>
+                             
+        }
+
+    @{ 
+        bool showSubmitDocuments = Model.Config.EnableSubmitDocuments && UserPermissionsEnum.SubmitDocuments.IsUserAuthorized(User);
+    }
+
+    <div id="react-submit-invoice-root" data-show="@Json.Encode(showSubmitDocuments)"></div>
+
+    @if (Model.Config.HasCustomView(Octacom.Odiss.Library.Custom.CustomActionFilterEnum.AppSearch))
+    {
+        @Model.Config.GetCustomPartialView(Html, Octacom.Odiss.Library.Custom.CustomActionFilterEnum.AppSearch, Model);
+    }
+}
+@if (Model.Config.HasCustomView(Octacom.Odiss.Library.Custom.CustomActionFilterEnum.AppHeader))
+{
+    @Model.Config.GetCustomPartialView(Html, Octacom.Odiss.Library.Custom.CustomActionFilterEnum.AppHeader, Model);
+}
+<h1>@Model.Name.ToLanguage()</h1>
+@if (UserPermissionsEnum.ViewDocuments.IsUserAuthorized(User))
+{
+    <form action="@Url.Content(string.Format("~/App/{0}/ViewerBase", Model.ID))" target="iViewerBase" method="post" style="display:none;" id="tmpForm" name="tmpForm">
+        <input type="hidden" name="docs" id="hidDoc" value="" />
+        <input type="hidden" name="extra" id="hidExtra" value="" />
+        <input type='submit' value='submit' style="display:none;" />
+    </form>
+    <div>
+        @{
+            bool hasColumnGroups = Model.Fields.Any(a => !string.IsNullOrWhiteSpace(a.HeaderGroupName));
+            string noWrap = customData != null && customData.NoWrap ? "nowrap" : "";
+        }
+        <table id="tbDocuments" class="table table-bordered table-condensed table-striped @noWrap" style="width:100%;">
+            <thead>
+                <tr>
+                    @if (hasColumnGroups)
+                    {
+                        <th rowspan="2" data-priority="0">
+                            @if (enableSelection)
+                            {
+                                <input type="checkbox" id="chkListAll" data-toggle="popover" />
+                            }
+                        </th>
+                        string antGroup = string.Empty;
+                        int iPosColumnResult1 = 1;
+                        foreach (var field in Model.Fields.Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchResults || a.VisibilityType == FieldVisibilityTypeEnum.OnlySearchResults).Where(a => UserPermissionsEnum.ViewHiddenFields.IsUserAuthorized(User) || customData?.HiddenFields == null || customData.HiddenFields.All(f => f != a.ID)).OrderBy(a => a.ResultOrder))
+                        {
+                            if (!string.IsNullOrWhiteSpace(field.HeaderGroupName))
+                            {
+                                if (field.HeaderGroupName.ToLanguage() != antGroup)
+                                {
+                                    <th data-result-field="@field.ID" data-result-index="@iPosColumnResult1" colspan="@Model.Fields.Count(a => !string.IsNullOrWhiteSpace(a.HeaderGroupName) && a.HeaderGroupName.ToLanguage() == field.HeaderGroupName.ToLanguage())" class="text-center">
+                                        @field.HeaderGroupName.ToLanguage()
+                                    </th>
+                                }
+
+                                antGroup = field.HeaderGroupName.ToLanguage();
+                            }
+                            else
+                            {
+                                <th rowspan="2" data-result-field="@field.ID" data-result-index="@iPosColumnResult1">@field.Name.ToLanguage()</th>
+                                antGroup = string.Empty;
+                            }
+                            iPosColumnResult1++;
+                        }
+                    }
+                    else
+                    {
+                        <th data-priority="0">
+                            @*@if (!((customData != null) && (customData.OpenViewer == false)))
+                                {*@
+                            @if (enableSelection)
+                            {
+                                <input type="checkbox" id="chkListAll" data-toggle="popover" />
+                            }
+                            @*}*@
+                        </th>
+                        int iPosColumnResult2 = 1;
+                        foreach (var field in Model.Fields.Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchResults || a.VisibilityType == FieldVisibilityTypeEnum.OnlySearchResults).Where(a => UserPermissionsEnum.ViewHiddenFields.IsUserAuthorized(User) || customData?.HiddenFields == null || customData.HiddenFields.All(f => f != a.ID)).OrderBy(a => a.ResultOrder))
+                        {
+                            string priorityNum = null;
+
+                            if (field.Settings?.Priority != null)
+                            {
+                                priorityNum = "data-priority=\"" + field.Settings.Priority.Value + "\"";
+                            }
+
+                            <th data-result-field="@field.ID" data-result-index="@iPosColumnResult2" @Html.Raw(priorityNum)>@field.Name.ToLanguage()</th>
+                            iPosColumnResult2++;
+                        }
+                    }
+                </tr>
+                @if (hasColumnGroups)
+                {
+                    <tr>
+                        @foreach (var field in Model.Fields.Where(a => !string.IsNullOrWhiteSpace(a.HeaderGroupName) && (a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchResults || a.VisibilityType == FieldVisibilityTypeEnum.OnlySearchResults)).Where(a => UserPermissionsEnum.ViewHiddenFields.IsUserAuthorized(User) || customData?.HiddenFields == null || customData.HiddenFields.All(f => f != a.ID)).OrderBy(a => a.ResultOrder))
+                        {
+                            <th>@field.Name.ToLanguage()</th>
+                        }
+                    </tr>
+                }
+            </thead>
+            <tbody>
+                @if (Model.Results != null && Model.Results.Any())
+                {
+                    foreach (var row in Model.Results)
+                    {
+                        int posField = 0;
+                        bool enableNotes = UserPermissionsEnum.ViewNotes.IsUserAuthorized(User) && (bool)row.GetValue("HasNotes");
+                        string enableNotesData = enableNotes ? ("data-placement=left data-toggle=popover data-trigger=focus data-poload=" + row.GetValue("GUID") + " title=" + Words.Notes) : string.Empty;
+                        <tr @(enableNotesData)>
+                            <td>
+                                @*@if (!((customData != null) && (customData.OpenViewer == false)))
+                                    {*@
+                                <input type="checkbox" data-id="@row.GetValue("GUID")" />
+                                @*}*@
+                            </td>
+                            @foreach (var field in Model.Fields.Where(a => a.VisibilityType == FieldVisibilityTypeEnum.Always || a.VisibilityType == FieldVisibilityTypeEnum.SearchResults || a.VisibilityType == FieldVisibilityTypeEnum.OnlySearchResults).OrderBy(a => a.ResultOrder))
+                            {
+                                <td class="tdField @(posField == 0 ? "columnLinkOpenDocument" : string.Empty)">
+                                    @if (posField == 0)
+                                    {
+                                        var val = row.RenderValue(field);
+                                        @*if ((customData != null) && (customData.OpenViewer == false))
+                                            {
+                                                <a href class="link-open-file" data-id="@row.GetValue("GUID")"> @(string.IsNullOrWhiteSpace((string)val) ? "<" + Words.Application_Empty + ">" : val)</a>
+                                            }
+                                            else
+                                            {*@
+                                        <a href class="link-open-document" data-id="@row.GetValue("GUID")"> @(string.IsNullOrWhiteSpace((string)val) ? "<" + Words.Application_Empty + ">" : val)</a>
+                                        //}
+                                        if (enableNotes)
+                                        {
+                                            <a tabindex="0" role="button" class="glyphicon glyphicon-file pull-right" style="color:#F1D18F"></a><span class="notespopup hidden-sm hidden-xs"></span>@* Used to hide notes popup for small devices *@
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @row.RenderValue(field)
+                                    }
+                                </td>
+                                posField++;
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="modal" id="modDocument" tabindex="-1" role="dialog" aria-labelledby="lblModal">
+        <div class="modal-dialog modal-dialog-full" role="document">
+            <div class="modal-content modal-content-full">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="@Words.Close"><span style="float:left;margin:5px 5px 0px 0px;font-size:12px;">@Words.Close</span><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="lblModal" style="display: inline-block; width: 325px">@GetViewerTitle()</h4>
+                    <div id="react-invoice-header" style="display:inline-block; width: 200px; margin-left: calc(50% - 325px - 100px);"></div>
+                </div>
+                <div class="modal-body modal-content-full-body">
+                    <iframe id="iViewerBase" name="iViewerBase" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@Words.Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a tabindex="0" style="display:none;color:#F1D18F;margin-left:5px;" class="aOpenNotesClone btnOpenNotes glyphicon glyphicon-file" data-placement="left" data-toggle="popover" data-trigger="focus" data-poload="0" title="@Words.Notes" role="button"></a>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">@Words.Error:</span>
+        @Words.Application_NoPermissionView
+    </div>
+}
+@if (Model.Config.EnableSubmitDocuments && UserPermissionsEnum.SubmitDocuments.IsUserAuthorized(User))
+{
+    <form action="@Url.Content(string.Format("~/App/{0}/SubmitBase", Model.ID))" target="iSubmitBase" method="post" style="display:none;" id="tmpSubmitForm" name="tmpSubmitForm">
+        <input type="hidden" name="docs" id="hid" value="" />
+        <input type='submit' value='submit' style="display:none;" />
+    </form>
+    <div class="modal" id="modSubmitDocument" tabindex="-1" role="dialog" aria-labelledby="lblModal">
+        <div class="modal-dialog modal-dialog-full" role="document">
+            <div class="modal-content modal-content-full">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="@Words.Close"><span style="float:left;margin:5px 5px 0px 0px;font-size:12px;">@Words.Close</span><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="lblModal">
+                        @Model.Name.ToLanguage() - @if (string.IsNullOrEmpty(Model.Config.Custom?.SubmitTitle))
+                        {@Words.Submit_Document }
+                    else
+                    { @Model.Config.Custom.SubmitTitle}
+                    </h4>
+                </div>
+                <div class="modal-body modal-content-full-body">
+                    <iframe id="iSubmitBase" name="iSubmitBase" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@Words.Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="modal" id="globalModal" tabindex="-1" role="dialog" aria-labelledby="globalModalLabel">
+    <div class="modal-dialog modal-dialog-full" role="document">
+        <div class="modal-content modal-content-full">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="@(Words.Close)"><span style="float:left;margin:5px 5px 0px 0px;font-size:12px;">@(Words.Close)</span><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="globalModalLabel"></h4>
+            </div>
+            <div class="modal-body modal-content-full-body">
+                <iframe id="iGlobalModal" name="iGlobalModal" frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">@(Words.Close)</button>
+            </div>
+        </div>
+    </div>
+</div>
+@*@if ((customData != null) && (customData.OpenViewer == false))
+        {
+        <form action="@Url.Content(string.Format("~/App/{0}/OpenFile", Model.ID))" target="iOpenFile" method="post" style="display:none;" id="tmpOpenFileForm" name="tmpOpenFileForm">
+            <input type="hidden" name="FileIdentification" id="FileIdentification" value="" />
+            <input type="hidden" name="AppIdentification" id="AppIdentification" value="" />
+            <input type='submit' value='submit' style="display:none;" />
+        </form>
+        <iframe id="iOpenFile" name="iOpenFile" frameborder="0" style="display:none;overflow:hidden;height:0;width:0" height="0" width="0"></iframe>
+    }*@

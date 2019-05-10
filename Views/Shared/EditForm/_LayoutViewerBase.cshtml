@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html lang="@Language" style="height:100%;width:100%;">
+<head>
+    <title>@ViewBag.Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Octacom">
+    <base href="@Url.Content("~")" />
+    <link type="image/x-icon" href="@Url.Content("~/content/img/octa-icon.png")" rel="icon">
+    <link href="@Url.Content("~/content/img/octa-icon.png")" rel="shortcut icon">
+    @Styles.Render("~/content/min/css/editformviewerbase")
+    <!--[if lt IE 9]>
+      @Scripts.Render("~/content/min/js/ie8")
+    <![endif]-->
+
+  
+
+</head>
+<body style="height:100%; background: none transparent;" class="base@(ConfigBase.Settings.ColorScheme)">           
+
+    @RenderSection("editdata", false)
+           
+    @Scripts.Render("~/content/min/js/editformviewerbase")
+    @RenderSection("footer", false)
+</body>
+</html>
